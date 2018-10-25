@@ -141,3 +141,6 @@ Travis-CI will be used to automatically publish Sphinx documentation in Github P
 - In project settings (in Travis-CI) add your token in "Environment Variables" section.
 - Set variable name as `GH_TOKEN` and paste your token to the value. "Display value in build log" should be `off`.
 - After pushing anything to the `master` branch, your documentation will become visible at https://itucsdb18NN.github.io/itucsdb18NN/
+
+
+- Set try
