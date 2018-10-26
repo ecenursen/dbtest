@@ -10,6 +10,30 @@ INIT_STATEMENTS = [
         password VARCHAR NOT NULL
     )""",
 
+    """CREATE TABLE IF NOT EXISTS POLICLINICS (
+        ID VARCHAR,
+        HOSPITAL_ID VARCHAR,
+        NAME VARCHAR(50) NOT NULL,
+        NUMBER_OF_EXAMINATION_ROOMS INTEGER,
+        NUMBER_OF_OBSERVATION_ROOMS INTEGER,
+        RECEPTIONIST VARCHAR(30) NOT NULL,
+        PRIVATE BOOL DEFAULT FALSE,
+        PRIMARY KEY (ID,HOSPITAL_ID)
+
+    )
+    """,
+
+    """CREATE TABLE IF NOT EXISTS DETAILED_POLICLINICS (
+        HOSPITAL_ID VARCHAR,
+        POLICLINIC_ID VARCHAR,
+        DOCTOR_ID VARCHAR,
+        WORKING_HOURS VARCHAR(50),
+        PRIMARY KEY (HOSPITAL_ID,POLICLINIC_ID,DOCTOR_ID),
+        FOREIGN KEY (POLICLINIC_ID) REFERENCES POLICLINICS (ID)
+    )
+    """,
+
+
 ]
 
 connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
@@ -27,6 +51,27 @@ def home_page():
 @app.route("/about")
 def about_page():
     return render_template('about_page.html')
+
+
+@app.route("/ece_test")
+def ece_test():
+    try:
+        connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+        cursor = connection.cursor()
+        statement = """SELECT * FROM POLICLINICS"""
+        cursor.execute(statement)
+        connection.commit()
+
+        for myrow in cursor:
+            print(myrow)
+
+    except db.DatabaseError:
+        connection.rollback()
+        flash('Unsuccessful to write the table!', 'danger')
+    finally:
+        connection.close()
+    return render_template('policlinics.html',myrow=myrow)
+
 
 @app.route("/login", methods=['GET', 'POST'])
 def login_page():
