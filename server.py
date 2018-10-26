@@ -32,6 +32,15 @@ INIT_STATEMENTS = [
         FOREIGN KEY (POLICLINIC_ID) REFERENCES POLICLINICS (ID)
     )
     """,
+     """CREATE TABLE IF NOT EXISTS pharmacies (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        location VARCHAR,
+        pharmacist INTEGER,
+        helper INTEGER,
+        next_night_shift DATE,
+        tel_num INTEGER
+    )""",
 
 
 ]
@@ -52,6 +61,21 @@ def home_page():
 def about_page():
     return render_template('about_page.html')
 
+@app.route("/pharmacy")
+def pharmacy_page():
+    pharmacies=[]
+    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+    cursor = connection.cursor()
+    statement = """SELECT * FROM pharmacies"""""
+    cursor.execute(statement)
+    connection.commit()
+    
+    i = 0
+    for row in cursor:
+        print (row)
+    cursor.close()
+
+    return render_template('pharmacy_page.html', Pharmacies=pharmacies)
 
 @app.route("/ece_test")
 def ece_test():
