@@ -1,4 +1,28 @@
 {% extends "layout.html" %}
 {% block content %}
     <h1>Pharmacy Page</h1>
+<table>
+    <tr>
+        <th>name</th>
+        <th>location</th>
+        <th>pharmacist</th>
+        <th>helper</th>
+        <th>next_night_shift</th>
+        <th>tel_num</th>
+    </tr>
+    {% for item in Pharmacies %}
+    <tr>
+        <td>{{item[1]}}</td>
+        <td>{{item[2]}}</td>
+        <td>{{item[3]}}</td>
+        <td>{{item[4]}}</td>
+        <td>{{item[5]}}</td>
+        <td>{{item[6]}}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+
+
 {% endblock content %}
