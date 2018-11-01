@@ -4,6 +4,7 @@ import psycopg2 as db
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW' 
 
+
 INIT_STATEMENTS = [
     """CREATE TABLE IF NOT EXISTS users (
         tckn VARCHAR PRIMARY KEY,
@@ -45,6 +46,7 @@ INIT_STATEMENTS = [
 
 ]
 
+
 connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
 cursor = connection.cursor()
 for statement in INIT_STATEMENTS:
@@ -69,10 +71,10 @@ def pharmacy_page():
     statement = """SELECT * FROM pharmacies"""""
     cursor.execute(statement)
     connection.commit()
-    
-    i = 0
     for row in cursor:
-        print (row)
+        pharmacies.append(row)
+    
+    
     cursor.close()
 
     return render_template('pharmacy_page.html', Pharmacies=pharmacies)
