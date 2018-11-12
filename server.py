@@ -31,8 +31,8 @@ INIT_STATEMENTS = [
         NAME VARCHAR(50) NOT NULL,
         AGE INTEGER,
         SEX BOOL DEFAULT FALSE, 
-        TCKN INTEGER NOT NULL,
-        PHONE INTEGER,
+        TCKN VARCHAR NOT NULL,
+        PHONE VARCHAR,
         CUR_COMPLAINT VARCHAR NOT NULL,
         INSURANCE INTEGER
     )
@@ -75,9 +75,7 @@ INIT_STATEMENTS = [
         CONSTRAINT c2 FOREIGN KEY (COMPANY_ID) REFERENCES DRUG_COMPANIES(ID)
     )""",
 
-
     # /GOKTUG
-
 
     """CREATE TABLE IF NOT EXISTS DETAILED_POLICLINICS (
         HOSPITAL_ID VARCHAR,
@@ -115,7 +113,31 @@ def home_page():
 @app.route("/about")
 def about_page():
     return render_template('about_page.html')
-
+@app.route("/patients")
+def patients_page():
+    patients = []
+    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+    cursor = connection.cursor()
+    statement = """SELECT * FROM PATIENTS"""""
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        patients.append(row)
+    cursor.close()
+    return render_template('patients_page.html', Patients=patients)
+    
+@app.route("/drugs")
+def drugs_page():
+    drugs = []
+    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+    cursor = connection.cursor()
+    statement = """SELECT * FROM DRUGS"""""
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        drugs.append(row)
+    cursor.close()
+    return render_template('drugs_page.html', Drugs=drugs)
 @app.route("/pharmacy")
 def pharmacy_page():
     pharmacies=[]
