@@ -1,71 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-     <meta charset="utf-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
- 
-     <!-- Bootstrap CSS -->
-     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-     <link rel="stylesheet" href="{{ url_for('static', filename='contents.css') }}"/>
-     {% if title %}
-        <title>HastayımDB - {{ title }}</title>
-    {% else %}
-        <title>HastayımDB</title>
-        
-    {% endif %}
-
-</head>
-<body style="background-color: #fafafa">
-    <header class="site-header">
-        <nav class="navbar navbar-expand-lg navbar-light bg-info">
-            <div class="container">
-                <a class="navbar-brand mr-4" href="/">HastayımDB</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarToggle">
-                    <div class="navbar-nav mr-auto">
-                    <a class="nav-item nav-link" href="{{ url_for('home_page') }}">Home</a>
-                    <a class="nav-item nav-link" href="{{ url_for('about_page') }}">About</a>
-                    <a class="nav-item nav-link" href="{{ url_for('pharmacy_page') }}">Pharmacy</a>
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Log In</legend>
+                <div class="form-group">
+                    {{ form.tckn.label(class="form-control-label") }}
+                    {{ form.tckn(class="form-control form-control-lg") }}
                 </div>
-                    <!-- Navbar Right Side -->
-                <div class="navbar-nav">
-                    <a class="nav-item nav-link" href="{{ url_for('login_page') }}">Login</a>
+                <div class="form-group">
+                    {{ form.password.label(class="form-control-label") }}
+                    {{ form.password(class="form-control form-control-lg") }}
                 </div>
+                <div class="form-check">
+                    {{ form.remember(class="form-check-input") }}
+                    {{ form.remember.label(class="form-check-label") }}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
             </div>
-            </div>
-        </nav>
-    </header>
-
-    <main role="main" class="container">
-        <div class="row" >
-            <div class="col-md-8">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category,message in messages %}
-                            <div class="alert alert-{{ category }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                {% block content %}{% endblock %}
-            </div>
-        </div>
-    </main>
-     <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
- 
-</body>
-
-<footer>
-    <div class="footer-copyright text-center py-3">© 2018 Copyright:
-        <a href="{{url_for('about_page') }}"> HastayimDB</a>
+            <small class="text-muted ml-2">
+                <a href="#">Forgot Password?</a>
+            </small>
+        </form>
     </div>
-   
-</footer>
-</html>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Forgot password? <a class="ml-2" href="{{ url_for('home_page') }}">Sign Up Now</a>
+        </small>
+    </div>
+{% endblock content %}
