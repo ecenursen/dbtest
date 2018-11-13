@@ -20,9 +20,62 @@ INIT_STATEMENTS = [
         RECEPTIONIST VARCHAR(30) NOT NULL,
         PRIVATE BOOL DEFAULT FALSE,
         PRIMARY KEY (ID,HOSPITAL_ID)
-
     )
     """,
+
+
+    #GOKTUG
+    #False == Male
+    """CREATE TABLE IF NOT EXISTS PATIENTS (
+        ID SERIAL PRIMARY KEY,
+        NAME VARCHAR(50) NOT NULL,
+        AGE INTEGER,
+        SEX BOOL DEFAULT FALSE, 
+        TCKN VARCHAR NOT NULL,
+        PHONE VARCHAR,
+        CUR_COMPLAINT VARCHAR NOT NULL,
+        INSURANCE INTEGER
+    )
+    """,
+    """CREATE TABLE IF NOT EXISTS ALLERGIES (
+        ID SERIAL PRIMARY KEY,
+        NAME VARCHAR NOT NULL
+
+    )""",
+    """CREATE TABLE IF NOT EXISTS ALLERGIE_INDEX (
+        PATIENT_ID INTEGER NOT NULL,
+        ALLERGIES_ID INTEGER NOT NULL,
+        CONSTRAINT c1 FOREIGN KEY (PATIENT_ID) REFERENCES PATIENTS(ID),
+        CONSTRAINT c2 FOREIGN KEY (ALLERGIES_ID) REFERENCES ALLERGIES(ID)
+
+    )""",
+
+
+     """CREATE TABLE IF NOT EXISTS DRUG_COMPANIES (
+        ID SERIAL PRIMARY KEY,
+        NAME VARCHAR NOT NULL,
+        FOUNDATION_YEAR INTEGER NOT NULL,
+        FOUNDER VARCHAR NOT NULL,
+        COUNTRY VARCHAR NOT NULL,
+        WORKER_NUM INTEGER NOT NULL,
+        FACTORY_NUM INTEGER NOT NULL
+    )""",
+    """CREATE TABLE IF NOT EXISTS DRUG_TYPE (
+        ID SERIAL PRIMARY KEY,
+        NAME VARCHAR NOT NULL
+    )""",
+    """CREATE TABLE IF NOT EXISTS DRUGS (
+        NAME VARCHAR NOT NULL,
+        COMPANY_ID INTEGER NOT NULL,
+        SIZE INTEGER NOT NULL,
+        SHELF_LIFE INTEGER NOT NULL,
+        PRICE VARCHAR NOT NULL,
+        TYPE INTEGER NOT NULL,
+        CONSTRAINT c1 FOREIGN KEY (TYPE) REFERENCES DRUG_TYPE(ID),
+        CONSTRAINT c2 FOREIGN KEY (COMPANY_ID) REFERENCES DRUG_COMPANIES(ID)
+    )""",
+
+    # /GOKTUG
 
     """CREATE TABLE IF NOT EXISTS DETAILED_POLICLINICS (
         HOSPITAL_ID VARCHAR,
@@ -82,7 +135,31 @@ def home_page():
 @app.route("/about")
 def about_page():
     return render_template('about_page.html')
-
+@app.route("/patients")
+def patients_page():
+    patients = []
+    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+    cursor = connection.cursor()
+    statement = """SELECT * FROM PATIENTS"""""
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        patients.append(row)
+    cursor.close()
+    return render_template('patients_page.html', Patients=patients)
+    
+@app.route("/drugs")
+def drugs_page():
+    drugs = []
+    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+    cursor = connection.cursor()
+    statement = """SELECT * FROM DRUGS"""""
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        drugs.append(row)
+    cursor.close()
+    return render_template('drugs_page.html', Drugs=drugs)
 @app.route("/pharmacy")
 def pharmacy_page():
     pharmacies=[]
