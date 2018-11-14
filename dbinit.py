@@ -96,6 +96,42 @@ INIT_STATEMENTS = [
         next_night_shift DATE,
         tel_num INTEGER
     )""",
+
+    # /ATAKAN
+
+    """CREATE TABLE IF NOT EXISTS pharmacies (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        location VARCHAR,
+        pharmacist INTEGER,
+        helper INTEGER,
+        next_night_shift DATE,
+        tel_num INTEGER,
+        FOREIGN KEY (POLICLINIC_ID) helper pharmacy_personel (id),
+        FOREIGN KEY (POLICLINIC_ID) pharmacist pharmacy_personel (id)
+    )""",
+    """
+    CREATE TABLE IF NOT EXISTS pharmacy_personel (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        tel_num INTEGER,
+        job BIT NOT NULL,
+        school VARCHAR,
+        graduation_year INTEGER,
+        years_worked INTEGER
+    )
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS pharmaceutical_warehouse (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        tel_num INTEGER,
+        years_worked INTEGER,
+        adress VARCHAR,
+        region VARCHAR,
+        carriers INTEGER
+    )
+    """
 ]
 
 def initialize(url):
