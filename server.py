@@ -5,11 +5,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW' 
 
 
-INIT_STATEMENTS = [
-    """CREATE TABLE IF NOT EXISTS users (
-        tckn VARCHAR PRIMARY KEY,
-        password VARCHAR NOT NULL
-    )""",
 
     """CREATE TABLE IF NOT EXISTS POLICLINICS (
         ID VARCHAR,
@@ -120,13 +115,14 @@ INIT_STATEMENTS = [
 ]
 
 
+'''
 connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
 cursor = connection.cursor()
 for statement in INIT_STATEMENTS:
     cursor.execute(statement)
 connection.commit()
 cursor.close()
-
+'''
 @app.route("/")
 @app.route("/home")
 def home_page():
@@ -147,7 +143,7 @@ def patients_page():
         patients.append(row)
     cursor.close()
     return render_template('patients_page.html', Patients=patients)
-    
+
 @app.route("/drugs")
 def drugs_page():
     drugs = []
@@ -160,6 +156,21 @@ def drugs_page():
         drugs.append(row)
     cursor.close()
     return render_template('drugs_page.html', Drugs=drugs)
+
+
+@app.route("/drug-companies")
+def drug_companies_page():
+    companies = []
+    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+    cursor = connection.cursor()
+    statement = """SELECT * FROM DRUG_COMPANIES"""""
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        companies.append(row)
+    cursor.close()
+    return render_template('drug_companies_page.html', DrugCompanies=companies)
+
 @app.route("/pharmacy")
 def pharmacy_page():
     pharmacies=[]
