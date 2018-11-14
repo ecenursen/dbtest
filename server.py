@@ -91,6 +91,7 @@ app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW'
         tel_num INTEGER
     )""",
 
+        #Ecem
     """CREATE TABLE IF NOT EXISTS HOSPITAL_PERSONNEL (
         PERSONNEL_ID SERIAL PRIMARY KEY,
         WORKER_NAME VARCHAR,
@@ -100,7 +101,7 @@ app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW'
         NIGHT_SHIFT INTEGER,
         PHONE_NUM VARCHAR,
         WORKING_FIELD VARCHAR,
-        tckn VARCHAR REFERENCES users (tckn),
+        TCKN VARCHAR,
         FOREIGN KEY (DAYS_WORKED)  REFERENCES DAY_TABLE(GENERATED_KEY),
         FOREIGN KEY (NIGHT_SHIFT) REFERENCES DAY_TABLE(GENERATED_KEY)
     )""",
@@ -115,14 +116,13 @@ app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW'
 ]
 
 
-'''
 connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
 cursor = connection.cursor()
 for statement in INIT_STATEMENTS:
     cursor.execute(statement)
 connection.commit()
 cursor.close()
-'''
+
 @app.route("/")
 @app.route("/home")
 def home_page():
@@ -143,7 +143,7 @@ def patients_page():
         patients.append(row)
     cursor.close()
     return render_template('patients_page.html', Patients=patients)
-
+    
 @app.route("/drugs")
 def drugs_page():
     drugs = []
@@ -187,6 +187,20 @@ def pharmacy_page():
 
     return render_template('pharmacy_page.html', Pharmacies=pharmacies)
 
+@app.route("/hospital_personnel")
+def hospital_personnel_page():
+    workers =[]
+    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+    cursor = connection.cursor()
+    statement = """SELECT * FROM HOSPITAL_PERSONNEL"""
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        workers.append(row)
+    cursor.close()
+    return render_template('hospital_personnel_page.html',hospital_personnel=workers)
+
+    
 @app.route("/ece_test")
 def ece_test():
     try:
