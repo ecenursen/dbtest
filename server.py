@@ -1,5 +1,6 @@
 from flask import Flask,render_template,redirect,url_for,flash
 from forms import LoginForm
+import os
 import psycopg2 as db
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW' 
@@ -13,6 +14,11 @@ connection.commit()
 cursor.close()
 '''
 
+#LIVE ICIN
+url = os.getenv("DATABASE_URL")
+#DENEME ICIN
+#url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
+
 @app.route("/")
 @app.route("/home")
 def home_page():
@@ -24,7 +30,7 @@ def about_page():
 @app.route("/patients")
 def patients_page():
     patients = []
-    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+    connection = db.connect(url)
     cursor = connection.cursor()
     statement = """SELECT * FROM PATIENTS"""""
     cursor.execute(statement)
@@ -37,7 +43,9 @@ def patients_page():
 @app.route("/drugs")
 def drugs_page():
     drugs = []
-    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+
+
+    connection = db.connect(url)
     cursor = connection.cursor()
     statement = """SELECT * FROM DRUGS"""""
     cursor.execute(statement)
@@ -51,7 +59,7 @@ def drugs_page():
 @app.route("/drug-companies")
 def drug_companies_page():
     companies = []
-    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+    connection = db.connect(url)
     cursor = connection.cursor()
     statement = """SELECT * FROM DRUG_COMPANIES"""""
     cursor.execute(statement)
@@ -64,7 +72,7 @@ def drug_companies_page():
 @app.route("/pharmacy")
 def pharmacy_page():
     pharmacies=[]
-    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+    connection = db.connect(url)
     cursor = connection.cursor()
     statement = """SELECT * FROM pharmacies"""""
     cursor.execute(statement)
@@ -80,7 +88,7 @@ def pharmacy_page():
 @app.route("/hospital_personnel")
 def hospital_personnel_page():
     workers =[]
-    connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+    connection = db.connect(url)
     cursor = connection.cursor()
     statement = """SELECT * FROM HOSPITAL_PERSONNEL"""
     cursor.execute(statement)
@@ -94,7 +102,7 @@ def hospital_personnel_page():
 @app.route("/ece_test")
 def ece_test():
     try:
-        connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+        connection = db.connect(url)
         cursor = connection.cursor()
         statement = """SELECT * FROM POLICLINICS"""
         cursor.execute(statement)
@@ -118,7 +126,7 @@ def login_page():
         tc = form.tckn.data
         pw = form.password.data
         try:
-            connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
+            connection = db.connect(url)
             cursor = connection.cursor()
             statement = """SELECT * FROM users WHERE tckn = '%s'
                     """ % tc
