@@ -6,7 +6,6 @@ import psycopg2 as dbapi2
 
 
 INIT_STATEMENTS = [
-    
     """CREATE TABLE IF NOT EXISTS users (
         tckn VARCHAR PRIMARY KEY,
         password VARCHAR NOT NULL
@@ -44,6 +43,7 @@ INIT_STATEMENTS = [
     )""",
     
 
+
     #GOKTUG
     #False == Male
     """CREATE TABLE IF NOT EXISTS PATIENTS (
@@ -70,7 +70,6 @@ INIT_STATEMENTS = [
 
     )""",
 
-
      """CREATE TABLE IF NOT EXISTS DRUG_COMPANIES (
         ID SERIAL PRIMARY KEY,
         NAME VARCHAR NOT NULL,
@@ -94,66 +93,15 @@ INIT_STATEMENTS = [
         CONSTRAINT c1 FOREIGN KEY (TYPE) REFERENCES DRUG_TYPE(ID),
         CONSTRAINT c2 FOREIGN KEY (COMPANY_ID) REFERENCES DRUG_COMPANIES(ID)
     )""",
-
     # /GOKTUG
-<<<<<<< HEAD
-=======
 
-    """CREATE TABLE IF NOT EXISTS DETAILED_POLICLINICS (
-        HOSPITAL_ID VARCHAR,
-        POLICLINIC_ID VARCHAR,
-        DOCTOR_ID VARCHAR,
-        WORKING_HOURS VARCHAR(50),
-        PRIMARY KEY (HOSPITAL_ID,POLICLINIC_ID,DOCTOR_ID),
-        FOREIGN KEY (POLICLINIC_ID) REFERENCES POLICLINICS (ID)
-    )
-    """,
-     """CREATE TABLE IF NOT EXISTS pharmacies (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR NOT NULL,
-        location VARCHAR,
-        pharmacist INTEGER,
-        helper INTEGER,
-        next_night_shift DATE,
-        tel_num INTEGER
-    )""",
-
-    # /ATAKAN
-
-    """CREATE TABLE IF NOT EXISTS pharmacies (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR NOT NULL,
-        location VARCHAR,
-        pharmacist INTEGER,
-        helper INTEGER,
-        next_night_shift DATE,
-        tel_num INTEGER,
-        FOREIGN KEY (POLICLINIC_ID) helper pharmacy_personel (id),
-        FOREIGN KEY (POLICLINIC_ID) pharmacist pharmacy_personel (id)
-    )""",
-    """
-    CREATE TABLE IF NOT EXISTS pharmacy_personel (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR NOT NULL,
-        tel_num INTEGER,
-        job BIT NOT NULL,
-        school VARCHAR,
-        graduation_year INTEGER,
-        years_worked INTEGER
-    )
-    """,
-    """
-    CREATE TABLE IF NOT EXISTS pharmaceutical_warehouse (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR NOT NULL,
-        tel_num INTEGER,
-        years_worked INTEGER,
-        adress VARCHAR,
-        region VARCHAR,
-        carriers INTEGER
-    )
-    """
     #Ecem
+        """CREATE TABLE IF NOT EXISTS DAY_TABLE (
+        GENERATED_KEY SERIAL PRIMARY KEY,
+        WORK_DAY VARCHAR,
+        WORKER_NAME VARCHAR,
+        DAYSHIFT BOOL
+    )""",
     """CREATE TABLE IF NOT EXISTS HOSPITAL_PERSONNEL (
         PERSONNEL_ID SERIAL PRIMARY KEY,
         WORKER_NAME VARCHAR,
@@ -168,16 +116,42 @@ INIT_STATEMENTS = [
         FOREIGN KEY (NIGHT_SHIFT) REFERENCES DAY_TABLE(GENERATED_KEY)
     )""",
 
-    """CREATE TABLE IF NOT EXISTS DAY_TABLE (
-        GENERATED_KEY SERIAL PRIMARY KEY,
-        WORK_DAY VARCHAR,
-        WORKER_NAME VARCHAR,
-        DAYSHIFT BOOL
-    )"""
+    # ATAKAN
+    """
+    CREATE TABLE IF NOT EXISTS pharmacy_personel (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        tel_num INTEGER,
+        job BIT NOT NULL,
+        school VARCHAR,
+        graduation_year INTEGER,
+        years_worked INTEGER
+    )
+    """,
+    """CREATE TABLE IF NOT EXISTS pharmacies (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        location VARCHAR,
+        pharmacist INTEGER,
+        helper INTEGER,
+        next_night_shift DATE,
+        tel_num INTEGER,
+        CONSTRAINT c1 FOREIGN KEY (helper) REFERENCES  pharmacy_personel(id),
+        CONSTRAINT c2 FOREIGN KEY (pharmacist) REFERENCES  pharmacy_personel(id)
+    )""",
+    """
+    CREATE TABLE IF NOT EXISTS pharmaceutical_warehouse (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        tel_num INTEGER,
+        years_worked INTEGER,
+        adress VARCHAR,
+        region VARCHAR,
+        carriers INTEGER
+    )
+    """
 
->>>>>>> 4bc74adaf02fc184f385f8598113804795369c11
 ]
-
 def initialize(url):
     with dbapi2.connect(url) as connection:
         cursor = connection.cursor()
