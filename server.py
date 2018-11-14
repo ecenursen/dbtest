@@ -137,5 +137,5 @@ def login_page():
     return render_template('login_page.html', title='Login', form=form)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
  
