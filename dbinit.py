@@ -12,7 +12,7 @@ INIT_STATEMENTS = [
     )""",
 
     """CREATE TABLE IF NOT EXISTS POLICLINICS (
-        ID VARCHAR,
+        ID VARCHAR UNIQUE,
         HOSPITAL_ID VARCHAR,
         NAME VARCHAR(50) NOT NULL,
         NUMBER_OF_EXAMINATION_ROOMS INTEGER,
@@ -23,6 +23,25 @@ INIT_STATEMENTS = [
     )
     """,
 
+    """CREATE TABLE IF NOT EXISTS DETAILED_POLICLINICS (
+        HOSPITAL_ID VARCHAR,
+        POLICLINIC_ID VARCHAR,
+        DOCTOR_ID VARCHAR,
+        WORKING_HOURS VARCHAR(50),
+        PRIMARY KEY (HOSPITAL_ID,POLICLINIC_ID,DOCTOR_ID),
+        FOREIGN KEY (POLICLINIC_ID) REFERENCES POLICLINICS (ID)
+    )
+    """,
+     """CREATE TABLE IF NOT EXISTS pharmacies (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        location VARCHAR,
+        pharmacist INTEGER,
+        helper INTEGER,
+        next_night_shift DATE,
+        tel_num INTEGER
+    )""",
+    
 
     #GOKTUG
     #False == Male
@@ -76,25 +95,6 @@ INIT_STATEMENTS = [
     )""",
 
     # /GOKTUG
-
-    """CREATE TABLE IF NOT EXISTS DETAILED_POLICLINICS (
-        HOSPITAL_ID VARCHAR,
-        POLICLINIC_ID VARCHAR,
-        DOCTOR_ID VARCHAR,
-        WORKING_HOURS VARCHAR(50),
-        PRIMARY KEY (HOSPITAL_ID,POLICLINIC_ID,DOCTOR_ID),
-        FOREIGN KEY (POLICLINIC_ID) REFERENCES POLICLINICS (ID)
-    )
-    """,
-     """CREATE TABLE IF NOT EXISTS pharmacies (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR NOT NULL,
-        location VARCHAR,
-        pharmacist INTEGER,
-        helper INTEGER,
-        next_night_shift DATE,
-        tel_num INTEGER
-    )""",
 ]
 
 def initialize(url):
