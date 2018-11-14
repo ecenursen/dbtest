@@ -96,6 +96,12 @@ INIT_STATEMENTS = [
     # /GOKTUG
 
     #Ecem
+        """CREATE TABLE IF NOT EXISTS DAY_TABLE (
+        GENERATED_KEY SERIAL PRIMARY KEY,
+        WORK_DAY VARCHAR,
+        WORKER_NAME VARCHAR,
+        DAYSHIFT BOOL
+    )""",
     """CREATE TABLE IF NOT EXISTS HOSPITAL_PERSONNEL (
         PERSONNEL_ID SERIAL PRIMARY KEY,
         WORKER_NAME VARCHAR,
@@ -110,26 +116,7 @@ INIT_STATEMENTS = [
         FOREIGN KEY (NIGHT_SHIFT) REFERENCES DAY_TABLE(GENERATED_KEY)
     )""",
 
-    """CREATE TABLE IF NOT EXISTS DAY_TABLE (
-        GENERATED_KEY SERIAL PRIMARY KEY,
-        WORK_DAY VARCHAR,
-        WORKER_NAME VARCHAR,
-        DAYSHIFT BOOL
-    )""",
-
-
     # ATAKAN
-    """CREATE TABLE IF NOT EXISTS pharmacies (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR NOT NULL,
-        location VARCHAR,
-        pharmacist INTEGER,
-        helper INTEGER,
-        next_night_shift DATE,
-        tel_num INTEGER,
-        CONSTRAINT c1 FOREIGN KEY (helper) REFERENCES  pharmacy_personel(id),
-        CONSTRAINT c2 FOREIGN KEY (pharmacist) REFERENCES  pharmacy_personel(id)
-    )""",
     """
     CREATE TABLE IF NOT EXISTS pharmacy_personel (
         id SERIAL PRIMARY KEY,
@@ -141,6 +128,17 @@ INIT_STATEMENTS = [
         years_worked INTEGER
     )
     """,
+    """CREATE TABLE IF NOT EXISTS pharmacies (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        location VARCHAR,
+        pharmacist INTEGER,
+        helper INTEGER,
+        next_night_shift DATE,
+        tel_num INTEGER,
+        CONSTRAINT c1 FOREIGN KEY (helper) REFERENCES  pharmacy_personel(id),
+        CONSTRAINT c2 FOREIGN KEY (pharmacist) REFERENCES  pharmacy_personel(id)
+    )""",
     """
     CREATE TABLE IF NOT EXISTS pharmaceutical_warehouse (
         id SERIAL PRIMARY KEY,
