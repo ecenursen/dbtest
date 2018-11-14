@@ -4,8 +4,12 @@ import psycopg2 as db
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW' 
 
-
-
+INIT_STATEMENTS = [
+    """CREATE TABLE IF NOT EXISTS users (
+        tckn VARCHAR PRIMARY KEY,
+        password VARCHAR NOT NULL
+    )""",
+    
     """CREATE TABLE IF NOT EXISTS POLICLINICS (
         ID VARCHAR,
         HOSPITAL_ID VARCHAR,
