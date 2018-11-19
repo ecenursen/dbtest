@@ -1,7 +1,9 @@
-from flask import Flask,render_template,redirect,url_for,flash
-from forms import LoginForm
+from flask import Flask,render_template,redirect,url_for,flash,request
+from forms import FlaskForm,PatientSearchForm
 import os
 import psycopg2 as db
+import math
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW' 
 
@@ -27,24 +29,38 @@ def home_page():
 @app.route("/about")
 def about_page():
     return render_template('about_page.html')
-@app.route("/patients")
+
+@app.route("/patients",methods=['GET', 'POST'])
 def patients_page():
     patients = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = """SELECT * FROM PATIENTS"""""
+    statement = """SELECT * FROM PATIENTS ORDER BY NAME ASC"""""
     cursor.execute(statement)
     connection.commit()
     for row in cursor:
         patients.append(row)
     cursor.close()
-    return render_template('patients_page.html', Patients=patients)
-    
+    form = PatientSearchForm()
+    if form.validate_on_submit():
+        attr = form.select.data
+        key = form.search.data
+        result=[]
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        statement = """SELECT * FROM PATIENTS WHERE """"" + "CAST("+attr+" AS TEXT)" + " ILIKE " + "\'%"+key+"%\'" + "ORDER BY "+attr+" ASC" 
+        print(statement)
+        cursor.execute(statement)
+        connection.commit()
+        for row in cursor:
+            result.append(row)
+        cursor.close()
+        return render_template('patients_page.html', Patients=result,form=form)
+    return render_template('patients_page.html', Patients=patients,form=form)
+
 @app.route("/drugs")
 def drugs_page():
     drugs = []
-
-
     connection = db.connect(url)
     cursor = connection.cursor()
     statement = """SELECT * FROM DRUGS"""""
@@ -54,7 +70,6 @@ def drugs_page():
         drugs.append(row)
     cursor.close()
     return render_template('drugs_page.html', Drugs=drugs)
-
 
 @app.route("/drug-companies")
 def drug_companies_page():
@@ -145,5 +160,5 @@ def login_page():
     return render_template('login_page.html', title='Login', form=form)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
  
