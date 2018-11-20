@@ -1,7 +1,8 @@
-from flask import Flask,render_template,redirect,url_for,flash
-from forms import LoginForm
+from flask import Flask,render_template,redirect,url_for,flash,request,session
+from forms import FlaskForm,PatientSearchForm,LoginForm
 import os
 import psycopg2 as db
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW' 
 
@@ -22,29 +23,44 @@ url = os.getenv("DATABASE_URL")
 @app.route("/")
 @app.route("/home")
 def home_page():
-    return render_template('home_page.html')
+    logged = True if session.get('logged_in') == True else False
+    return render_template('home_page.html',logged = logged)
 
 @app.route("/about")
 def about_page():
     return render_template('about_page.html')
-@app.route("/patients")
+
+@app.route("/patients",methods=['GET', 'POST'])
 def patients_page():
     patients = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = """SELECT * FROM PATIENTS"""""
+    statement = """SELECT * FROM PATIENTS ORDER BY NAME ASC"""""
     cursor.execute(statement)
     connection.commit()
     for row in cursor:
         patients.append(row)
     cursor.close()
-    return render_template('patients_page.html', Patients=patients)
-    
+    form = PatientSearchForm()
+    if form.validate_on_submit():
+        attr = form.select.data
+        key = form.search.data
+        result=[]
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        statement = """SELECT * FROM PATIENTS WHERE """"" + "CAST("+attr+" AS TEXT)" + " ILIKE " + "\'%"+key+"%\'" + "ORDER BY "+attr+" ASC" 
+        print(statement)
+        cursor.execute(statement)
+        connection.commit()
+        for row in cursor:
+            result.append(row)
+        cursor.close()
+        return render_template('patients_page.html', Patients=result,form=form)
+    return render_template('patients_page.html', Patients=patients,form=form)
+
 @app.route("/drugs")
 def drugs_page():
     drugs = []
-
-
     connection = db.connect(url)
     cursor = connection.cursor()
     statement = """SELECT * FROM DRUGS"""""
@@ -54,7 +70,6 @@ def drugs_page():
         drugs.append(row)
     cursor.close()
     return render_template('drugs_page.html', Drugs=drugs)
-
 
 @app.route("/drug-companies")
 def drug_companies_page():
@@ -121,28 +136,41 @@ def ece_test():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login_page():
-    form = LoginForm()
-    if form.validate_on_submit():
-        tc = form.tckn.data
-        pw = form.password.data
-        try:
-            connection = db.connect(url)
-            cursor = connection.cursor()
-            statement = """SELECT * FROM users WHERE tckn = '%s'
-                    """ % tc
-            cursor.execute(statement)
-            result = cursor.fetchone()
-            if(result[1] == pw):
-                flash('You have been logged in!', 'success')
-                return redirect(url_for('home_page'))
-            else:
+    if session.get('logged_in'):
+        #print('Already logged in')
+        return redirect(url_for('home_page'))
+    else:
+        form = LoginForm()
+        if form.validate_on_submit():
+            tc = form.tckn.data
+            pw = form.password.data
+            try:
+                connection = db.connect(url)
+                cursor = connection.cursor()
+                statement = """SELECT * FROM users WHERE tckn = '%s'
+                        """ % tc
+                cursor.execute(statement)
+                result = cursor.fetchone()
+                if(result[1] == pw):
+                    flash('You have been logged in!', 'success')
+                    session['logged_in'] = True
+                    session['tckn'] = tc 
+                    return redirect(url_for('home_page'))
+                else:
+                    flash('Login Unsuccessful. Please check username and password', 'danger')
+            except db.DatabaseError:
+                connection.rollback()
                 flash('Login Unsuccessful. Please check username and password', 'danger')
-        except db.DatabaseError:
-            connection.rollback()
-            flash('Login Unsuccessful. Please check username and password', 'danger')
-        finally:
-            connection.close()
-    return render_template('login_page.html', title='Login', form=form)
+            finally:
+                connection.close()
+        return render_template('login_page.html', title='Login', form=form)
+
+@app.route("/logout")
+def logout_page():
+    session.pop('tckn',None)
+    session['logged_in'] = False
+    return redirect(url_for('home_page'))
+    
 
 if __name__ == "__main__":
     app.run()

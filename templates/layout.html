@@ -35,7 +35,12 @@
                 </div>
                     <!-- Navbar Right Side -->
                 <div class="navbar-nav">
-                    <a class="nav-item nav-link" href="{{ url_for('login_page') }}">Login</a>
+                    {% if not logged %}
+                        <a class="nav-item nav-link" href="{{ url_for('login_page') }}">Login</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('logout_page') }}">Logout</a>
+                    {% endif %}
+
                 </div>
             </div>
             </div>
