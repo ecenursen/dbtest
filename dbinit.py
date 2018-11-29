@@ -118,6 +118,7 @@ INIT_STATEMENTS = [
     )""",
 
     # ATAKAN
+    # job = 0 = pharmacist
     """
     CREATE TABLE IF NOT EXISTS pharmacy_personel (
         id SERIAL PRIMARY KEY,
@@ -150,12 +151,14 @@ INIT_STATEMENTS = [
         adress VARCHAR,
         region VARCHAR,
         carriers INTEGER
-    ),
+    )""",
+    """
     CREATE TABLE IF NOT EXISTS pharmacy_inventory (
         drugs_id INTEGER REFENCES DRUGS(ID),
         pharmacy_id INTEGER REFENCES pharmacies(id),
         number INTEGER DEFAULT 0
-    ),
+    )""",
+    """
     CREATE TABLE IF NOT EXISTS warehouse_inventory (
         drugs_id INTEGER REFENCES DRUGS(ID),
         warehouse_id INTEGER REFENCES pharmacies(id),
