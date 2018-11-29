@@ -84,6 +84,7 @@ INIT_STATEMENTS = [
         NAME VARCHAR NOT NULL
     )""",
     """CREATE TABLE IF NOT EXISTS DRUGS (
+        ID SERIAL PRIMARY KEY,
         NAME VARCHAR NOT NULL,
         COMPANY_ID INTEGER NOT NULL,
         SIZE INTEGER NOT NULL,
@@ -123,6 +124,7 @@ INIT_STATEMENTS = [
         name VARCHAR NOT NULL,
         tel_num INTEGER,
         job BIT NOT NULL,
+        job BOOL NOT NULL,
         school VARCHAR,
         graduation_year INTEGER,
         years_worked INTEGER
@@ -148,6 +150,16 @@ INIT_STATEMENTS = [
         adress VARCHAR,
         region VARCHAR,
         carriers INTEGER
+    ),
+    CREATE TABLE IF NOT EXISTS pharmacy_inventory (
+        drugs_id INTEGER REFENCES DRUGS(ID),
+        pharmacy_id INTEGER REFENCES pharmacies(id),
+        number INTEGER DEFAULT 0
+    ),
+    CREATE TABLE IF NOT EXISTS warehouse_inventory (
+        drugs_id INTEGER REFENCES DRUGS(ID),
+        warehouse_id INTEGER REFENCES pharmacies(id),
+        number INTEGER DEFAULT 0
     )
     """
 
