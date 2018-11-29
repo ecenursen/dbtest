@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}
+    <h1>PRESCRIPTIONs</h1>
+{% endblock title %}
+{% block content %}
+<table>
+    <tr>
+        <th>PRESCRIPTION ID </th>
+        <th>HOSPITAL NAME </th>
+        <th>DOCTOR NAME </th>
+        <th>VALID UNTIL </th>
+    </tr>
+    {% for item in Prescriptions %}
+    <tr>
+        <td>{{item[1]}}</td>
+        <td>{{item[2]}}</td>
+        <td>{{item[3]}}</td>
+        <td>{{item[4]}}</td>
+
+    </tr>
+    {% endfor %}
+
+</table>
+{% endblock content %}

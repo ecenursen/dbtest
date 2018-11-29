@@ -1,5 +1,6 @@
 from flask import Flask,render_template,redirect,url_for,flash,request,session
 from forms import FlaskForm,PatientSearchForm,LoginForm
+import datetime
 import os
 import psycopg2 as db
 
@@ -113,25 +114,26 @@ def hospital_personnel_page():
     cursor.close()
     return render_template('hospital_personnel_page.html',hospital_personnel=workers)
 
-    
-@app.route("/ece_test")
-def ece_test():
-    try:
-        connection = db.connect(url)
-        cursor = connection.cursor()
-        statement = """SELECT * FROM POLICLINICS"""
-        cursor.execute(statement)
-        connection.commit()
+@app.route("/Prescription<id>",methods=['GET', 'POST'])
+def prescription_page(id):
+    prescriptions=[]
+    date = datetime.datetime.now().date()
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = """SELECT PRESCRIPTION.PRESCRIPTION_ID,HOSPITAL.HOSPITAL_NAME,HOSPITAL_PERSONNEL.WORKER_NAME,PRESCRIPTION.VALID_DATE FROM PRESCRIPTION,HOSPITAL_PERSONNEL,HOSPITAL 
+        WHERE PATIENT_ID="+"CAST("+id+"AS INTEGER)"""+ """
+        AND VALID_DATE>="""+"CAST("+date+"AS DATE) """ +"""
+        AND (HOSPITAL.HOSPITAL_ID = PRESCRIPTION.HOSPITAL_ID)
+        AND (HOSPITAL_PERSONNEL.PERSONNEL_ID = PRESCRIPTION.DOCTOR_ID)
+        ORDER BY PRESCRIPTION.VALID_DATE DESC
+    """
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        prescriptions.append(row)
+    cursor.close()
+    return render_template('prescription.html', Prescriptions=prescriptions)
 
-        for myrow in cursor:
-            print(myrow)
-
-    except db.DatabaseError:
-        connection.rollback()
-        flash('Unsuccessful to write the table!', 'danger')
-    finally:
-        connection.close()
-    return render_template('policlinics.html',myrow=myrow)
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -174,4 +176,6 @@ def logout_page():
 
 if __name__ == "__main__":
     app.run()
+    #app.run(debug='True')
+    
  
