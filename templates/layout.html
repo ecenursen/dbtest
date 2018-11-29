@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-     <meta charset="utf-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
- 
-     <!-- Bootstrap CSS -->
-     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-     <link rel="stylesheet" href="{{ url_for('static', filename='contents.css') }}"/>
-     {% if title %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='contents.css') }}"/>
+    {% if title %}
         <title>HastayımDB - {{ title }}</title>
     {% else %}
         <title>HastayımDB</title>
-        
     {% endif %}
 
 </head>
@@ -27,11 +26,7 @@
                     <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link" href="{{ url_for('home_page') }}">Home</a>
                     <a class="nav-item nav-link" href="{{ url_for('about_page') }}">About</a>
-                    <a class="nav-item nav-link" href="{{ url_for('pharmacy_page') }}">Pharmacy</a>
-                    <a class="nav-item nav-link" href="{{ url_for('patients_page') }}">Patients</a>
-                    <a class="nav-item nav-link" href="{{ url_for('drugs_page') }}">Drugs</a>
-                    <a class="nav-item nav-link" href="{{ url_for('drug_companies_page') }}">Drug Companies</a>
-                    <a class="nav-item nav-link" href="{{ url_for('hospital_personnel_page') }}">Staff</a>
+
                 </div>
                     <!-- Navbar Right Side -->
                 <div class="navbar-nav">
@@ -40,7 +35,6 @@
                     {% else %}
                         <a class="nav-item nav-link" href="{{ url_for('logout_page') }}">Logout</a>
                     {% endif %}
-
                 </div>
             </div>
             </div>
@@ -49,7 +43,19 @@
 
     <main role="main" class="container">
         <div class="row" >
-            <div class="col-md-8">
+            <div class="col-md-4" style="margin-top: 5%">
+                <div class="content-section">
+                    <ul class="list-group" >
+                        <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('pharmacy_page') }}">Pharmacy</a>
+                        <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('patients_page') }}">Patients</a>
+                        <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('drugs_page') }}">Drugs</a>
+                        <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('drug_companies_page') }}">Drug Companies</a>
+                        <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('hospital_personnel_page') }}">Staff</a>
+                    </ul>
+                    </p>
+                </div>
+            </div>
+             <div class="col-md-8" style="margin-top:5%">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category,message in messages %}
@@ -61,6 +67,7 @@
                 {% endwith %}
                 {% block content %}{% endblock %}
             </div>
+           
         </div>
     </main>
      <!-- Optional JavaScript -->

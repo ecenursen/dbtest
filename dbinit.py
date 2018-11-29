@@ -6,21 +6,11 @@ import psycopg2 as dbapi2
 
 
 INIT_STATEMENTS = [
-    """CREATE TABLE IF NOT EXISTS users (
-        tckn VARCHAR PRIMARY KEY,
-        password VARCHAR NOT NULL
+    """CREATE TABLE IF NOT EXISTS USERS (
+        ID INTEGER UNIQUE PRIMARY KEY,
+        PASSWORD VARCHAR NOT NULL,
+        STATUS INTEGER NOT NULL
     )""",
-
-    """CREATE TABLE IF NOT EXISTS pharmacies (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR NOT NULL,
-        location VARCHAR,
-        pharmacist INTEGER,
-        helper INTEGER,
-        next_night_shift DATE,
-        tel_num INTEGER
-    )""",
-    
     #GOKTUG
     #False == Male
     """CREATE TABLE IF NOT EXISTS PATIENTS (

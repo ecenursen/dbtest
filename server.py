@@ -3,7 +3,7 @@ from forms import FlaskForm,PatientSearchForm,LoginForm
 import datetime
 import os
 import psycopg2 as db
-
+from dbinit import initialize
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW' 
 
@@ -20,6 +20,7 @@ cursor.close()
 url = os.getenv("DATABASE_URL")
 #DENEME ICIN
 #url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
+#initialize(url)
 
 @app.route("/")
 @app.route("/home")
@@ -144,19 +145,19 @@ def login_page():
     else:
         form = LoginForm()
         if form.validate_on_submit():
-            tc = form.tckn.data
+            id = form.id.data
             pw = form.password.data
             try:
                 connection = db.connect(url)
                 cursor = connection.cursor()
-                statement = """SELECT * FROM users WHERE tckn = '%s'
-                        """ % tc
+                statement = """SELECT * FROM USERS WHERE ID = '%s'
+                        """ % id
                 cursor.execute(statement)
                 result = cursor.fetchone()
                 if(result[1] == pw):
                     flash('You have been logged in!', 'success')
                     session['logged_in'] = True
-                    session['tckn'] = tc 
+                    session['id'] = id 
                     return redirect(url_for('home_page'))
                 else:
                     flash('Login Unsuccessful. Please check username and password', 'danger')
@@ -169,7 +170,7 @@ def login_page():
 
 @app.route("/logout")
 def logout_page():
-    session.pop('tckn',None)
+    session.pop('id',None)
     session['logged_in'] = False
     return redirect(url_for('home_page'))
     
