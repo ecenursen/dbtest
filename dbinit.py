@@ -156,7 +156,6 @@ INIT_STATEMENTS = [
         id SERIAL PRIMARY KEY,
         name VARCHAR NOT NULL,
         tel_num INTEGER,
-        job BIT NOT NULL,
         job BOOL NOT NULL,
         school VARCHAR,
         graduation_year INTEGER,
