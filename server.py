@@ -16,7 +16,7 @@ connection.commit()
 cursor.close()
 '''
 
-DEBUG = True
+DEBUG = False
 
 #LIVE ICIN
 if(DEBUG==False):
