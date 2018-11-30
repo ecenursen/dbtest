@@ -28,7 +28,6 @@ else:
     #drop_table(url)
 
 
-
 @app.route("/")
 @app.route("/home")
 def home_page():
@@ -149,14 +148,14 @@ def hospital_personnel_page():
     cursor.close()
     return render_template('hospital_personnel_page.html',hospital_personnel=workers)
 
-@app.route("/Prescription<id>",methods=['GET', 'POST'])
+@app.route("/Prescription/{id}",methods=['GET', 'POST'])
 def prescription_page(id):
     prescriptions=[]
     date = datetime.datetime.now().date()
     connection = db.connect(url)
     cursor = connection.cursor()
     statement = """SELECT PRESCRIPTION.PRESCRIPTION_ID,HOSPITAL.HOSPITAL_NAME,HOSPITAL_PERSONNEL.WORKER_NAME,PRESCRIPTION.VALID_DATE FROM PRESCRIPTION,HOSPITAL_PERSONNEL,HOSPITAL 
-        WHERE PATIENT_ID="+"CAST("+id+"AS INTEGER)"""+ """
+        WHERE PATIENT_ID="""+"CAST("+id+"AS INTEGER)"""+ """
         AND VALID_DATE>="""+"CAST("+date+"AS DATE) """ +"""
         AND (HOSPITAL.HOSPITAL_ID = PRESCRIPTION.HOSPITAL_ID)
         AND (HOSPITAL_PERSONNEL.PERSONNEL_ID = PRESCRIPTION.DOCTOR_ID)
@@ -167,7 +166,37 @@ def prescription_page(id):
     for row in cursor:
         prescriptions.append(row)
     cursor.close()
-    return render_template('prescription.html', Prescriptions=prescriptions)
+    return render_template('prescription.html', Prescriptions=prescriptions,id=id)
+
+@app.route("/Prescription/{id}/{pid}",methods=['GET', 'POST'])
+def det_prescription_page(id,pid):
+    drug=[]
+    examination = []
+    date = datetime.datetime.now().date()
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement1 = """SELECT *.DETAILED_PRESCRIPTION,DRUGS.NAME FROM DETAILED_PRESCRIPTION,DRUGS
+        WHERE PATIENT_ID="""+"CAST("+id+"AS INTEGER)"""+ """
+        AND VALID_DATE>="""+"CAST("+date+"AS DATE) """ +"""
+        AND DETAILED_PRESCRIPTION.PRESCRIPTION_ID ="""+"CAST("+pid+"AS INTEGER)""" + """
+        AND (DRUGS.ID = PRESCRIPTION.DRUG_ID)
+        ORDER BY PRESCRIPTION.VALID_DATE DESC
+    """
+    cursor.execute(statement1)
+    connection.commit()
+    for row in cursor:
+        drug.append(row)
+    statement2 = """SELECT * FROM EXAMINATION 
+        WHERE PATIENT_ID="""+"CAST("+id+"AS INTEGER)"""+ """
+        AND VALID_DATE>="""+"CAST("+date+"AS DATE) """ +"""
+        AND DETAILED_PRESCRIPTION.PRESCRIPTION_ID ="""+"CAST("+pid+"AS INTEGER)""" + """
+        ORDER BY PRESCRIPTION.VALID_DATE DESC
+    """
+    cursor.execute(statement2)
+    for row in cursor:
+        examination.append(row)
+    cursor.close()
+    return render_template('detail_prescription.html', P_Drugs = drug,P_Examination = examination,id=id,pid=pid)
 
 
 
