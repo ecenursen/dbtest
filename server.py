@@ -16,12 +16,16 @@ connection.commit()
 cursor.close()
 '''
 
+DEBUG = False
+
 #LIVE ICIN
-url = os.getenv("DATABASE_URL")
-#DENEME ICIN
-url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
-#initialize(url)
-#drop_table(url)
+if(DEBUG==False):
+    url = os.getenv("DATABASE_URL")
+else:  
+    #DENEME ICIN
+    url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
+    initialize(url)
+    #drop_table(url)
 
 
 
@@ -179,7 +183,9 @@ def logout_page():
     
 
 if __name__ == "__main__":
-    app.run()
-    #app.run(debug='True')
+    if(DEBUG):
+        app.run(debug='True')
+    else:
+        app.run()
     
  
