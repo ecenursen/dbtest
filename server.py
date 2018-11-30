@@ -16,7 +16,7 @@ connection.commit()
 cursor.close()
 '''
 
-DEBUG = False
+DEBUG = True
 
 #LIVE ICIN
 if(DEBUG==False):
@@ -67,6 +67,7 @@ def patients_page():
         return render_template('patients_page.html', Patients=result,form=form)
     return render_template('patients_page.html', Patients=patients,form=form)
 
+
 @app.route("/drugs")
 def drugs_page():
     drugs = []
@@ -93,21 +94,47 @@ def drug_companies_page():
     cursor.close()
     return render_template('drug_companies_page.html', DrugCompanies=companies)
 
-@app.route("/pharmacy")
+@app.route("/pharmacy",methods=['GET', 'POST'])
 def pharmacy_page():
-    pharmacies=[]
+    #id = session.get('id')
+    #stat = session.get('status')
+    #if (stat == 4):
+    id = 3424
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = """SELECT * FROM pharmacies"""""
+    statement = """SELECT id,name,tckn,school,graduation_year,years_worked,tel_num FROM pharmacy_personel
+                    WHERE tckn = '{}' """.format(id) 
     cursor.execute(statement)
     connection.commit()
-    for row in cursor:
-        pharmacies.append(row)
+    phar_pers = cursor.fetchone()
+    phar_id = phar_pers[0]
     
-    
+    statement = """SELECT name,location,next_night_shift,tel_num FROM pharmacies
+                    WHERE id = '{}' """.format(phar_id) 
+    cursor.execute(statement)
+    connection.commit()
+    phar_detail = cursor.fetchone()
+
+    statement = """ SELECT pharmacy_personel.name,pharmacy_personel.tel_num FROM pharmacy_personel,pharmacies
+                    WHERE (pharmacies.id = {})""".format(phar_id)
+    cursor.execute(statement)
+    connection.commit()
+    employees = cursor.fetchone() 
     cursor.close()
 
-    return render_template('pharmacy_page.html', Pharmacies=pharmacies)
+    return render_template('pharmacy_page.html',Personel=phar_pers,Pharma = phar_detail,Employees = employees)
+    
+
+    #return render_template('pharmacy_page.html', Pharmacies=pharmacies)
+
+    
+@app.route("/pharma_inventory")
+def pinventory_page():
+    
+
+    return render_template('pinventory_page.html')
+
+
 
 @app.route("/hospital_personnel")
 def hospital_personnel_page():

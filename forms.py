@@ -20,3 +20,6 @@ class PatientSearchForm(FlaskForm):
     select = SelectField('Filter Patients:',choices=choices)
     search = StringField('')
     submit = SubmitField('Filter')
+
+
+

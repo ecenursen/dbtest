@@ -119,6 +119,7 @@ INIT_STATEMENTS = [
     # job = 0 = pharmacist
     """
     CREATE TABLE IF NOT EXISTS pharmacy_personel (
+        tckn INTEGER,
         id SERIAL PRIMARY KEY,
         name VARCHAR NOT NULL,
         tel_num INTEGER,
@@ -141,6 +142,7 @@ INIT_STATEMENTS = [
     )""",
     """
     CREATE TABLE IF NOT EXISTS pharmaceutical_warehouse (
+        login_id INTEGER,
         id SERIAL PRIMARY KEY,
         name VARCHAR NOT NULL,
         tel_num INTEGER,
