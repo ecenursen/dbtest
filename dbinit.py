@@ -166,7 +166,7 @@ INIT_STATEMENTS = [
 
     """CREATE TABLE IF NOT EXISTS POLICLINICS (
         POLICLINICS_ID SERIAL PRIMARY KEY,
-        HOSPITAL_ID VARCHAR,
+        HOSPITAL_ID INTEGER,
         NAME VARCHAR(50) NOT NULL,
         NUMBER_OF_EXAMINATION_ROOMS INTEGER DEFAULT 0,
         NUMBER_OF_OBSERVATION_ROOMS INTEGER DEFAULT 0,
@@ -178,10 +178,10 @@ INIT_STATEMENTS = [
 
     """CREATE TABLE IF NOT EXISTS DETAILED_POLICLINICS (
         DETAILED_P_ID  SERIAL PRIMARY KEY,
-        POLICLINIC_ID VARCHAR,
+        POLICLINIC_ID INTEGER,
         DOCTOR_ID INTEGER,
         WORKING_HOURS VARCHAR(50),
-        FOREIGN KEY (POLICLINICS_ID) REFERENCES POLICLINICS (ID),
+        FOREIGN KEY (POLICLINIC_ID) REFERENCES POLICLINICS(POLICLINICS_ID),
         FOREIGN KEY (DOCTOR_ID) REFERENCES HOSPITAL_PERSONNEL(PERSONNEL_ID)
     )
     """,
@@ -234,3 +234,11 @@ if __name__ == "__main__":
         print("Usage: DATABASE_URL=url python dbinit.py", file=sys.stderr)
         sys.exit(1)
     initialize(url)
+
+
+
+def drop_table(url):
+    with dbapi2.connect(url) as connection:
+        cursor = connection.cursor()
+        cursor.execute("DROP SCHEMA public CASCADE;CREATE SCHEMA public;")
+        cursor.close()

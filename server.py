@@ -3,7 +3,7 @@ from forms import FlaskForm,PatientSearchForm,LoginForm
 import datetime
 import os
 import psycopg2 as db
-from dbinit import initialize
+from dbinit import initialize,drop_table
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW' 
 
@@ -19,8 +19,11 @@ cursor.close()
 #LIVE ICIN
 url = os.getenv("DATABASE_URL")
 #DENEME ICIN
-#url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
+url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
 #initialize(url)
+#drop_table(url)
+
+
 
 @app.route("/")
 @app.route("/home")
