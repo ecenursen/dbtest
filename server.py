@@ -1,5 +1,5 @@
 from flask import Flask,render_template,redirect,url_for,flash,request,session
-from forms import FlaskForm,PatientSearchForm,LoginForm
+from forms import FlaskForm,PatientSearchForm,LoginForm,G_PharmacySearchForm
 import datetime
 import os
 import psycopg2 as db
@@ -16,7 +16,7 @@ connection.commit()
 cursor.close()
 '''
 
-DEBUG = False
+DEBUG = True
 
 #LIVE ICIN
 if(DEBUG==False):
@@ -99,42 +99,121 @@ def pharmacy_page():
     #id = session.get('id')
     #stat = session.get('status')
     #if (stat == 4):
-    id = 3424
-    connection = db.connect(url)
-    cursor = connection.cursor()
-    statement = """SELECT id,name,tckn,school,graduation_year,years_worked,tel_num FROM pharmacy_personel
-                    WHERE tckn = '{}' """.format(id) 
-    cursor.execute(statement)
-    connection.commit()
-    phar_pers = cursor.fetchone()
-    phar_id = phar_pers[0]
+    form = G_PharmacySearchForm()
+    logged_in = False
+    if (logged_in):
     
-    statement = """SELECT name,location,next_night_shift,tel_num FROM pharmacies
-                    WHERE id = '{}' """.format(phar_id) 
-    cursor.execute(statement)
-    connection.commit()
-    phar_detail = cursor.fetchone()
+        id = 3424
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        statement = """SELECT id,name,tckn,school,graduation_year,years_worked,tel_num FROM pharmacy_personel
+                        WHERE tckn = '{}' """.format(id) 
+        cursor.execute(statement)
+        connection.commit()
+        phar_pers = cursor.fetchone()
+        phar_id = phar_pers[0]
+        
+        statement = """SELECT name,location,next_night_shift,tel_num FROM pharmacies
+                        WHERE id = '{}' """.format(phar_id) 
+        cursor.execute(statement)
+        connection.commit()
+        phar_detail = cursor.fetchone()
 
-    statement = """ SELECT pharmacy_personel.name,pharmacy_personel.tel_num FROM pharmacy_personel,pharmacies
-                    WHERE (pharmacies.id = {})""".format(phar_id)
-    cursor.execute(statement)
-    connection.commit()
-    employees = cursor.fetchone() 
-    cursor.close()
+        statement = """ SELECT pharmacy_personel.name,pharmacy_personel.tel_num FROM pharmacy_personel,pharmacies
+                        WHERE (pharmacies.id = {})""".format(phar_id)
+        cursor.execute(statement)
+        connection.commit()
+        employees = cursor.fetchone() 
+        cursor.close()
 
-    return render_template('pharmacy_page.html',Personel=phar_pers,Pharma = phar_detail,Employees = employees)
-    
+        return render_template('pharmacy_page.html',id = phar_id, Personel=phar_pers,Pharma = phar_detail,Employees = employees,search_form = form,logged_in=logged_in)
+    else:
+        if form.validate_on_submit():
+            attr = form.select.data
+            key = form.search.data
+            results=[]
+            connection = db.connect(url)
+            cursor = connection.cursor()
+            statement = """SELECT pharmacies.name,location,next_night_shift,pharmacies.tel_num,pharmacy_personel.name,pharmacies.id FROM pharmacies,pharmacy_personel WHERE """"" + "CAST(pharmacies.{} AS TEXT) ILIKE  \'%{}%\' AND pharmacies.pharmacist = pharmacy_personel.id ORDER BY pharmacies.{} ASC".format(attr,key,attr)
+            #print(statement)
+            cursor.execute(statement)
+            connection.commit()
+            for row in cursor:
+                results.append(row)
+            cursor.close()
+            return render_template('pharmacy_page.html',   search_form = form,logged_in=logged_in, results = results,searched = True)
 
-    #return render_template('pharmacy_page.html', Pharmacies=pharmacies)
+        return render_template('pharmacy_page.html' ,  search_form = form,logged_in=logged_in,searched = False)
+    return
 
 
-@app.route("/pharma_inventory")
-def pinventory_page():
-    
+@app.route("/inventory/<id>/<mode>")
+def inventory_page(id,mode):
+    logged_in = True
+    self = True
+    if (logged_in): #pharma or pwarehouse
+        if (self):
+            if (mode == 'p'):
+                connection = db.connect(url)
+                cursor = connection.cursor()
+                statement = "select name from pharmacies where id={} ".format(id)
+                cursor.execute(statement)
+                connection.commit()
+                name = cursor.fetchone()[0]
+                statement = "select NAME , number from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
+                cursor.execute(statement)
+                connection.commit()
+                inventory = cursor.fetchall()
+                cursor.close()
+                return render_template('inventory_page.html' , self = True , name = name, results = inventory)
+            elif (mode == 'w'):
+                connection = db.connect(url)
+                cursor = connection.cursor()
+                statement = "select name from pharmacies where id={} ".format(id)
+                cursor.execute(statement)
+                connection.commit()
+                name = cursor.fetchone()[0]
+                statement = "select NAME , number from DRUGS,warehouse_inventory wherewarehouse_inventory.id = {} and drugs_id = ID".format(id)
+                cursor.execute(statement)
+                connection.commit()
+                inventory = cursor.fetchall()
+                cursor.close()
+                return render_template('inventory_page.html' , self = True , name = name, results = inventory)
+            else:
+                return redirect(url_for('home_page'))
+        else:
+            if (mode == 'p'):
+                connection = db.connect(url)
+                cursor = connection.cursor()
+                statement = "select name from pharmacies where id={} ".format(id)
+                cursor.execute(statement)
+                connection.commit()
+                name = cursor.fetchone()[0]
+                statement = "select NAME from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
+                cursor.execute(statement)
+                connection.commit()
+                inventory = cursor.fetchall()
+                cursor.close()
+                return render_template('inventory_page.html' , self = False , name = name, results = inventory)
+            elif (mode == 'w'):
+                connection = db.connect(url)
+                cursor = connection.cursor()
+                statement = "select name from pharmaceutical_warehouse where id={} ".format(id)
+                cursor.execute(statement)
+                connection.commit()
+                name = cursor.fetchone()[0]
+                statement = "select NAME from DRUGS,warehouse_inventory where warehouse_inventory.id = {} and drugs_id = ID".format(id)
+                cursor.execute(statement)
+                connection.commit()
+                inventory = cursor.fetchall()
+                cursor.close()
+                return render_template('inventory_page.html' , self = False , name = name, results = inventory)
+            else:
+                return redirect(url_for('home_page'))
 
-    return render_template('pinventory_page.html')
-
-
+    else:
+        return redirect(url_for('home_page'))
+    return 
 
 @app.route("/hospital_personnel")
 def hospital_personnel_page():

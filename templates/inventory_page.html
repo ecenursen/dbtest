@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>{{name}}'s Inventory Page</h1>
+<table>
+    <tr>
+        <th>Name </th>
+        {% if self %}
+        <th>Quantity</th>
+        {% endif %}
+    </tr>
+    {% for items in results %}
+    <tr>
+        <td> items[0] </td>
+        {% if self %}
+        <td> items[1] </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}

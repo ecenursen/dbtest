@@ -1,53 +1,98 @@
 {% extends "layout.html" %}
 {% block content %}
     <h1>Pharmacy Page</h1>
-<table>
-    <caption> Your Info</caption>
-    <tr>
-        <th>Name</th>
-        <th>TCKN</th>
-        <th>School</th>
-        <th>Graduation Year</th>
-        <th>Years worked here</th>
-        <th>Telephone number</th>
-    </tr>
-    <tr>
-        <td>{{Personel[1]}}</td>
-        <td>{{Personel[2]}}</td>
-        <td>{{Personel[3]}}</td>
-        <td>{{Personel[4]}}</td>
-        <td>{{Personel[5]}}</td>
-        <td>{{Personel[6]}}</td>
-    </tr>
-</table>
-<table>
-    <caption> Your Pharmacies Info</caption>
-    <tr>
-        <th>Name</th>
-        <th>Location</th>
-        <th>Next Night Shift </th>
-        <th>Telephone number</th>
-    </tr>
-    <tr>
-        <td>{{Pharma[0]}}</td>
-        <td>{{Pharma[1]}}</td>
-        <td>{{Pharma[2]}}</td>
-        <td>{{Pharma[3]}}</td>
-    </tr>
-</table>
-<table>
-    <caption>Employees working here</caption>
-    <tr>
-        <th>Name</th>
-        <th>Telephone number</th>
-    </tr>
-    <tr>
-        <td>{{Employees[0]}}</td>
-        <td>{{Employees[1]}}</td>
-    </tr>
-</table>
 
+{% if logged_in %}
+    <table>
+        <caption> Your Info</caption>
+        <tr>
+            <th>Name</th>
+            <th>TCKN</th>
+            <th>School</th>
+            <th>Graduation Year</th>
+            <th>Years worked here</th>
+            <th>Telephone number</th>
+        </tr>
+        <tr>
+            <td>{{Personel[1]}}</td>
+            <td>{{Personel[2]}}</td>
+            <td>{{Personel[3]}}</td>
+            <td>{{Personel[4]}}</td>
+            <td>{{Personel[5]}}</td>
+            <td>{{Personel[6]}}</td>
+        </tr>
+    </table>
+    <table>
+        <caption> Your Pharmacies Info</caption>
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Next Night Shift </th>
+            <th>Telephone number</th>
+        </tr>
+        <tr>
+            <td>{{Pharma[0]}}</td>
+            <td>{{Pharma[1]}}</td>
+            <td>{{Pharma[2]}}</td>
+            <td>{{Pharma[3]}}</td>
+        </tr>
+    </table>
+    <table>
+        <caption>Employees working here</caption>
+        <tr>
+            <th>Name</th>
+            <th>Telephone number</th>
+        </tr>
+        <tr>
+            <td>{{Employees[0]}}</td>
+            <td>{{Employees[1]}}</td>
+        </tr>
+    </table>
+    </br>
+    </br>
+    <p><a href="{{url_for('inventory_page' , id = id , mode = 'p') }}"> My Inventory</a></p>
+{% else %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ search_form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-2">Pharmacy Page</legend>
+                <div class="form-group">
+                    {{ search_form.select.label(class="form-control-label") }}
+                    {{ search_form.select(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ search_form.search.label(class="form-control-label") }}
+                    {{ search_form.search(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ search_form.submit(class="btn btn-outline-info") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    </br>
+    {% if searched %}
+        <table>
+            <caption> Pharmacies Found </caption>
+            <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Pharmacist</th>
+                <th>Telephone number</th>
+                <th>Next Night Shift </th>
+            </tr>
+            {% for items in results %}
+            <tr>
+                <td> <a href="{{url_for('inventory_page' , id = items[5] , mode = 'p') }}"> {{items[0]}} </a>  </td>
+                <td>{{ items[1] }}</td>
+                <td>{{ items[4] }}</td>
+                <td>{{ items[3] }}</td>
+                <td>{{ items[2] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 
-
-
+{% endif%}
 {% endblock content %}
