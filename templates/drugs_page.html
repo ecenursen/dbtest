@@ -4,7 +4,7 @@
 <table>
     <tr>
         <th>NAME</th>
-        <th>COMPANY ID</th>
+        <th>COMPANY</th>
         <th>SIZE</th>
         <th>SHELF LIFE</th>
         <th>TYPE</th>
@@ -12,12 +12,12 @@
     </tr>
     {% for item in Drugs %}
     <tr>
+        <td>{{item[0]}}</td>
         <td>{{item[1]}}</td>
         <td>{{item[2]}}</td>
         <td>{{item[3]}}</td>
-        <td>{{item[4]}}</td>
-        <td>{{item[6]}}</td>
         <td>{{item[5]}}</td>
+        <td>{{item[4]}}</td>
     </tr>
     {% endfor %}
 
