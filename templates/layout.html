@@ -7,17 +7,91 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='contents.css') }}"/>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            
+            var drugnext = 0;
+            $("#add-more-drug").click(function(e){
+                e.preventDefault();
+                var addto = "#field_d" + drugnext;
+                var addRemove = "#field_d" + (drugnext);
+                drugnext = drugnext + 1;
+                var newIn = ' <div id="field_d'+ drugnext +'" name="field_d'+ drugnext +'"><!-- Text input--><div class="form-group"><label class="col-md-4 control-label" for="drug_name">Drug Name</label>  <div class="col-md-5"><input id="action_id" name="drug_name" type="text" placeholder="" class="form-control input-md"></div><label class="col-md-4 control-label" for="dosage">Dosage</label>  <div class="col-md-5"><input id="action_id" name="dosage" type="text" placeholder="" class="form-control input-md"></div><input type="checkbox" name="regular" value="regular"> Regular?<br></div></div></div>';
+                var newInput = $(newIn);
+                var removeBtn = '<button id="remove_drug' + (drugnext - 1) + '" class="btn btn-danger remove-drug" >Remove</button></div></div><div id="field_d">';
+                var removeButton = $(removeBtn);
+                $(addto).after(newInput);
+                $(addRemove).after(removeButton);
+                $("#field_d" + drugnext).attr('data-source',$(addto).attr('data-source'));
+                $("#count").val(drugnext);  
+                
+                    $('.remove-drug').click(function(e){
+                        e.preventDefault();
+                        var fieldNum = this.id.charAt(this.id.length-1);
+                        var fieldID = "#field_d" + fieldNum;
+                        $(this).remove();
+                        $(fieldID).remove();
+                    });
+            });
+
+            var examnext = 0;
+            $("#add-more-exam").click(function(e){
+                e.preventDefault();
+                var addto = "#field_e" + examnext;
+                var addRemove = "#field_e" + (examnext);
+                examnext = examnext + 1;
+                var newIn = ' <div id="field_e'+ examnext +'" name="field_e'+ examnext +'"><div class="form-group"><label class="col-md-4 control-label" for="exam_type">Examination Type</label>  <div class="col-md-5"><input id="action_id" name="exam_type" type="text" placeholder="" class="form-control input-md"></div><label class="col-md-4 control-label" for="duration">Duration</label><div class="col-md-5"><input id="action_id" name="duration" type="number" min="1" max="30" placeholder="" class="form-control input-md"></div><label class="col-md-4 control-label" for="place">Place</label>  <div class="col-md-5"><input id="action_id" name="place" type="text" placeholder="" class="form-control input-md"></div></div></div></div>';
+                var newInput = $(newIn);
+                var removeBtn = '<button id="remove_exam' + (examnext - 1) + '" class="btn btn-danger remove-exam" >Remove</button></div></div><div id="field_e">';
+                var removeButton = $(removeBtn);
+                $(addto).after(newInput);
+                $(addRemove).after(removeButton);
+                $("#field_e" + examnext).attr('data-source',$(addto).attr('data-source'));
+                $("#count").val(examnext);  
+                
+                    $('.remove-exam').click(function(e){
+                        e.preventDefault();
+                        var fieldNum = this.id.charAt(this.id.length-1);
+                        var fieldID = "#field_e" + fieldNum;
+                        $(this).remove();
+                        $(fieldID).remove();
+                    });
+            });
+        
+        });
+        </script>
     {% if title %}
         <title>HastayımDB - {{ title }}</title>
     {% else %}
         <title>HastayımDB</title>
     {% endif %}
-
+    
 </head>
+<style>
+    table,th,td{
+        border: 1px solid black;
+        padding: 16px;
+        white-space: nowrap;
+    }
+    table tr:nth-child(even){
+        background-color:#eee;
+    }
+    table tr:nth-child(odd){
+        background-color:#fff;
+    }
+    table th{
+        color:white;
+        background-color:darkkhaki;
+    }
+    
+</style>
 <body style="background-color: #fafafa">
     <header class="site-header">
         <nav class="navbar navbar-expand-lg navbar-light bg-info">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand mr-4" href="/">HastayımDB</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -41,9 +115,9 @@
         </nav>
     </header>
 
-    <main role="main" class="container">
+    <main role="main" class="container-fluid">
         <div class="row" >
-            <div class="col-md-4" style="margin-top: 5%">
+            <div class="col-md-2" style="margin-top: 5%">
                 <div class="content-section">
                     <ul class="list-group" >
                         <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('pharmacy_page') }}">Pharmacy</a>

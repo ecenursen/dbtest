@@ -1,24 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<style>
-table,th,td{
-    border: 1px solid black;
-    padding: 16px;
-    white-space: nowrap;
-}
-table tr:nth-child(even){
-    background-color:#eee;
-}
-table tr:nth-child(odd){
-    background-color:#fff;
-}
-table th{
-    color:white;
-    background-color:darkkhaki;
-}
 
-</style>
 <div class="content-section">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
@@ -39,7 +22,8 @@ table th{
     </form>
 </div>
 
-<table style='margin-top: 2%'>
+{% if filtered %}
+<table style='margin-top: 2%; table-layout: fixed;'>
     <tr>
         <th>NAME</th>
         <th>AGE</th>
@@ -51,7 +35,7 @@ table th{
     </tr>
     {% for item in Patients %}
     <tr>
-        <td>{{item[1]}}</td>
+        <td><a href="{{ url_for('prescription_page',id=item[0]) }}">{{item[1]}}</a></td>
         <td>{{item[2]}}</td>
         {% if item[3] %}
             <td>Female</td>
@@ -65,5 +49,7 @@ table th{
     </tr>
     {% endfor %}
 </table>
+{% endif %}
+
 
 {% endblock content %}
