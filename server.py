@@ -216,7 +216,7 @@ def inventory_page(id,mode):
         return redirect(url_for('home_page'))
     return 
 
-@app.route("/hospital_personnel")
+app.add_url_rule("/hospital_personnel",view_func=hospital_personnel_page,methods=["GET"])
 def hospital_personnel_page():
     workers =[]
     connection = db.connect(url)
