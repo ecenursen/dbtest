@@ -45,7 +45,7 @@ def patients_page():
     patients = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = """SELECT * FROM PATIENTS ORDER BY NAME ASC"""""
+    statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE_COMPANIES WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID ORDER BY PATIENTS.NAME ASC"
     cursor.execute(statement)
     connection.commit()
     for row in cursor:
@@ -58,8 +58,8 @@ def patients_page():
         result=[]
         connection = db.connect(url)
         cursor = connection.cursor()
-        statement = """SELECT * FROM PATIENTS WHERE """"" + "CAST("+attr+" AS TEXT)" + " ILIKE " + "\'%"+key+"%\'" + "ORDER BY "+attr+" ASC" 
-        print(statement)
+        statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE_COMPANIES WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID AND CAST({} AS TEXT) ILIKE {} ORDER BY {} ASC".format(attr,"\'%" + key + "%\'", attr)
+        #statement = """SELECT * FROM PATIENTS WHERE CAST({} AS TEXT) ILIKE {} ORDER BY {} ASC""".format(attr,"\'%" + key + "%\'", attr)
         cursor.execute(statement)
         connection.commit()
         for row in cursor:
@@ -74,7 +74,7 @@ def drugs_page():
     drugs = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = """SELECT * FROM DRUGS"""""
+    statement= "SELECT DRUGS.name,DRUG_COMPANIES.name,size,shelf_life,price,DRUG_TYPE.name FROM DRUGS,DRUG_COMPANIES,DRUG_TYPE WHERE company_id=DRUG_COMPANIES.id AND type=DRUG_TYPE.id ORDER BY drugs.NAME ASC"
     cursor.execute(statement)
     connection.commit()
     for row in cursor:
@@ -82,7 +82,7 @@ def drugs_page():
     cursor.close()
     return render_template('drugs_page.html', Drugs=drugs)
 
-@app.route("/drug-companies")
+@app.route("/drug_companies")
 def drug_companies_page():
     companies = []
     connection = db.connect(url)
@@ -213,7 +213,6 @@ def det_prescription_page(id,pid):
 @app.route("/login", methods=['GET', 'POST'])
 def login_page():
     if session.get('logged_in'):
-        #print('Already logged in')
         return redirect(url_for('home_page'))
     else:
         form = LoginForm()
@@ -231,6 +230,7 @@ def login_page():
                     flash('You have been logged in!', 'success')
                     session['logged_in'] = True
                     session['id'] = id 
+                    session['status'] = result[2]
                     return redirect(url_for('home_page'))
                 else:
                     flash('Login Unsuccessful. Please check username and password', 'danger')

@@ -68,12 +68,30 @@
     {% else %}
         <title>HastayımDB</title>
     {% endif %}
-
+    
 </head>
+<style>
+    table,th,td{
+        border: 1px solid black;
+        padding: 16px;
+        white-space: nowrap;
+    }
+    table tr:nth-child(even){
+        background-color:#eee;
+    }
+    table tr:nth-child(odd){
+        background-color:#fff;
+    }
+    table th{
+        color:white;
+        background-color:darkkhaki;
+    }
+    
+</style>
 <body style="background-color: #fafafa">
     <header class="site-header">
         <nav class="navbar navbar-expand-lg navbar-light bg-info">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand mr-4" href="/">HastayımDB</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -97,9 +115,9 @@
         </nav>
     </header>
 
-    <main role="main" class="container">
+    <main role="main" class="container-fluid">
         <div class="row" >
-            <div class="col-md-4" style="margin-top: 5%">
+            <div class="col-md-2" style="margin-top: 5%">
                 <div class="content-section">
                     <ul class="list-group" >
                         <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('pharmacy_page') }}">Pharmacy</a>
