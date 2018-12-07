@@ -12,7 +12,7 @@
     </tr>
     {% for item in Prescriptions %}
     <tr>
-        <td><a id='id'  pid={{item[0]}} href="{{ url_for('/Prescription/{id}/{pid}') }}">{{item[0]}}</a></td>
+        <td><a href="{{ url_for('det_prescription_page',id=id,pid=item[0]) }}">{{item[0]}}</a></td>
         <td>{{item[1]}}</td>
         <td>{{item[2]}}</td>
         <td>{{item[3]}}</td>
@@ -20,4 +20,7 @@
     {% endfor %}
 
 </table>
+<form action="{{url_for('prescription_add_page',id=id)}}">
+    <input type="submit" value="Add Prescription for" />
+</form>
 {% endblock content %}

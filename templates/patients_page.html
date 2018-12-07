@@ -51,7 +51,7 @@ table th{
     </tr>
     {% for item in Patients %}
     <tr>
-        <td>{{item[1]}}</td>
+        <td><a href="{{ url_for('prescription_page',id=item[0]) }}">{{item[1]}}</a></td>
         <td>{{item[2]}}</td>
         {% if item[3] %}
             <td>Female</td>

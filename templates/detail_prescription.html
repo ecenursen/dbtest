@@ -3,30 +3,32 @@
     <h1>PRESCRIPTION</h1>
 {% endblock title %}
 {% block content %}
-<table>
-    <tr>
-        <th>PRESCRIPTION ID </th>
-        <th>DRUG NAME </th>
-        <th>DOSAGE </th>
-        <th>REGULAR DRUG </th>
-    </tr>
-    {% for item in P_Drugs %}
-    <tr>
-        <td>{{item[1]}}</td>
-        <td>{{item[5]}}</td>
-        <td>{{item[3]}}</td>
-        <td>{{item[4]}}</td>
-
-    </tr>
-    {% endfor %}
-
-</table>
-<table>
+{% if P_Drugs %}
+    <table>
+        <tr>
+            <th>PRESCRIPTION ID </th>
+            <th>DRUG NAME </th>
+            <th>DOSAGE </th>
+            <th>REGULAR DRUG </th>
+        </tr>
+        {% for item in P_Drugs %}
+        <tr>
+            <td>{{item[1]}}</td>
+            <td>{{item[5]}}</td>
+            <td>{{item[3]}}</td>
+            <td>{{item[4]}}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+{% if P_Examination %}
+    <table>
         <tr>
             <th>PRESCRIPTION ID </th>
             <th>EXAMINATION TYPE </th>
             <th>DURATION </th>
             <th>PLACE </th>
+
         </tr>
         {% for item in P_Examination %}
         <tr>
@@ -39,4 +41,5 @@
         {% endfor %}
     
     </table>
+    {% endif %}
 {% endblock content %}
