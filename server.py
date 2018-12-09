@@ -28,7 +28,6 @@ else:
     #drop_table(url)
 
 
-
 @app.route("/")
 @app.route("/home")
 def home_page():
@@ -216,7 +215,6 @@ def inventory_page(id,mode):
         return redirect(url_for('home_page'))
     return 
 
-app.add_url_rule("/hospital_personnel",view_func=hospital_personnel_page,methods=["GET"])
 def hospital_personnel_page():
     workers =[]
     connection = db.connect(url)
@@ -228,6 +226,8 @@ def hospital_personnel_page():
         workers.append(row)
     cursor.close()
     return render_template('hospital_personnel_page.html',hospital_personnel=workers)
+app.add_url_rule("/hospital_personnel",view_func=hospital_personnel_page,methods=["GET"])
+
 
 @app.route("/Prescription/<id>/",methods=['GET'])
 def prescription_page(id):
