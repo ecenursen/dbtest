@@ -16,7 +16,7 @@ connection.commit()
 cursor.close()
 '''
 
-DEBUG = True
+DEBUG = False
 
 #LIVE ICIN
 if(DEBUG==False):
@@ -26,7 +26,6 @@ else:
 	url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
 	initialize(url)
 	#drop_table(url)
-
 
 
 @app.route("/")
@@ -208,18 +207,57 @@ def inventory_page(id,mode):
 		return redirect(url_for('home_page'))
 	return 
 
-@app.route("/hospital_personnel")
+def hospital_page():
+    hospitals =[]
+    connection=db.connect(url)
+    cursor = connection.cursor()
+    statement =""" SELECT * FROM HOSPITAL ORDER BY HOSPITAL_NAME"""
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        hospitals.append(row)
+    cursor.close()
+    return render_template('hospital_page.html',hospital=hospitals)
+app.add_url_rule("/hospital",view_func=hospital_page,methods=['GET','POST'])
+
+def single_personnel_page(personnel_id):
+    connection = db.connect(url)
+    cursor=connection.cursor()
+    statement = """SELECT * FROM HOSPITAL_PERSONNEL WHERE PERSONNEL_ID ='{}'""".format(personnel_id)
+    cursor.execute(statement)
+    connection.commit()
+    person= cursor.fetchone
+    print(person)
+    return render_template('single_personnel_page.html',personnel=person, personnel_id=personnel_id)
+app.add_url_rule("/hospital_personnel/<int:personnel_id>",view_func=single_personnel_page, methods=["GET"])
+
 def hospital_personnel_page():
-	workers =[]
-	connection = db.connect(url)
-	cursor = connection.cursor()
-	statement = """SELECT * FROM HOSPITAL_PERSONNEL"""
-	cursor.execute(statement)
-	connection.commit()
-	for row in cursor:
-		workers.append(row)
-	cursor.close()
-	return render_template('hospital_personnel_page.html',hospital_personnel=workers)
+    workers =[]
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = """SELECT * FROM HOSPITAL_PERSONNEL"""
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        workers.append(row)
+    cursor.close()
+    return render_template('hospital_personnel_page.html',hospital_personnel=workers)
+app.add_url_rule("/hospital_personnel",view_func=hospital_personnel_page,methods=["GET"])
+
+
+
+def emergency_shift_page():
+    data=[]
+    connection = db.connect(url)
+    cursor=connection.cursor()
+    statement = """SELECT * FROM DAY_TABLE ORDER BY SHIFT_BEGIN_DATE"""
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        data.append(row)
+    cursor.close()
+    return render_template('emergency_shift_page.html',data=data)
+app.add_url_rule("/emergency_shift",view_func=emergency_shift_page, methods=["GET"])
 
 @app.route("/Prescription/<id>/",methods=['GET'])
 def prescription_page(id):
@@ -320,9 +358,7 @@ def logout_page():
 	
 
 if __name__ == "__main__":
-	if(DEBUG):
-		app.run(debug='True')
-	else:
-		app.run()
-	
- 
+    if(DEBUG):
+        app.run(debug='True')
+    else:
+        app.run()

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}
+    <h1>HOSPITALS </h1>
+{% endblock title %}
+{% block content %}
+<table>
+    <tr>
+        <th>NAME </th>
+        <th>PUBLIC HOSPITAL </th>
+        <th>LOCATION </th>
+        <th>ADMINISTRATOR </th>
+        <th>PHONE NUMBER </th>
+        <th>AMBULANCE COUNT </th>
+    </tr>
+    {% for item in hospital %}
+    <tr>
+        <td>{{item[1]}}</td>
+        <td>{{item[2]}}</td>
+        <td>{{item[3]}}</td>
+        <td>{{item[4]}}</td>
+        <td>{{item[5]}}</td>
+        <td>{{item[6]}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %}
+    <h1>{{personnel_id}}PERSONNEL </h1>
+{% endblock title %}
+{% block content %}
+<table>
+    <tr>
+        <th>NAME </th>
+        <th>JOB TITLE </th>
+        <th>JOB EXPERIENCE </th>
+        <th>WORKING DAYS </th>
+        <th>PHONE </th>
+        <th>WORK FIELD </th>
+        <th>HOSPITAL </th>
+        <th>SHIFT INFO</th>
+    </tr>
+    <tr>
+        <td>{{personnel[1]}}</td>
+        <td>{{personnel[2]}}</td>
+        <td>{{personnel[3]}}</td>
+        <td>{{personnel[4]}}</td>
+        <td>{{personnel[5]}}</td>
+        <td>{{personnel[6]}}</td>
+        <td>{{personnel[7]}}</td>
+    </tr>
+</table>
+{% endblock content %}
