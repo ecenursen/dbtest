@@ -1,6 +1,24 @@
 {% extends "layout.html" %}
 {% block content %}
     <h1>Pharmacy Page</h1>
+    <h2> On Duty Pharmacy </h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Telephone number</th>
+        </tr>
+        {% for items in on_duty %}
+        <tr>
+            
+            <td>{{items[0]}}</td>
+            <td>{{items[1]}}</td>
+            <td>{{items[2]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </br>
+    </br>
 
 {% if logged_in %}
     <table>
@@ -22,6 +40,7 @@
             <td>{{Personel[6]}}</td>
         </tr>
     </table>
+    </br>
     <table>
         <caption> Your Pharmacies Info</caption>
         <tr>
@@ -37,6 +56,7 @@
             <td>{{Pharma[3]}}</td>
         </tr>
     </table>
+    </br>
     <table>
         <caption>Employees working here</caption>
         <tr>
@@ -56,7 +76,6 @@
         <form method="POST" action="">
             {{ search_form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-2">Pharmacy Page</legend>
                 <div class="form-group">
                     {{ search_form.select.label(class="form-control-label") }}
                     {{ search_form.select(class="form-control") }}

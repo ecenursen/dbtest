@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField,StringField, PasswordField, SubmitField, BooleanField, RadioField
+from wtforms import SelectField,StringField, PasswordField, SubmitField, BooleanField, RadioField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 class LoginForm(FlaskForm):
@@ -23,9 +23,13 @@ class PatientSearchForm(FlaskForm):
 
 
 class G_PharmacySearchForm(FlaskForm):
-    choices = [('name','Name'),
+    c = [('name','Name'),
     ('location','Location'),
     ]
-    select = RadioField('Search for Pharmacies' , choices = choices)
+    select = RadioField('Search for Pharmacies' , choices = c)
     search = StringField('')
     submit = SubmitField('Search') 
+
+class inventory_change_form(FlaskForm):
+    submit = SubmitField('Save Changes')
+    value = IntegerField('')
