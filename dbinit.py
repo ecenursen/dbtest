@@ -11,7 +11,7 @@ INIT_STATEMENTS = [
         PASSWORD VARCHAR NOT NULL,
         STATUS INTEGER NOT NULL
     )""",
-    
+    # unique kalkması lazım sanki - primary de patlar primary id ve password olmalı olcak
     #GOKTUG
     #False == Male
     """CREATE TABLE IF NOT EXISTS PATIENTS (

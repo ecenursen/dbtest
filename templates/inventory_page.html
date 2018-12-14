@@ -8,14 +8,26 @@
         <th>Quantity</th>
         {% endif %}
     </tr>
-    {% for items in results %}
+    {% for k in i %}
     <tr>
-        <td> items[0] </td>
+        <td> {{results[k][0]}} </td>
         {% if self %}
-        <td> items[1] </td>
+        <td> {{results[k][1]}} </td>
+        <td><form method="POST" action="">
+            {{ forms[k].hidden_tag() }}
+            <fieldset class="form-group">
+                <div class="form-group">
+                    {{ forms[k].sold(class="btn btn-outline-info") }}
+                </div>
+                <div class="form-group">
+                    {{ forms[k].bought(class="btn btn-outline-info") }}
+                </div>
+            </fieldset>
+        </form> </td>
         {% endif %}
     </tr>
     {% endfor %}
 </table>
+
 
 {% endblock content %}

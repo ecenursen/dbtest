@@ -22,26 +22,6 @@
 
 {% if logged_in %}
     <table>
-        <caption> Your Info</caption>
-        <tr>
-            <th>Name</th>
-            <th>TCKN</th>
-            <th>School</th>
-            <th>Graduation Year</th>
-            <th>Years worked here</th>
-            <th>Telephone number</th>
-        </tr>
-        <tr>
-            <td>{{Personel[1]}}</td>
-            <td>{{Personel[2]}}</td>
-            <td>{{Personel[3]}}</td>
-            <td>{{Personel[4]}}</td>
-            <td>{{Personel[5]}}</td>
-            <td>{{Personel[6]}}</td>
-        </tr>
-    </table>
-    </br>
-    <table>
         <caption> Your Pharmacies Info</caption>
         <tr>
             <th>Name</th>
@@ -64,14 +44,20 @@
             <th>Telephone number</th>
         </tr>
         <tr>
-            <td>{{Employees[0]}}</td>
-            <td>{{Employees[1]}}</td>
+            <td>{{Employees[0][0]}}</td>
+            <td>{{Employees[0][1]}}</td>
+        </tr>
+        <tr>
+            <td>{{Employees[1][0]}}</td>
+            <td>{{Employees[1][1]}}</td>
         </tr>
     </table>
     </br>
-    </br>
+    
     <p><a href="{{url_for('inventory_page' , id = id , mode = 'p') }}"> My Inventory</a></p>
-{% else %}
+{% endif %}
+    </br>
+    </br>   
     <div class="content-section">
         <form method="POST" action="">
             {{ search_form.hidden_tag() }}
@@ -113,5 +99,5 @@
         </table>
     {% endif %}
 
-{% endif%}
+
 {% endblock content %}

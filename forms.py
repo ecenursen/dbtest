@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField,StringField, PasswordField, SubmitField, BooleanField, RadioField, IntegerField
+from wtforms import SelectField,StringField, PasswordField, SubmitField, BooleanField, RadioField, IntegerField, FloatField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 class LoginForm(FlaskForm):
@@ -31,5 +31,5 @@ class G_PharmacySearchForm(FlaskForm):
     submit = SubmitField('Search') 
 
 class inventory_change_form(FlaskForm):
-    submit = SubmitField('Save Changes')
-    value = IntegerField('')
+    sold = SubmitField('Sold a Drug')
+    bought = SubmitField('Bought a Drug')
