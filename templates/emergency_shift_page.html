@@ -5,7 +5,7 @@
 {% block content %}
 <table>
     <tr>
-        <th>PERSONNEL ID </th>
+        <th>PERSONNEL NAME </th>
         <th>SHIFT DAY </th>
         <th>NEXT SHIFT IN # DAYS  </th>
         <th>SHIFT LENGTH </th>
@@ -14,12 +14,16 @@
     </tr>
     {% for item in data %}
     <tr>
+        <td>
+            <a href="{{ url_for('single_personnel_page' , personnel_id = item[0]) }}">
+                    {{item[1]}}
+            </a>
+        </td>
         <td>{{item[2]}}</td>
         <td>{{item[3]}}</td>
         <td>{{item[4]}}</td>
         <td>{{item[5]}}</td>
         <td>{{item[6]}}</td>
-        <td>{{item[7]}}</td>
     </tr>
     {% endfor %}
 </table>

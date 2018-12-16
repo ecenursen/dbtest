@@ -21,7 +21,6 @@ class PatientSearchForm(FlaskForm):
     search = StringField('')
     submit = SubmitField('Filter')
 
-
 class G_PharmacySearchForm(FlaskForm):
     c = [('name','Name'),
     ('location','Location'),
@@ -31,5 +30,24 @@ class G_PharmacySearchForm(FlaskForm):
     submit = SubmitField('Search') 
 
 class inventory_change_form(FlaskForm):
-    sold = SubmitField('Sold a Drug')
-    bought = SubmitField('Bought a Drug')
+    submit = SubmitField('Save Changes')
+    value = IntegerField('')
+
+class HospitalSearchForm(FlaskForm):
+    choices=[('HOSPITAL_NAME','Hospital Name'),
+    ('LOCATION', 'Location'),
+    ('ADMINISTRATOR','Administrator'),
+    ('TELEPHONE_NUMBER','Phone Number')]
+    selection=SelectField('Hospital Filter:',choices=choices)
+    search=StringField('Keyword')
+    publicHos=RadioField('Public Hospital? ',choices=[('True','Public'),('False','Private'),('*','Both')],validators=[DataRequired()])
+    submit=SubmitField('Search')
+
+class HospitalAddForm(FlaskForm):
+    hospital_name=StringField('Hospital Name',validators=[DataRequired()])
+    is_public=RadioField('Public Hospital?',choices=[('True','Public'),('False','Private')],validators=[DataRequired()])
+    location=StringField('Location')
+    administrator=StringField('Administrator Name')
+    telephone_number=StringField('Phone Number, 11 digit required',validators=[Length(min=11,max=11)])
+    ambulance_count= StringField('Number of ambulances')
+    submit=SubmitField('Insert')
