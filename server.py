@@ -173,8 +173,6 @@ def prescription_page(id):
 def prescription_add_page(id):
     prescriptions = []
     return render_template('prescription_add.html', Prescriptions=prescriptions, id=id)
-    
-        
 
 
 @app.route("/Prescription/<id>/<pid>/",methods=['GET'])
