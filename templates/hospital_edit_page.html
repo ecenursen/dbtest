@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}
+<h1>Edit movie</h1>
+{% endblock %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.csrf_token }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-2">Hospital Edit Page</legend>
+                <br></br>
+                <div class="form-group">
+                    {{ form.hospital_name.label(class="form-control-label") }}
+                    {{ form.hospital_name(class="form-control", value=hospital.get_name()) }}
+                </div>
+                <div class="form-group">
+                    {{ form.is_public.label(class="form-control-label") }}
+                    {{ form.is_public(class="form-control", value=hospital.get_public(),checked="checked") }}
+                    <br></br>
+                </div>
+                <div class="form-group">
+                    {{ form.location.label(class="form-control-label") }}
+                    {{ form.location(class="form-control", value=hospital.get_location()) }}
+                </div>
+                <div class="form-group">
+                        {{ form.administrator.label(class="form-control-label") }}
+                        {{ form.administrator(class="form-control",value=hospital.get_administrator()) }}
+                    </div>
+                <div class="form-group">
+                        {{ form.telephone_number.label(class="form-control-label") }}
+                        {{ form.telephone_number(class="form-control",value=hospital.get_telephone_number()) }}
+                </div>
+                <div class="form-group">
+                        {{ form.ambulance_count.label(class="form-control-label") }}
+                        {{ form.ambulance_count(class="form-control", value=hospital.get_ambulance_count()) }}
+                    </div>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-dark") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock content %}

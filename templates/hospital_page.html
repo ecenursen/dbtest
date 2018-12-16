@@ -16,6 +16,7 @@
                 {{ form.selection.label(class="form-control-label") }}
                 {{ form.selection(class="form-control") }}
             </div>
+            <br></br>
             <div class="form-group">
                 {{ form.search.label(class="form-control-label") }}
                 {{ form.search(class="form-control") }}
@@ -24,9 +25,10 @@
                 {{ form.publicHos.label(class="form-control-label") }}
                 {{ form.publicHos(class="form-control") }}
             </div>
-            <br></br>
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                    <br></br>
+                    <br></br>
+                {{ form.submit(class="btn btn-info") }}
             </div>
         </fieldset>
     </form>
@@ -39,6 +41,9 @@
         <th>ADMINISTRATOR </th>
         <th>PHONE NUMBER </th>
         <th>AMBULANCE COUNT </th>
+        {% if stat==1 or stat==7 %}
+        <th>EDIT LINK </th>
+        {% endif %}
     </tr>
     {% for item in hospital %}
     <form method="POST" action="">
@@ -56,6 +61,9 @@
         <td>{{item.get_administrator()}}</td>
         <td>{{item.get_telephone_number()}}</td>
         <td>{{item.get_ambulance_count()}}</td>
+        {% if stat==1 or stat==7 %}
+        <td><a href="{{url_for('edit_hospital',hospital_id=item.get_id())}}" class='btn btn-success' role="button">Edit Hospital</a></td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>

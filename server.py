@@ -110,56 +110,53 @@ def pharmacy_page():
     statement = """SELECT name,location,tel_num FROM pharmacies WHERE next_night_shift = '{}' """.format(date)
     cursor.execute(statement)
     connection.commit
-	on_duty = cursor.fetchall()
-	cursor.close()
+    on_duty = cursor.fetchall()
+    cursor.close()
 	#id = session.get('id') # =pharmacy id
 	#stat = session.get('status')
 	#if (stat == 4):
-	form1 = G_PharmacySearchForm()
-	logged_in = session.get('logged_in')
+    form1 = G_PharmacySearchForm()
+    logged_in = session.get('logged_in')
 	#print(logged_in)
-	s = (session.get('status') == 4)
+    s = (session.get('status') == 4)
 	#for debug
-	logged_in = s=True
-	phar_id =11
+    logged_in = s=True
+    phar_id =11
 	#
-	if form1.validate_on_submit():
-		attr = form1.select.data
-		key = form1.search.data
-		results=[]
-		connection = db.connect(url)
-		cursor = connection.cursor()
-		statement = """SELECT pharmacies.name,location,next_night_shift,pharmacies.tel_num,pharmacy_personel.name,pharmacies.id FROM pharmacies,pharmacy_personel WHERE """"" + "CAST(pharmacies.{} AS TEXT) ILIKE  \'%{}%\' AND pharmacies.pharmacist = pharmacy_personel.id ORDER BY pharmacies.{} ASC".format(attr,key,attr)
-		#print(statement)
-		cursor.execute(statement)
-		connection.commit()
-		for row in cursor:
-			results.append(row)
-		cursor.close()
-		return render_template('pharmacy_page.html', on_duty = on_duty,   search_form = form1,logged_in=False, results = results,searched = True)
+    if form1.validate_on_submit():
+        attr = form1.select.data
+        key = form1.search.data
+        results=[]
+        connection =db.connect(url)
+        cursor = connection.cursor()
+        statement = """SELECT pharmacies.name,location,next_night_shift,pharmacies.tel_num,pharmacy_personel.name,pharmacies.id FROM pharmacies,pharmacy_personel WHERE """"" + "CAST(pharmacies.{} AS TEXT) ILIKE  \'%{}%\' AND pharmacies.pharmacist = pharmacy_personel.id ORDER BY pharmacies.{} ASC".format(attr,key,attr)
+        #print(statement)
+        cursor.execute(statement)
+        connection.commit()
+        for row in cursor:
+            results.append(row)
+            cursor.close()
+        return render_template('pharmacy_page.html', on_duty = on_duty,   search_form = form1,logged_in=False, results = results,searched = True)
 	
-	if ((logged_in) and ( s )):
+    if ((logged_in) and ( s )):
 		#phar_id = session.get('id')
-		connection = db.connect(url)
-		cursor = connection.cursor()
-		
-		statement = """SELECT name,location,next_night_shift,tel_num,pharmacist,helper FROM pharmacies
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        statement = """SELECT name,location,next_night_shift,tel_num,pharmacist,helper FROM pharmacies
 						WHERE id = '{}' """.format(phar_id) 
-		cursor.execute(statement)
-		connection.commit()
-		phar_detail = cursor.fetchone()
-		pharmacist_id=phar_detail[4]
-		helper_id=phar_detail[5]
-
-		statement = """ SELECT name,tel_num FROM pharmacy_personel
+        cursor.execute(statement)
+        connection.commit()
+        phar_detail = cursor.fetchone()
+        pharmacist_id=phar_detail[4]
+        helper_id=phar_detail[5]
+        statement = """ SELECT name,tel_num FROM pharmacy_personel
 						WHERE (id ={} or id={})""".format(pharmacist_id,helper_id)
-		cursor.execute(statement)
-		connection.commit()
-		employees = cursor.fetchall() 
-		cursor.close()
-		return render_template('pharmacy_page.html',on_duty = on_duty , id = phar_id,Pharma = phar_detail,Employees = employees,search_form = form1,logged_in=logged_in)
-	
-	return render_template('pharmacy_page.html' , on_duty = on_duty , search_form = form1,logged_in=False,searched = False)
+        cursor.execute(statement)
+        connection.commit()
+        employees = cursor.fetchall() 
+        cursor.close()
+        return render_template('pharmacy_page.html',on_duty = on_duty , id = phar_id,Pharma = phar_detail,Employees = employees,search_form = form1,logged_in=logged_in)
+    return render_template('pharmacy_page.html' , on_duty = on_duty , search_form = form1,logged_in=False,searched = False)
 	
 @app.route("/inventory/<id>/<mode>",methods=['GET', 'POST'])
 def inventory_page(id,mode):
@@ -314,9 +311,6 @@ def pharmaceutical_warehouse_page():
 		return redirect(url_for('home_page'))
 	return redirect(url_for('home_page'))
 
-    else:
-        return redirect(url_for('home_page'))
-    return
 
 status=1
 def hospital_page():
@@ -355,12 +349,18 @@ def hospital_page():
             return render_template('hospital_page.html', hospital=hospital_form, form=form,delform=delform, stat=status, len=len(hospital_form))
         if delform.validate_on_submit() and delform.delete.data:
             del_list=request.form.getlist("del_hospitals")
-            del_hospitals=tuple(del_list)
             connection=db.connect(url)
             cursor=connection.cursor()
-            statement="DELETE FROM hospital WHERE hospital_id IN {}".format(del_hospitals)
+            if(len(del_list)>1):
+                del_hospitals=tuple(del_list)
+                statement="DELETE FROM hospital WHERE hospital_id IN {}".format(del_hospitals)
+            else:
+                del_hospitals=''.join(str(e) for e in del_list)
+                statement="DELETE FROM hospital WHERE hospital_id ={}".format(del_hospitals)
             cursor.execute(statement)
             connection.commit()
+            cursor.close()
+            return redirect(url_for('hospital_page'))
     return render_template('hospital_page.html', hospital=hospitals, form=form,delform=delform, stat=status, len=len(hospitals))
 app.add_url_rule("/hospital", view_func=hospital_page, methods=['GET', 'POST'])
 
@@ -396,6 +396,38 @@ def add_hospital():
     return render_template('hospital_add_page.html',hospital=hospitals,form=hosAddForm)
 app.add_url_rule('/hospital/add_hospital',view_func=add_hospital, methods=['GET','POST'])
 
+def edit_hospital(hospital_id):
+    if status not in (1,7):
+        return redirect(url_for('home_page'))
+    connection=db.connect(url)
+    cursor=connection.cursor()
+    statement = """ SELECT * FROM HOSPITAL WHERE HOSPITAL_ID={}""".format(hospital_id)
+    cursor.execute(statement)
+    connection.commit()
+    db_hosp=cursor.fetchone()
+    if db_hosp==None:
+        abort(404)
+    hospitalToedit=hospital(db_hosp[0],db_hosp[1],db_hosp[2],db_hosp[3],db_hosp[4],db_hosp[5],db_hosp[6])
+    cursor.close()
+    form=HospitalAddForm()
+    if request.method=='POST':
+        if form.validate_on_submit():
+            hospital_name=form.hospital_name.data
+            is_public=form.is_public.data
+            location=form.location.data
+            administrator=form.administrator.data
+            telephone_number=form.telephone_number.data
+            ambulance_count=form.ambulance_count.data
+            connection = db.connect(url)
+            cursor=connection.cursor()
+            statement="""UPDATE HOSPITAL SET hospital_name='{}', is_public='{}', location='{}', administrator='{}', telephone_number='{}', ambulance_count='{}' WHERE HOSPITAL_ID={}""".format(hospital_name,is_public,location,administrator,telephone_number,ambulance_count, hospital_id)
+            cursor.execute(statement)
+            connection.commit()
+            cursor.close()
+            return redirect(url_for('hospital_page'))
+    return render_template('hospital_edit_page.html',hospital=hospitalToedit,form=form)      
+app.add_url_rule('/<int:hospital_id>/edit_hospital',view_func=edit_hospital, methods=['GET','POST'])
+
 def single_personnel_page(personnel_id):
     connection = db.connect(url)
     cursor = connection.cursor()
@@ -410,7 +442,7 @@ def single_personnel_page(personnel_id):
                                 db_person[4], db_person[5], db_person[6], db_person[7], db_person[8], db_person[9])
     cursor.close()
     return render_template('single_personnel_page.html', personnel=person, personnel_id=personnel_id)
-app.add_url_rule("/emergency_shift/<int:personnel_id>",view_func=single_personnel_page,methods=['GET','POST'])
+app.add_url_rule("/emergency_shift/<int:personnel_id>",view_func=single_personnel_page, methods=['GET','POST'])
 
 
 

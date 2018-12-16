@@ -58,7 +58,7 @@ class HospitalAddForm(FlaskForm):
     is_public=RadioField('Public Hospital?',choices=[('True','Public'),('False','Private')],validators=[DataRequired()])
     location=StringField('Location')
     administrator=StringField('Administrator Name')
-    telephone_number=StringField('Phone Number, 11 digit required',validators=[Length(min=11,max=11)])
+    telephone_number=StringField('Phone Number, 11 digit required')#,validators=[Length(min=11,max=11)])
     ambulance_count= StringField('Number of ambulances')
     submit=SubmitField('Insert')
 
