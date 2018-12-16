@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>{{name}}'s Inventory Page</h1>
+<table>
+    <tr>
+        <th>Name </th>
+        {% if self %}
+        <th>Quantity</th>
+        {% endif %}
+    </tr>
+    {% for k in i %}
+    <tr>
+        <td> {{results[k][0]}} </td>
+        {% if self %}
+        <td> {{results[k][1]}} </td>
+        <td><form method="POST" action="">
+            {{ forms[k].hidden_tag() }}
+            <fieldset class="form-group">
+                <div class="form-group">
+                    {{ forms[k].sold(class="btn btn-outline-info") }}
+                </div>
+                <div class="form-group">
+                    {{ forms[k].bought(class="btn btn-outline-info") }}
+                </div>
+            </fieldset>
+        </form> </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock content %}

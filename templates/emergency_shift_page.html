@@ -1,23 +1,22 @@
 {% extends "layout.html" %}
 {% block title %}
-    <h1>HOSPITAL STAFF</h1>
+    <h1>SHIFT TABLE </h1>
 {% endblock title %}
 {% block content %}
 <table>
     <tr>
-        <th>NAME </th>
-        <th>JOB TITLE </th>
-        <th>JOB EXPERIENCE </th>
-        <th>WORKING DAYS </th>
-        <th>PHONE </th>
-        <th>WORK FIELD </th>
-        <th>HOSPITAL </th>
+        <th>PERSONNEL NAME </th>
+        <th>SHIFT DAY </th>
+        <th>NEXT SHIFT IN # DAYS  </th>
+        <th>SHIFT LENGTH </th>
+        <th>SHIFT DURING DAYTIME </th>
+        <th>EMERGENCY AREA CATEGORY </th>
     </tr>
-    {% for item in hospital_personnel %}
+    {% for item in data %}
     <tr>
         <td>
             <a href="{{ url_for('single_personnel_page' , personnel_id = item[0]) }}">
-                {{item[1]}}
+                    {{item[1]}}
             </a>
         </td>
         <td>{{item[2]}}</td>
@@ -25,7 +24,6 @@
         <td>{{item[4]}}</td>
         <td>{{item[5]}}</td>
         <td>{{item[6]}}</td>
-        <td>{{item[7]}}</td>
     </tr>
     {% endfor %}
 </table>

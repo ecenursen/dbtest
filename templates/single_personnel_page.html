@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}
+    <h1>DETAILED PERSONNEL INFO</h1>
+{% endblock title %}
+{% block content %}
+<table>
+    <tr>
+        <th>NAME </th>
+        <th>JOB TITLE </th>
+        <th>JOB EXPERIENCE </th>
+        <th>WORKING DAYS </th>
+        <th>PHONE </th>
+        <th>WORK FIELD </th>
+        <th>HOSPITAL </th>
+    </tr>
+    <tr>
+        <td>{{personnel.get_name()}}</td>
+        <td>{{personnel.get_title()}}</td>
+        <td>{{personnel.get_exp()}}</td>
+        <td>{{personnel.get_days()}}</td>
+        <td>{{personnel.get_number()}}</td>
+        <td>{{personnel.get_field()}}</td>
+        <td>{{personnel.get_hospital_name()}}</td>
+    </tr>
+</table>
+{% endblock content %}
