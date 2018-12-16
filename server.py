@@ -1,9 +1,10 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, session,abort
-from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm
+from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm,HospitalDeleteForm
 import datetime
 import os
 import psycopg2 as db
 from dbinit import initialize, drop_table
+from classes.hospital import *
 from classes.hospital_personnel import *
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW'
@@ -219,7 +220,7 @@ def inventory_page(id, mode):
         return redirect(url_for('home_page'))
     return
 
-
+status=1
 def hospital_page():
     hospitals = []
     connection = db.connect(url)
@@ -227,35 +228,42 @@ def hospital_page():
     statement = """ SELECT * FROM HOSPITAL ORDER BY HOSPITAL_NAME"""
     cursor.execute(statement)
     connection.commit()
-    for row in cursor:
-        hospitals.append(row)
+    rows=cursor.fetchall()
+    for db_hosp in rows:
+        hospitals.append(hospital(db_hosp[0],db_hosp[1],db_hosp[2],db_hosp[3],db_hosp[4],db_hosp[5],db_hosp[6]))
     cursor.close()
     form=HospitalSearchForm()
-    stat = session.get('status')
-    if form.validate_on_submit():
-        selection=form.selection.data
-        data=form.search.data
-        button=form.publicHos.data
-        hospital_form=[]
-        connection=db.connect(url)
-        cursor =connection.cursor()
-        if(button=='*'):
-            statement="""SELECT * FROM HOSPITAL WHERE CAST({} AS TEXT) ILIKE  \'%{}%\' ORDER BY {} ASC """.format(selection, data , selection)
-        else:
-            statement="""SELECT * FROM HOSPITAL WHERE CAST({} AS TEXT) ILIKE  \'%{}%\' AND IS_PUBLIC={} ORDER BY {} ASC """.format(selection, data ,button, selection)
-#        print(statement)
-        cursor.execute(statement)
-        connection.commit()
-        for row in cursor:
-            hospital_form.append(row)
-        cursor.close()
-        return render_template('hospital_page.html', hospital=hospital_form, form=form, stat=stat)
-    return render_template('hospital_page.html', hospital=hospitals, form=form, stat=stat)
+    #status = session.get('status')
+    delform=HospitalDeleteForm()
+    if(request.method=='POST'):
+        if form.validate_on_submit():
+            selection=form.selection.data
+            data=form.search.data
+            button=form.publicHos.data
+            hospital_form=[]
+            connection=db.connect(url)
+            cursor =connection.cursor()
+            if(button=='*'):
+                statement="""SELECT * FROM HOSPITAL WHERE CAST({} AS TEXT) ILIKE  \'%{}%\' ORDER BY {} ASC """.format(selection, data , selection)
+            else:
+                statement="""SELECT * FROM HOSPITAL WHERE CAST({} AS TEXT) ILIKE  \'%{}%\' AND IS_PUBLIC={} ORDER BY {} ASC """.format(selection, data ,button, selection)
+    #        print(statement)
+            cursor.execute(statement)
+            connection.commit()
+            rows=cursor.fetchall()
+            for db_hosp in rows:
+                hospital_form.append(hospital(db_hosp[0],db_hosp[1],db_hosp[2],db_hosp[3],db_hosp[4],db_hosp[5],db_hosp[6]))
+            cursor.close()
+            return render_template('hospital_page.html', hospital=hospital_form, form=form,delform=delform, stat=status, len=len(hospital_form))
+        if delform.validate_on_submit():
+            del_hospitals=request.form.getlist("del_hospitals")
+            print('here')
+            print(del_hospitals)
+    return render_template('hospital_page.html', hospital=hospitals, form=form,delform=delform, stat=status, len=len(hospitals))
 app.add_url_rule("/hospital", view_func=hospital_page, methods=['GET', 'POST'])
 
 def add_hospital():
-    status=session.get('status')
-    status=7
+    #status=session.get('status')
     if status not in (1,7):
         return redirect(url_for('home_page'))
     hospitals=[]

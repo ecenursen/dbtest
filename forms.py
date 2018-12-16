@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField,StringField, PasswordField, SubmitField, BooleanField, RadioField, IntegerField, FloatField
+from wtforms import SelectField,StringField, PasswordField, SubmitField, BooleanField, RadioField, IntegerField, FloatField, SelectMultipleField,widgets
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 class LoginForm(FlaskForm):
@@ -51,3 +51,6 @@ class HospitalAddForm(FlaskForm):
     telephone_number=StringField('Phone Number, 11 digit required',validators=[Length(min=11,max=11)])
     ambulance_count= StringField('Number of ambulances')
     submit=SubmitField('Insert')
+
+class HospitalDeleteForm(FlaskForm):
+    submit=SubmitField('Delete')

@@ -4,7 +4,8 @@
 {% endblock title %}
 {% block content %}
 {% if stat==1 or stat==7 %}
-    <a href="{{url_for('add_hospital')}}" class="btn btn-light">Add Hospital</a>
+    <a href="{{url_for('add_hospital')}}" class="btn btn-primary" role="button">Add Hospital</a>
+    <br></br>
 {% endif %}
 <div class="content-section">
     <form method="POST" action="">
@@ -42,15 +43,30 @@
     {% for item in hospital %}
     <tr>
         <td>
-                <a href="{{ url_for('hospital_personnel_page' , hospital_id = item[0]) }}">
-                        {{item[1]}}
+                {% if stat==1 or stat==7 %}
+                <form method="POST" action="">
+                <input type="checkbox" name="del_hospitals" value="{{item.get_id()}}">
+                </form>
+                {% endif %}
+                <a href="{{ url_for('hospital_personnel_page' , hospital_id = item.get_id()) }}">
+                        {{item.get_name()}}
                 </a>
-        <td>{{item[2]}}</td>
-        <td>{{item[3]}}</td>
-        <td>{{item[4]}}</td>
-        <td>{{item[5]}}</td>
-        <td>{{item[6]}}</td>
+            </td>
+        <td>{{item.get_public()}}</td>
+        <td>{{item.get_location()}}</td>
+        <td>{{item.get_administrator()}}</td>
+        <td>{{item.get_telephone_number()}}</td>
+        <td>{{item.get_ambulance_count()}}</td>
     </tr>
     {% endfor %}
 </table>
+{% if stat==1 or stat==7 %}
+<br></br>
+<form method="POST" action="">
+        {{ delform.csrf_token }}
+<div class="delform-group">
+          {{ delform.submit(class="btn btn-danger") }}
+ </div>
+</form>
+{% endif %}
 {% endblock content %}
