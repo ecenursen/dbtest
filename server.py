@@ -18,9 +18,9 @@ connection.commit()
 cursor.close()
 '''
 
-DEBUG = False
+#DEBUG = False
 
-#DEBUG = True
+DEBUG = True
 # LIVE ICIN
 if(DEBUG == False):
     url = os.getenv("DATABASE_URL")
@@ -236,7 +236,7 @@ def hospital_page():
     #status = session.get('status')
     delform=HospitalDeleteForm()
     if(request.method=='POST'):
-        if form.validate_on_submit():
+        if form.validate_on_submit() and form.submit.data:
             selection=form.selection.data
             data=form.search.data
             button=form.publicHos.data
@@ -255,10 +255,14 @@ def hospital_page():
                 hospital_form.append(hospital(db_hosp[0],db_hosp[1],db_hosp[2],db_hosp[3],db_hosp[4],db_hosp[5],db_hosp[6]))
             cursor.close()
             return render_template('hospital_page.html', hospital=hospital_form, form=form,delform=delform, stat=status, len=len(hospital_form))
-        if delform.validate_on_submit():
-            del_hospitals=request.form.getlist("del_hospitals")
-            print('here')
-            print(del_hospitals)
+        if delform.validate_on_submit() and delform.delete.data:
+            del_list=request.form.getlist("del_hospitals")
+            del_hospitals=tuple(del_list)
+            connection=db.connect(url)
+            cursor=connection.cursor()
+            statement="DELETE FROM hospital WHERE hospital_id IN {}".format(del_hospitals)
+            cursor.execute(statement)
+            connection.commit()
     return render_template('hospital_page.html', hospital=hospitals, form=form,delform=delform, stat=status, len=len(hospitals))
 app.add_url_rule("/hospital", view_func=hospital_page, methods=['GET', 'POST'])
 

@@ -41,12 +41,11 @@
         <th>AMBULANCE COUNT </th>
     </tr>
     {% for item in hospital %}
+    <form method="POST" action="">
     <tr>
         <td>
                 {% if stat==1 or stat==7 %}
-                <form method="POST" action="">
                 <input type="checkbox" name="del_hospitals" value="{{item.get_id()}}">
-                </form>
                 {% endif %}
                 <a href="{{ url_for('hospital_personnel_page' , hospital_id = item.get_id()) }}">
                         {{item.get_name()}}
@@ -62,10 +61,9 @@
 </table>
 {% if stat==1 or stat==7 %}
 <br></br>
-<form method="POST" action="">
         {{ delform.csrf_token }}
 <div class="delform-group">
-          {{ delform.submit(class="btn btn-danger") }}
+          {{ delform.delete(class="btn btn-danger") }}
  </div>
 </form>
 {% endif %}

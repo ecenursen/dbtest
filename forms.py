@@ -53,4 +53,4 @@ class HospitalAddForm(FlaskForm):
     submit=SubmitField('Insert')
 
 class HospitalDeleteForm(FlaskForm):
-    submit=SubmitField('Delete')
+    delete=SubmitField('Delete')
