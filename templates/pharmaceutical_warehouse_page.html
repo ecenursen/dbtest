@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Pharmaceutical Warehouse Page</h1>
+
+{% if logged_in %}
+    <table>
+        <caption> Your Warehouse's Info</caption>
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Next Night Shift </th>
+            <th>Telephone number</th>
+        </tr>
+        <tr>
+            <td>{{ware[0]}}</td>
+            <td>{{ware[1]}}</td>
+            <td>{{ware[2]}}</td>
+            <td>{{ware[3]}}</td>
+        </tr>
+    </table>
+    </br>
+    
+    
+    <p><a href="{{url_for('inventory_page' , id = id , mode = 'w') }}"> My Inventory</a></p>
+{% endif %}
+    </br>
+    </br>   
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ search_form.hidden_tag() }}
+            <fieldset class="form-group">
+                <div class="form-group">
+                    {{ search_form.select.label(class="form-control-label") }}
+                    {{ search_form.select(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ search_form.search.label(class="form-control-label") }}
+                    {{ search_form.search(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ search_form.submit(class="btn btn-outline-info") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    </br>
+    {% if searched %}
+        <table>
+            <caption> Pharmaceutical Warehouses Found </caption>
+            <tr>
+                <th>Name</th>
+                <th>Working for </th>
+                <th>Telephone number</th>
+                <th>Adress </th>
+                <th>Region </th>
+                <th>Carriers </th>
+            </tr>
+            {% for items in results %}
+            <tr>
+                <td> <a href="{{url_for('inventory_page' , id = items[5] , mode = 'w') }}"> {{items[0]}} </a>  </td>
+                <td>{{ items[1] }}</td>
+                <td>{{ items[4] }}</td>
+                <td>{{ items[3] }}</td>
+                <td>{{ items[2] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+
+{% endblock content %}
