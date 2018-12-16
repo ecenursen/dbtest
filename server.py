@@ -17,9 +17,9 @@ connection.commit()
 cursor.close()
 '''
 
-DEBUG = True
+DEBUG = False
 
-DEBUG = True
+#DEBUG = True
 # LIVE ICIN
 if(DEBUG == False):
     url = os.getenv("DATABASE_URL")
