@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}
-    <h1>{{personnel_id}}PERSONNEL </h1>
+    <h1>DETAILED PERSONNEL INFO</h1>
 {% endblock title %}
 {% block content %}
 <table>
@@ -12,16 +12,15 @@
         <th>PHONE </th>
         <th>WORK FIELD </th>
         <th>HOSPITAL </th>
-        <th>SHIFT INFO</th>
     </tr>
     <tr>
-        <td>{{personnel[1]}}</td>
-        <td>{{personnel[2]}}</td>
-        <td>{{personnel[3]}}</td>
-        <td>{{personnel[4]}}</td>
-        <td>{{personnel[5]}}</td>
-        <td>{{personnel[6]}}</td>
-        <td>{{personnel[7]}}</td>
+        <td>{{personnel.get_name()}}</td>
+        <td>{{personnel.get_title()}}</td>
+        <td>{{personnel.get_exp()}}</td>
+        <td>{{personnel.get_days()}}</td>
+        <td>{{personnel.get_number()}}</td>
+        <td>{{personnel.get_field()}}</td>
+        <td>{{personnel.get_hospital_name()}}</td>
     </tr>
 </table>
 {% endblock content %}

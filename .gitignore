@@ -9,3 +9,5 @@ __pycache__
 
 venv/
 docs/build/
+
+templates/\{\{ url_for\('single_personnel_page',personnel_id=item\[0\]\) }}

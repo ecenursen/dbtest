@@ -4,11 +4,11 @@
 {% endblock title %}
 {% block content %}
 
-<form role="form" action="" method="post" name="movie_edit" class="form-horizontal">
+<form role="form" action="{{url_for('prescription_add_page',id =id)}}" method="post" name="submit" class="form-horizontal">
     <div class="form-group">
-        <label for="dr_name" class="control-label col-sm-2">Doctor Name:</label> 
+        <label for="dr_id" class="control-label col-sm-2">Doctor ID:</label> 
         <div class="col-sm-10">
-            <input type="text" name="dr_name" required autofocus />
+            <input type="int" name="dr_id" required autofocus />
         </div>
     </div>
 
@@ -20,9 +20,9 @@
     </div> 
 
     <div class="form-group">
-        <label for="validity" class="control-label col-sm-2">Valid Until</label>
+        <label for="validity" class="control-label col-sm-2">Valid For:</label>
         <div class="col-sm-10">
-            <input type="number" name="validty" min="1" max="90"/>
+            <input type="number" name="validity" min="1" max="90"/>
         </div>
     </div> 
 
@@ -36,13 +36,13 @@
                 <div class="form-group">
                     <label class="col-md-4 control-label" for="drug_name">Drug Name</label>  
                     <div class="col-md-5">
-                    <input id="action_id" name="drug_name" type="text" placeholder="" class="form-control input-md">
+                    <input id="drug_name" name="drug_name" type="text" placeholder="" class="form-control input-md">
                     </div>
                     <label class="col-md-4 control-label" for="dosage">Dosage</label>  
                     <div class="col-md-5">
-                    <input id="action_id" name="dosage" type="text" placeholder="" class="form-control input-md">
+                    <input id="dosage" name="dosage" type="text" placeholder="" class="form-control input-md">
                     </div>
-                    <input type="checkbox" name="regular" value="regular"> Regular?<br>
+                    <input type="checkbox" name="regular" value="True"> Regular<br>
                 </div>
             </div>
             </div>
@@ -67,15 +67,15 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="exam_type">Examination Type</label>  
                         <div class="col-md-5">
-                        <input id="action_id" name="exam_type" type="text" placeholder="" class="form-control input-md">
+                        <input id="exam_type" name="exam_type" type="text" placeholder="" class="form-control input-md">
                         </div>
                         <label class="col-md-4 control-label" for="duration">Duration</label>
                         <div class="col-md-5">
-                        <input id="action_id" name="duration" type="number" min="1" max="30" placeholder="" class="form-control input-md">
+                        <input id="duration" name="duration" type="number" min="1" max="30" placeholder="" class="form-control input-md">
                         </div>
                         <label class="col-md-4 control-label" for="place">Place</label>  
                         <div class="col-md-5">
-                        <input id="action_id" name="place" type="text" placeholder="" class="form-control input-md">
+                        <input id="place" name="place" type="text" placeholder="" class="form-control input-md">
                         </div>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
     
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" name="save" class="btn btn-primary">Add</button>
+            <button type="submit" value="Submit" name="Add" class="btn btn-primary">Add</button>
         </div> 
     </div>
 </form>

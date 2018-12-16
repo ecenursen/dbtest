@@ -12,22 +12,20 @@
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script>
         $(document).ready(function(){
-            
             var drugnext = 0;
             $("#add-more-drug").click(function(e){
                 e.preventDefault();
                 var addto = "#field_d" + drugnext;
                 var addRemove = "#field_d" + (drugnext);
                 drugnext = drugnext + 1;
-                var newIn = ' <div id="field_d'+ drugnext +'" name="field_d'+ drugnext +'"><!-- Text input--><div class="form-group"><label class="col-md-4 control-label" for="drug_name">Drug Name</label>  <div class="col-md-5"><input id="action_id" name="drug_name" type="text" placeholder="" class="form-control input-md"></div><label class="col-md-4 control-label" for="dosage">Dosage</label>  <div class="col-md-5"><input id="action_id" name="dosage" type="text" placeholder="" class="form-control input-md"></div><input type="checkbox" name="regular" value="regular"> Regular?<br></div></div></div>';
+                var newIn = ' <div id="field_d'+ drugnext +'" name="field_d'+ drugnext +'"><!-- Text input--><div class="form-group"><label class="col-md-4 control-label" for="drug_name">Drug Name</label>  <div class="col-md-5"><input id="drug_name" name="drug_name" type="text" placeholder="" class="form-control input-md"></div><label class="col-md-4 control-label" for="dosage">Dosage</label>  <div class="col-md-5"><input id="dosage" name="dosage" type="text" placeholder="" class="form-control input-md"></div><input type="checkbox" name="regular" value="True"> Regular?<br></div></div></div>';
                 var newInput = $(newIn);
                 var removeBtn = '<button id="remove_drug' + (drugnext - 1) + '" class="btn btn-danger remove-drug" >Remove</button></div></div><div id="field_d">';
                 var removeButton = $(removeBtn);
                 $(addto).after(newInput);
                 $(addRemove).after(removeButton);
-                $("#field_d" + drugnext).attr('data-source',$(addto).attr('data-source'));
-                $("#count").val(drugnext);  
-                
+                $("#field_d" + drugnext).attr('data-source',$(addto).attr('data-source'));//Set attribute and value by returning the value of data-source
+                $("#count").val(drugnext);  //return the value of count
                     $('.remove-drug').click(function(e){
                         e.preventDefault();
                         var fieldNum = this.id.charAt(this.id.length-1);
@@ -43,7 +41,7 @@
                 var addto = "#field_e" + examnext;
                 var addRemove = "#field_e" + (examnext);
                 examnext = examnext + 1;
-                var newIn = ' <div id="field_e'+ examnext +'" name="field_e'+ examnext +'"><div class="form-group"><label class="col-md-4 control-label" for="exam_type">Examination Type</label>  <div class="col-md-5"><input id="action_id" name="exam_type" type="text" placeholder="" class="form-control input-md"></div><label class="col-md-4 control-label" for="duration">Duration</label><div class="col-md-5"><input id="action_id" name="duration" type="number" min="1" max="30" placeholder="" class="form-control input-md"></div><label class="col-md-4 control-label" for="place">Place</label>  <div class="col-md-5"><input id="action_id" name="place" type="text" placeholder="" class="form-control input-md"></div></div></div></div>';
+                var newIn = ' <div id="field_e'+ examnext +'" name="field_e'+ examnext +'"><div class="form-group"><label class="col-md-4 control-label" for="exam_type">Examination Type</label>  <div class="col-md-5"><input id="exam_type" name="exam_type" type="text" placeholder="" class="form-control input-md"></div><label class="col-md-4 control-label" for="duration">Duration</label><div class="col-md-5"><input id="duration" name="duration" type="number" min="1" max="30" placeholder="" class="form-control input-md"></div><label class="col-md-4 control-label" for="place">Place</label>  <div class="col-md-5"><input id="place" name="place" type="text" placeholder="" class="form-control input-md"></div></div></div></div>';
                 var newInput = $(newIn);
                 var removeBtn = '<button id="remove_exam' + (examnext - 1) + '" class="btn btn-danger remove-exam" >Remove</button></div></div><div id="field_e">';
                 var removeButton = $(removeBtn);
@@ -51,7 +49,6 @@
                 $(addRemove).after(removeButton);
                 $("#field_e" + examnext).attr('data-source',$(addto).attr('data-source'));
                 $("#count").val(examnext);  
-                
                     $('.remove-exam').click(function(e){
                         e.preventDefault();
                         var fieldNum = this.id.charAt(this.id.length-1);
@@ -124,9 +121,9 @@
                         <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('patients_page') }}">Patients</a>
                         <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('drugs_page') }}">Drugs</a>
                         <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('drug_companies_page') }}">Drug Companies</a>
-                        <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('hospital_page') }}">Hospitals</a>
-                        <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('hospital_personnel_page') }}">Hospital Personnel</a>
+                        <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('hospital_page') }}">Hospitals</a>                        
                         <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('emergency_shift_page') }}">Shift Sheet</a>
+                        <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('hospital_personnel_sheet') }}">Hospital Workers</a>
                     </ul>
                     </p>
                 </div>
