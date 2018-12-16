@@ -30,6 +30,16 @@ class G_PharmacySearchForm(FlaskForm):
     submit = SubmitField('Search') 
 
 class inventory_change_form(FlaskForm):
+    sold = SubmitField('Sold a Drug')
+    bought = SubmitField('Bought a Drug')
+
+class G_WarehouseSearchForm(FlaskForm):
+    c = [('name','Name'),
+    ('region','Region'),
+    ]
+    select = RadioField('Search for Pharmaceutical Warehouses' , choices = c)
+    search = StringField('')
+    submit = SubmitField('Search') 
     submit = SubmitField('Save Changes')
     value = IntegerField('')
 
