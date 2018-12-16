@@ -18,9 +18,9 @@ connection.commit()
 cursor.close()
 '''
 
-DEBUG = True
+DEBUG = False
 
-DEBUG = True
+#DEBUG = True
 # LIVE ICIN
 if(DEBUG == False):
     url = os.getenv("DATABASE_URL")
@@ -381,8 +381,42 @@ def prescription_page(id):
 
 @app.route("/Prescription_Add/<id>/", methods=['GET', 'POST'])
 def prescription_add_page(id):
-    prescriptions = []
-    return render_template('prescription_add.html', Prescriptions=prescriptions, id=id)
+    if(request.method == 'GET'):
+        return render_template('prescription_add.html', id=id)
+    else:
+        drs_id = []
+        hs_id =[]
+        
+        dr_id = int(request.form['dr_id'])
+        h_name = request.form['hospital_name']
+        valid = int(request.form['validity'])
+    
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        hs_id = """SELECT HOSPITAL_ID FROM HOSPITAL
+        WHERE HOSPITAL_NAME="""+"CAST("+ h_name+" AS VARCHAR)""" + """
+        GROUP BY HOSPITAL_ID"""
+        cursor.execute(hs_id)
+        for row in cursor:
+            hs_id = row
+        h_id = hs_id[0]
+        
+        statement = """INSERT INTO PRESCRIPTION (HOSPITAL_ID,DOCTOR_ID,PATIENT_ID) VALUES (
+            """ +"CAST("+str(h_id)+"AS INTEGER)""" + """,
+            """ +"CAST("+str(dr_id)+"AS INTEGER)""" + """,
+            """ +"CAST("+str(id)+"AS INTEGER)""" + """
+        );
+        """
+        cursor.execute(statement)
+        connection.commit()
+        for row in cursor:
+            print("my row:")
+            print(row)
+        cursor.close()
+        print(dr_id)
+        print(h_id)
+        print(valid)
+        return prescription_page(id)
 
 
 @app.route("/Prescription/<id>/<pid>/", methods=['GET'])
