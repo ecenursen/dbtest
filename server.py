@@ -214,41 +214,36 @@ def inventory_page(id,mode):
 			#self = session.get('status')==4 and session.get['id']==id
 			self = True
 			if (self):
-				forms = []
+				forms = inventory_change_form()
 				i=[]
 				statement = "select NAME , number, drugs_id from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
 				cursor.execute(statement)
 				connection.commit()
 				inventory = cursor.fetchall()
 				for k in range(0,len(inventory)):
-					forms.append(inventory_change_form())
 					i.append(k)
 					
-					
-				for k in range(0,len(inventory)):
-					
-					if forms[k].validate_on_submit():
-						if forms[k].bought.data:
-							new_value = 1
-						elif forms[k].sold.data:
-							new_value = -1
-					
-						new_value = inventory[k][1] + new_value
-						if new_value==0:
-							statement ="DELETE FROM public.pharmacy_inventory WHERE drugs_id={} and pharmacy_id = {};".format(inventory[k][2] , id)
-							del i[-1]
-						else:
-							#print ("aaaaaaaa")
-							statement ="UPDATE public.pharmacy_inventory SET number={} WHERE drugs_id={} and pharmacy_id = {};".format(new_value,inventory[k][2] , id)
-					cursor.execute(statement)
-					connection.commit()
-					statement = "select NAME , number from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
-					cursor.execute(statement)
-					connection.commit()
-					inventory = cursor.fetchall()
-					cursor.close()
-
-					return render_template('inventory_page.html' , self = True , name = name, results = inventory,i = i,forms = forms)
+				if forms.validate_on_submit():
+					k = int(forms.request_id.data)
+					if forms.bought.data:
+						new_value = 1
+					elif forms.sold.data:
+						new_value = -1
+					new_value = int(inventory[k][1]) + new_value
+					if new_value == 0:
+						statement = "DELETE FROM public.pharmacy_inventory WHERE drugs_id={} and pharmacy_id = {};".format(inventory[k][2], id)
+						del i[-1]
+					else:
+						#print ("aaaaaaaa")
+						statement = "UPDATE public.pharmacy_inventory SET number={} WHERE drugs_id={} and pharmacy_id = {};".format(new_value, inventory[k][2], id)
+				cursor.execute(statement)
+				connection.commit()
+				statement = "select NAME , number from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
+				cursor.execute(statement)
+				connection.commit()
+				inventory = cursor.fetchall()
+				cursor.close()
+				return render_template('inventory_page.html', self=True, name=name, results=inventory, i=i, forms=forms)
 			else:
 				statement = "select NAME from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
 				cursor.execute(statement)
@@ -259,41 +254,36 @@ def inventory_page(id,mode):
 			
 		elif (mode == 'w'):
 			if (self):
-				forms = []
+				forms = inventory_change_form()
 				i=[]
 				statement = "select NAME , number, drugs_id from DRUGS,warehouse_inventory where warehouse_inventory.warehouse_id = {} and drugs_id = ID".format(id)
 				cursor.execute(statement)
 				connection.commit()
 				inventory = cursor.fetchall()
 				for k in range(0,len(inventory)):
-					forms.append(inventory_change_form())
 					i.append(k)
 					
-					
-				for k in range(0,len(inventory)):
-					
-					if forms[k].validate_on_submit():
-						if forms[k].bought.data:
-							new_value = 1
-						elif forms[k].sold.data:
-							new_value = -1
-					
-						new_value = inventory[k][1] + new_value
-						if new_value==0:
-							statement ="DELETE FROM public.warehouse_inventory WHERE drugs_id={} and warehouse_id = {};".format(inventory[k][2] , id)
-							del i[-1]
-						else:
-							#print ("aaaaaaaa")
-							statement ="UPDATE public.warehouse_inventory SET number={} WHERE drugs_id={} and warehouse_id = {};".format(new_value,inventory[k][2] , id)
-					cursor.execute(statement)
-					connection.commit()
-					statement = "select NAME , number from DRUGS,warehouse_inventory where warehouse_inventory.warehouse_id = {} and drugs_id = ID".format(id)
-					cursor.execute(statement)
-					connection.commit()
-					inventory = cursor.fetchall()
-					cursor.close()
-
-					return render_template('inventory_page.html' , self = True , name = name, results = inventory,i = i,forms = forms)
+				if forms.validate_on_submit():
+					k = int(forms.request_id.data)
+					if forms.bought.data:
+						new_value = 1
+					elif forms.sold.data:
+						new_value = -1
+ 					new_value = int(inventory[k][1]) + new_value
+					if new_value == 0:
+						statement = "DELETE FROM public.warehouse_inventory WHERE drugs_id={} and warehouse_id = {};".format(inventory[k][2], id)
+						del i[-1]
+					else:
+						#print ("aaaaaaaa")
+						statement = "UPDATE public.warehouse_inventory SET number={} WHERE drugs_id={} and warehouse_id = {};".format(new_value, inventory[k][2], id)
+ 				cursor.execute(statement)
+				connection.commit()
+				statement = "select NAME , number from DRUGS,warehouse_inventory where warehouse_inventory.warehouse_id = {} and drugs_id = ID".format(id)
+				cursor.execute(statement)
+				connection.commit()
+				inventory = cursor.fetchall()
+				cursor.close()
+ 				return render_template('inventory_page.html', self=True, name=name, results=inventory, i=i, forms=forms)
 			else:
 				statement = "select name from pharmaceutical_warehouse where id={} ".format(id)
 				cursor.execute(statement)
