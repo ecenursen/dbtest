@@ -93,7 +93,6 @@ class HospitalAddForm(FlaskForm):
     submit=SubmitField('Insert')
 
 class HospitalDeleteForm(FlaskForm):
-<<<<<<< HEAD
     submit=SubmitField('Delete')
 class Drugs_Form(FlaskForm):
     choices = [('insert','Insert'),('update','Update')]
@@ -118,7 +117,6 @@ class DrugCompanies_Form(FlaskForm):
     factories=StringField('Factory Number')
     submit = SubmitField('Submit')
     delete = SubmitField('Delete')
-=======
     delete=SubmitField('Delete')
 
 class PersonnelSearchForm(FlaskForm):
@@ -155,4 +153,3 @@ class ShiftAddForm(FlaskForm):
     dayshift=RadioField('Shift in daytime?',choices=[('True','Daytime'),('False','Nighttime')],validators=[DataRequired()])
     emergency_area_assigned=StringField('Emergency area(Green, Yellow, Red)')
     submit=SubmitField('Insert')
->>>>>>> 6ff870d280c4382758c83cae3be25214a347fb46

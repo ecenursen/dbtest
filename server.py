@@ -1,10 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, session,abort
-<<<<<<< HEAD
 from forms import *
-=======
-from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm,HospitalDeleteForm,inventory_change_form,G_WarehouseSearchForm,PharmacyPersonelForm,PharPersonelEditForm,PharPersonelAdd
-from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm,HospitalDeleteForm,inventory_change_form,G_WarehouseSearchForm,PersonnelSearchForm, PersonnelAddForm, PersonnelDeleteForm, ShiftAddForm
->>>>>>> 6ff870d280c4382758c83cae3be25214a347fb46
 import datetime
 import os
 import psycopg2 as db
@@ -23,14 +18,7 @@ for statement in INIT_STATEMENTS:
 connection.commit()
 cursor.close()
 '''
-
-<<<<<<< HEAD
-DEBUG = True
-=======
-#DEBUG = False
->>>>>>> 6ff870d280c4382758c83cae3be25214a347fb46
-
-DEBUG = True
+DEBUG = False
 # LIVE ICIN
 if(DEBUG == False):
     url = os.getenv("DATABASE_URL")
