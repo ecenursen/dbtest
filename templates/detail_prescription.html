@@ -3,36 +3,48 @@
     <h1>PRESCRIPTION</h1>
 {% endblock title %}
 {% block content %}
-{% if P_Drugs %}
+
     <table>
         <tr>
-            <th>PRESCRIPTION ID </th>
+            <th>DRUG ID </th>
             <th>DRUG NAME </th>
-            <th>DOSAGE </th>
+            <th>DOSAGE PER TAKE </th>
+            <th>TIMES PER DAY </th>
+            <th>DURATION </th>
             <th>REGULAR DRUG </th>
         </tr>
+        {% if P_Drugs %}
         {% for item in P_Drugs %}
         <tr>
-            <td>{{item[1]}}</td>
-            <td>{{item[5]}}</td>
+            <td>{{item[2]}}<form action="{{url_for('drug_pres_del',id = id,pid=pid,did=item[0])}}">
+                    <input type="submit" value="delete" /> 
+                </form></td>
             <td>{{item[3]}}</td>
             <td>{{item[4]}}</td>
+            <td>{{item[5]}}</td>
+            <td>{{item[6]}}</td>
+            <td>{{item[7]}}</td>
         </tr>
         {% endfor %}
         {% endif %}
     </table>
-{% if P_Examination %}
+    <form action="{{url_for('add_drug_pres',id =id, pid=pid)}}">
+        <input type="submit" value="Add Drug" /> 
+    </form>
     <table>
         <tr>
-            <th>PRESCRIPTION ID </th>
+            <th>EXAMINATION ID </th>
             <th>EXAMINATION TYPE </th>
             <th>DURATION </th>
             <th>PLACE </th>
 
         </tr>
+    {% if P_Examination %}
         {% for item in P_Examination %}
         <tr>
-            <td>{{item[1]}}</td>
+            <td>{{item[0]}}<form action="{{url_for('exam_pres_del',id = id,pid=pid,did=item[0])}}">
+                    <input type="submit" value="delete" /> 
+                </form></td>
             <td>{{item[2]}}</td>
             <td>{{item[3]}}</td>
             <td>{{item[4]}}</td>
@@ -42,4 +54,7 @@
     
     </table>
     {% endif %}
+    <form action="{{url_for('add_exam_pres',id =id, pid=pid)}}">
+        <input type="submit" value="Add Examination" /> 
+    </form>
 {% endblock content %}

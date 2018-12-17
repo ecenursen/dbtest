@@ -218,7 +218,7 @@ def inventory_page(id, mode):
     else:
         return redirect(url_for('home_page'))
     return
-
+    
 
 def hospital_page():
     hospitals = []
@@ -350,81 +350,264 @@ def emergency_shift_page():
 app.add_url_rule("/emergency_shift",
                  view_func=emergency_shift_page, methods=["GET"])
 
+@app.route("/policlinics/")
+def choose_hospital():
+    log_id = session.get("status")
+    hospitals = []
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = """ SELECT * FROM HOSPITAL ORDER BY HOSPITAL_NAME"""
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        hospitals.append(row)
+    cursor.close()
+    return render_template('choose_hospital.html',hospital = hospitals,log_id = log_id)
+
+@app.route("/policlinics/<hospital_id>")
+def all_policlinics(hospital_id):
+    log_id = session.get("status")
+    policlinics = []
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = """ SELECT POLICLINICS.*,HOSPITAL.HOSPITAL_NAME,HOSPITAL_PERSONNEL.WORKER_NAME FROM POLICLINICS,HOSPITAL,HOSPITAL_PERSONNEL
+        WHERE POLICLINICS.HOSPITAL_ID="""+"CAST("+hospital_id+"AS INTEGER)""" + """
+        AND POLICLINICS.HOSPITAL_ID = HOSPITAL.HOSPITAL_ID
+        AND POLICLINICS.RECEPTIONIST_ID = HOSPITAL_PERSONNEL.PERSONNEL_ID
+    """
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        policlinics.append(row)
+    cursor.close()
+    return render_template('policlinics.html',policlinics = policlinics ,hospital_id = hospital_id,log_id = log_id)
+
+@app.route("/add_policlinics/<hospital_id>",methods=['GET', 'POST'])
+def add_pol(hospital_id):
+    log_id = session.get("status")
+    if(request.method == 'GET'):
+        return render_template('pol_add.html', hospital_id = hospital_id, log_id = log_id)
+    else:
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        r_id = int(request.form['r_id'])
+        name = request.form['name']
+        ex_room = request.form['ex_room']
+        if ex_room == "":
+            ex_room = 0
+        op_room = request.form['op_room']
+        if op_room == "" :
+            op_room = 0
+        if request.form.get('private') :
+            private = True
+        else:
+            private = False
+
+        if request.form.get('pedi') :
+            pedi = True
+        else:
+            pedi = False
+        
+        statement = """INSERT INTO POLICLINICS (HOSPITAL_ID,RECEPTIONIST_ID,NAME,NUMBER_OF_EXAMINATION_ROOMS,NUMBER_OF_OPERATION_ROOMS,PRIVATE,IS_PEDIATRICS) VALUES (
+            """ +"CAST("+str(hospital_id)+" AS INTEGER)""" + """,
+            """ +"CAST("+str(r_id)+" AS INTEGER)""" + """,
+            """ +"CAST('"+ str(name)+"' AS VARCHAR) """ + """,
+            """ +"CAST("+str(ex_room)+" AS INTEGER)""" + """,
+            """ +"CAST("+str(op_room)+" AS INTEGER)""" + """,
+            """ +"CAST('"+ str(private)+"' AS BOOL) """ + """,
+            """ +"CAST('"+ str(pedi)+"' AS BOOL) """ + """
+        );
+        """
+        cursor.execute(statement)
+        connection.commit()
+        cursor.close()
+        return all_policlinics(hospital_id)
+
+@app.route("/delete_policlinics/<id>")
+def pol_del(id):
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = """ DELETE FROM POLICLINICS
+        WHERE ID="""+"CAST("+id+"AS INTEGER)""" + """
+    """
+    print(statement)
+    cursor.execute(statement)
+    connection.commit()
+    cursor.close()
+    return choose_hospital()
+
+@app.route("/policlinics/<hospital_id>/<pol_id>") 
+def det_policlinic(hospital_id,pol_id):
+    log_id = session.get("status")
+    policlinic = []
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = """ SELECT DETAILED_POLICLINICS.*,HOSPITAL.HOSPITAL_NAME,POLICLINICS.NAME,HOSPITAL_PERSONNEL.WORKER_NAME FROM DETAILED_POLICLINICS,POLICLINICS,HOSPITAL,HOSPITAL_PERSONNEL 
+        WHERE DETAILED_POLICLINICS.HOSPITAL_ID="""+"CAST("+hospital_id+"AS INTEGER)""" + """
+        AND DETAILED_POLICLINICS.POLICLINIC_ID="""+"CAST("+pol_id+"AS INTEGER)""" + """
+        AND DETAILED_POLICLINICS.HOSPITAL_ID = HOSPITAL.HOSPITAL_ID
+        AND DETAILED_POLICLINICS.POLICLINIC_ID = POLICLINICS.ID
+        AND DETAILED_POLICLINICS.DOCTOR_ID = HOSPITAL_PERSONNEL.PERSONNEL_ID
+    """
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        policlinic.append(row)
+    cursor.close()
+    return render_template('det_policlinic.html',policlinic = policlinic,hospital_id = hospital_id, pol_id = pol_id,log_id = log_id)
+
+@app.route("/add_policlinics/<hospital_id>/<pol_id>",methods=['GET', 'POST'])
+def add_pol_det(hospital_id,pol_id):
+    log_id = session.get("status")
+    if(request.method == 'GET'):
+        return render_template('det_pol_add.html', hospital_id = hospital_id, pol_id = pol_id,log_id = log_id)
+    else:
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        d_id = int(request.form['d_id'])
+        work = request.form['work_hours']
+        result = request.form['result_hours']
+        statement = """INSERT INTO DETAILED_POLICLINICS (HOSPITAL_ID,POLICLINIC_ID,DOCTOR_ID,WORKING_HOURS,RESULT_HOURS) VALUES (
+            """ +"CAST("+str(hospital_id)+" AS INTEGER)""" + """,
+            """ +"CAST("+str(pol_id)+" AS INTEGER)""" + """,
+            """ +"CAST("+str(d_id)+" AS INTEGER)""" + """,
+            """ +"CAST('"+ str(work)+"' AS VARCHAR) """ + """,
+            """ +"CAST('"+str(result)+"' AS VARCHAR)""" + """
+        );
+        """
+        print(statement)
+        cursor.execute(statement)
+        connection.commit()
+        cursor.close()
+        return det_policlinic(hospital_id,pol_id)
+
+@app.route("/delete_policlinics/<id>")
+def det_pol_del(id):
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = """ DELETE FROM DETAILED_POLICLINICS
+        WHERE ID="""+"CAST("+id+"AS INTEGER)""" + """
+    """
+    print(statement)
+    cursor.execute(statement)
+    connection.commit()
+    cursor.close()
+    return choose_hospital()
 
 @app.route("/Prescription/<id>/", methods=['GET'])
 def prescription_page(id):
+    log_id = session.get("status")
     prescriptions = []
     date = datetime.datetime.now().date()
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = """SELECT PRESCRIPTION.PRESCRIPTION_ID,HOSPITAL.HOSPITAL_NAME,HOSPITAL_PERSONNEL.WORKER_NAME,PRESCRIPTION.VALID_DATE FROM PRESCRIPTION,HOSPITAL_PERSONNEL,HOSPITAL 
+    statement = """SELECT * FROM PRESCRIPTION 
 		WHERE PATIENT_ID="""+"CAST("+id+"AS INTEGER)""" + """
-		AND (HOSPITAL.HOSPITAL_ID = PRESCRIPTION.HOSPITAL_ID)
-		AND (HOSPITAL_PERSONNEL.PERSONNEL_ID = PRESCRIPTION.DOCTOR_ID)
-		ORDER BY PRESCRIPTION.VALID_DATE DESC
+		ORDER BY PRESCRIPTION_DATE DESC
 	"""
     cursor.execute(statement)
     connection.commit()
     for row in cursor:
         prescriptions.append(row)
     cursor.close()
-    return render_template('prescription.html', Prescriptions=prescriptions, id=id)
+    return render_template('prescription.html', Prescriptions=prescriptions, id=id,log_id = log_id)
 
 
 @app.route("/Prescription_Add/<id>/", methods=['GET', 'POST'])
 def prescription_add_page(id):
+    log_id = session.get("status")
     if(request.method == 'GET'):
-        return render_template('prescription_add.html', id=id)
+        return render_template('prescription_add.html', id=id,log_id = log_id)
     else:
-        drs_id = []
-        hs_id =[]
+        try:
+            connection = db.connect(url)
+            cursor = connection.cursor()
+
+            h_a_name =[]
+            dr_a_name = []
+            p_a_name = []
         
-        dr_id = int(request.form['dr_id'])
-        h_name = request.form['hospital_name']
-        valid = int(request.form['validity'])
-    
-        connection = db.connect(url)
-        cursor = connection.cursor()
-        hs_id = """SELECT HOSPITAL_ID FROM HOSPITAL
-        WHERE HOSPITAL_NAME="""+"CAST("+ h_name+" AS VARCHAR)""" + """
-        GROUP BY HOSPITAL_ID"""
-        cursor.execute(hs_id)
-        for row in cursor:
-            hs_id = row
-        h_id = hs_id[0]
+            h_id = int(request.form['h_id'])
+            dr_id = int(request.form['dr_id'])
+            date = datetime.datetime.now().date()
+            valid = request.form['validity']
+            if valid == "":
+                valid = 3
+
+
+            statement = """SELECT HOSPITAL_NAME FROM HOSPITAL
+            WHERE HOSPITAL_ID="""+"CAST("+ str(h_id)+" AS INTEGER)""" + """
+            GROUP BY HOSPITAL_NAME"""
+            cursor.execute(statement)
+            for row in cursor:
+                h_a_name.append(row)
+            for name in h_a_name[0]:
+                h_name = name
+
+            statement = """SELECT WORKER_NAME FROM HOSPITAL_PERSONNEL
+            WHERE PERSONNEL_ID="""+"CAST("+ str(dr_id)+" AS INTEGER)""" + """
+            GROUP BY WORKER_NAME"""
+            cursor.execute(statement)
+            for row in cursor:
+                dr_a_name.append(row)
+            for name in dr_a_name[0]:
+                dr_name = name
+
+            statement = """SELECT NAME FROM PATIENTS
+            WHERE ID = """+"CAST("+ str(id)+" AS INTEGER)""" + """
+            GROUP BY NAME"""
+            cursor.execute(statement)
+            for row in cursor:
+                p_a_name.append(row)
+            for name in p_a_name[0]:
+                p_name = name
         
-        statement = """INSERT INTO PRESCRIPTION (HOSPITAL_ID,DOCTOR_ID,PATIENT_ID) VALUES (
-            """ +"CAST("+str(h_id)+"AS INTEGER)""" + """,
-            """ +"CAST("+str(dr_id)+"AS INTEGER)""" + """,
-            """ +"CAST("+str(id)+"AS INTEGER)""" + """
-        );
-        """
-        cursor.execute(statement)
-        connection.commit()
-        for row in cursor:
-            print("my row:")
-            print(row)
-        cursor.close()
-        print(dr_id)
-        print(h_id)
-        print(valid)
+            statement = """INSERT INTO PRESCRIPTION (HOSPITAL_ID,DOCTOR_ID, PATIENT_ID, HOSPITAL_NAME, DOCTOR_NAME, PATIENT_NAME ,PRESCRIPTION_DATE,VALIDATION) VALUES (
+                """ +"CAST("+str(h_id)+" AS INTEGER)""" + """,
+                """ +"CAST("+str(dr_id)+" AS INTEGER)""" + """,
+                """ +"CAST("+str(id)+" AS INTEGER)""" + """,
+                """ +"CAST('"+ str(h_name)+"' AS VARCHAR) """ + """,
+                """ +"CAST('"+str(dr_name)+"' AS VARCHAR)""" + """,
+                """ +"CAST('"+str(p_name)+"' AS VARCHAR)""" + """,
+                """ +"CAST('"+str(date)+" 'AS DATE)""" + """,
+                """ +"CAST("+str(valid)+" AS INTEGER)""" + """
+            );
+            """
+            
+            cursor.execute(statement)
+            connection.commit()
+        except db.DatabaseError:
+            connection.rollback()
+            flash('Something Went Wrong', 'danger')
+        finally:
+            cursor.close()
         return prescription_page(id)
+
+@app.route("/pres_del/<id>/<pid>/")
+def pres_del(id,pid):
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = """ DELETE FROM PRESCRIPTION
+        WHERE ID="""+"CAST("+pid+"AS INTEGER)""" + """
+    """
+    print(statement)
+    cursor.execute(statement)
+    connection.commit()
+    cursor.close()
+    return prescription_page(id)
 
 
 @app.route("/Prescription/<id>/<pid>/", methods=['GET'])
 def det_prescription_page(id, pid):
+    log_id = session.get("status")
     drug = []
     examination = []
     date = datetime.datetime.now().date()
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement1 = """SELECT DETAILED_PRESCRIPTION.*,DRUGS.NAME FROM DETAILED_PRESCRIPTION,DRUGS,PRESCRIPTION
-		WHERE PRESCRIPTION.PATIENT_ID="""+"CAST("+id+"AS INTEGER)""" + """
-		AND PRESCRIPTION.PRESCRIPTION_ID =  PRESCRIPTION.PRESCRIPTION_ID
-		
-		AND DETAILED_PRESCRIPTION.PRESCRIPTION_ID ="""+"CAST("+pid+"AS INTEGER)""" + """
-		AND (DRUGS.ID = DETAILED_PRESCRIPTION.DRUG_ID)
-		GROUP BY DETAILED_PRESCRIPTION.ID,DRUGS.NAME
+    statement1 = """SELECT * FROM DETAILED_PRESCRIPTION
+		WHERE PRESCRIPTION_ID="""+"CAST("+pid+"AS INTEGER)""" + """
+		GROUP BY ID
 	"""
     cursor.execute(statement1)
     connection.commit()
@@ -433,17 +616,129 @@ def det_prescription_page(id, pid):
     cursor.close()
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement2 = """SELECT EXAMINATION.* FROM EXAMINATION,PRESCRIPTION
-		WHERE PRESCRIPTION.PATIENT_ID="""+"CAST("+id+"AS INTEGER)""" + """        
-		AND EXAMINATION.PRESCRIPTION_ID ="""+"CAST("+pid+"AS INTEGER)""" + """
-		GROUP BY EXAMINATION.ID
+    statement2 = """SELECT * FROM EXAMINATION
+		WHERE PRESCRIPTION_ID="""+"CAST("+pid+"AS INTEGER)""" + """        
+		GROUP BY ID
 	"""
     cursor.execute(statement2)
     connection.commit()
     for row in cursor:
         examination.append(row)
     cursor.close()
-    return render_template('detail_prescription.html', P_Drugs=drug, P_Examination=examination, id=id, pid=pid)
+    return render_template('detail_prescription.html', P_Drugs=drug, P_Examination=examination, id=id, pid=pid, log_id = log_id)
+
+@app.route("/add_drug_pres/<id>/<pid>/",methods=['GET', 'POST'])
+def add_drug_pres(id,pid):
+    log_id = session.get("status")
+    if(request.method == 'GET'):
+        return render_template('add_drug_pres.html', id=id,pid=pid,log_id = log_id)
+    else:
+        connection = db.connect(url)
+        cursor = connection.cursor()
+
+        drug_a_name = []
+
+        drug_id = int(request.form['drug_id'])
+        
+        statement = """SELECT NAME FROM DRUGS
+            WHERE ID="""+"CAST("+ str(drug_id)+" AS INTEGER)""" + """
+            GROUP BY NAME"""
+        cursor.execute(statement)
+
+        for row in cursor:
+            drug_a_name.append(row)
+        for name in drug_a_name[0]:
+            drug_name = name
+
+        print(drug_name)
+
+        dosage = request.form['dosage']
+        if dosage == "":
+            dosage = 1
+            
+        times = request.form['times']
+        if times == "":
+            times = 1
+
+        duration = request.form['duration']
+        if duration == "":
+            duration= 3
+
+        if request.form.get('regular') :
+            regular = True
+        else:
+            regular = False
+        
+        statement = """INSERT INTO DETAILED_PRESCRIPTION (PRESCRIPTION_ID,DRUG_ID,DRUG_NAME,DOSAGE_PER_TAKE,TIMES_PER_DAY,DURATION,REGULAR) VALUES (
+            """ +"CAST("+str(pid)+" AS INTEGER)""" + """,
+            """ +"CAST("+str(drug_id)+" AS INTEGER)""" + """,
+            """ +"CAST('"+ str(drug_name)+"' AS VARCHAR) """ + """,
+            """ +"CAST("+str(dosage)+" AS INTEGER)""" + """,
+            """ +"CAST("+str(times)+" AS INTEGER)""" + """,
+            """ +"CAST("+str(duration)+" AS INTEGER)""" + """,
+            """ +"CAST('"+ str(regular)+"' AS BOOL) """ + """
+        );
+        """
+        print(statement)
+        cursor.execute(statement)
+        connection.commit()
+        cursor.close()
+        return det_prescription_page(id, pid)
+
+@app.route("/drug_pres_del/<id>/<pid>/<did>")
+def drug_pres_del(id,pid,did):
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = """ DELETE FROM DETAILED_PRESCRIPTION
+        WHERE ID="""+"CAST("+did+"AS INTEGER)""" + """
+    """
+    print(statement)
+    cursor.execute(statement)
+    connection.commit()
+    cursor.close()
+    return det_prescription_page(id, pid)
+
+@app.route("/add_exam_pres/<id>/<pid>/",methods=['GET', 'POST'])
+def add_exam_pres(id,pid):
+    log_id = session.get("status")
+    if(request.method == 'GET'):
+        return render_template('add_exam_pres.html', id=id,pid=pid,log_id = log_id)
+    else:
+        connection = db.connect(url)
+        cursor = connection.cursor()
+
+        exam_type = request.form['exam_type']
+
+        duration = request.form['duration']
+
+        place = request.form['place']
+
+        
+        statement = """INSERT INTO EXAMINATION (PRESCRIPTION_ID,TYPE,DURATION,PLACE) VALUES (
+            """ +"CAST("+str(pid)+" AS INTEGER)""" + """,
+            """ +"CAST('"+ str(exam_type)+"' AS VARCHAR) """ + """,
+            """ +"CAST("+str(duration)+" AS INTEGER)""" + """,
+            """ +"CAST('"+ str(place)+"' AS VARCHAR) """ + """
+        );
+        """
+        print(statement)
+        cursor.execute(statement)
+        connection.commit()
+        cursor.close()
+        return det_prescription_page(id, pid)
+
+@app.route("/exam_pres_del/<id>/<pid>/<did>")
+def exam_pres_del(id,pid,did):
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = """ DELETE FROM EXAMINATION
+        WHERE ID="""+"CAST("+did+"AS INTEGER)""" + """
+    """
+    print(statement)
+    cursor.execute(statement)
+    connection.commit()
+    cursor.close()
+    return det_prescription_page(id, pid)
 
 
 @app.route("/login", methods=['GET', 'POST'])
