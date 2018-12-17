@@ -3,6 +3,54 @@
     <h1>DETAILED PERSONNEL INFO</h1>
 {% endblock title %}
 {% block content %}
+{% if stat==1 or stat==6 or stat==7 %}
+<div class="content-section">
+        <form method="POST" action="">
+            {{ form.csrf_token }}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-2">Personnel Update Page</legend>
+                    <br></br>
+                    <div class="form-group col">
+                        {{ form.worker_name.label(class="form-control-label") }}
+                        {{ form.worker_name(class="form-control", value=personnel.get_name()) }}
+                    </div>
+                    <div class="form-group col">
+                            {{ form.job_title.label(class="form-control-label") }}
+                            {{ form.job_title(class="form-control", value=personnel.get_title()) }}
+                        </div>
+                    <br></br>
+                    <div class="form-group col">
+                        {{ form.job_experience.label(class="form-control-label") }}
+                        {{ form.job_experience(class="form-control", value=personnel.get_exp()) }}
+                    </div>
+                    <div class="form-group col">
+                            {{ form.work_days.label(class="form-control-label") }}
+                            {{ form.work_days(class="form-control", value=personnel.get_days()) }}
+                        </div>
+                    <div class="form-group col">
+                            {{ form.phone_num.label(class="form-control-label") }}
+                            {{ form.phone_num(class="form-control",value=personnel.get_number()) }}
+                    </div>
+                    <div class="form-group col">
+                            {{ form.working_field.label(class="form-control-label") }}
+                            {{ form.working_field(class="form-control", value=personnel.get_field()) }}
+                        </div>
+                        <div class="form-group col">
+                                {{ form.hospital_worked.label(class="form-control-label") }}
+                                {{ form.hospital_worked(class="form-control", value=personnel.get_hospital()) }}
+                            </div>
+                        <div class="form-group col">
+                                    {{ form.tckn.label(class="form-control-label") }}
+                                    {{ form.tckn(class="form-control",value=personnel.get_tckn()) }}
+                        </div>   
+                    <div class="form-group">
+                            {{ form.csrf_token }}
+                        {{ form.submit(class="btn btn-info") }}
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+ {% endif %}
 <table>
     <tr>
         <th>NAME </th>

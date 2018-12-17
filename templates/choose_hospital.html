@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}
+    <h1>HOSPITALS </h1>
+{% endblock title %}
+{% block content %}
+<div class="alert alert-info" role="alert">
+    Choose a hospital from list!
+</div>
+<table>
+    <tr>
+        <th>NAME </th>
+        <th>PUBLIC HOSPITAL </th>
+        <th>LOCATION </th>
+        <th>ADMINISTRATOR </th>
+        <th>PHONE NUMBER </th>
+        <th>AMBULANCE COUNT </th>
+    </tr>
+    {% for item in hospital %}
+    <tr>
+        <td>
+                <a href="{{ url_for('all_policlinics' , hospital_id = item[0]) }}">
+                        {{item[1]}}
+                </a></td>
+        <td>{{item[2]}}</td>
+        <td>{{item[3]}}</td>
+        <td>{{item[4]}}</td>
+        <td>{{item[5]}}</td>
+        <td>{{item[6]}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock content %}

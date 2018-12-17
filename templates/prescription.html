@@ -3,6 +3,10 @@
     <h1>PRESCRIPTIONS</h1>
 {% endblock title %}
 {% block content %}
+<<<<<<< Updated upstream
+{% if log_id == 1 or log_id == 3 or log_id == 2 or log_id == 6 %} 
+=======
+>>>>>>> Stashed changes
 <table>
     <tr>
         <th>PRESCRIPTION ID </th>
@@ -12,15 +16,46 @@
     </tr>
     {% for item in Prescriptions %}
     <tr>
+<<<<<<< Updated upstream
+        <td><a href="{{ url_for('det_prescription_page',id=id,pid=item[0]) }}">{{item[0]}}</a>
+            {% if log_id == 1 or log_id == 3 %}
+            <form action="{{url_for('pres_del',id = id,pid=item[0])}}">
+                <input type="submit" value="delete" /> 
+            </form>
+            <form action="{{url_for('edit_pres',id = id,pid=item[0])}}">
+                <input type="submit" value="edit" /> 
+            </form>
+            {% endif %}
+        </td>
+        <td>{{item[4]}}</td>
+        <td>{{item[5]}}</td>
+        <td>{{item[6]}}</td>
+        <td>{{item[7]}}</td>
+        <td>{{item[8]}}</td>
+=======
         <td><a href="{{ url_for('det_prescription_page',id=id,pid=item[0]) }}">{{item[0]}}</a></td>
         <td>{{item[1]}}</td>
         <td>{{item[2]}}</td>
         <td>{{item[3]}}</td>
+>>>>>>> Stashed changes
     </tr>
     {% endfor %}
 
 </table>
+<<<<<<< Updated upstream
+{% if log_id == 1 or log_id == 3 %}
 <form action="{{url_for('prescription_add_page',id=id)}}">
     <input type="submit" value="Add Prescription for" />
 </form>
+{% endif %}
+{% else %}
+<div class="alert alert-danger" role="alert">
+    Your are not authorized to access this page! Please go back to home page!
+</div>
+{% endif %}
+=======
+<form action="{{url_for('prescription_add_page',id=id)}}">
+    <input type="submit" value="Add Prescription for" />
+</form>
+>>>>>>> Stashed changes
 {% endblock content %}
