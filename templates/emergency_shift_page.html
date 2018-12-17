@@ -5,8 +5,8 @@
 {% block content %}
 <div class="content-section">
     <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        <fieldset class="form-group">
+            {{ form.csrf_token }}
+            <fieldset class="form-group">
             <legend class="border-bottom mb-2">Shift Page</legend>
             <br></br>
             <div class="form-group">
@@ -57,8 +57,7 @@
         <td>
                 {% if stat==1 or stat==7 %}
                 <form method="POST" action="">
-                <input type="checkbox" name="del_hospitals" value="{{item.get_id()}}">
-                </form>
+                <input type="checkbox" name="del_shift" value="{{item.get_id()}}">
                 {% endif %}
             <a href="{{ url_for('single_personnel_page' , personnel_id = item.get_personnel_id()) }}">
                     {{item.get_name()}}
@@ -74,7 +73,6 @@
 </table>
 {% if stat==1 or stat==7%}
 <br></br>
-<form method="POST" action="">
         {{ delform.csrf_token }}
 <div class="delform-group">
           {{ delform.submit(class="btn btn-danger") }}

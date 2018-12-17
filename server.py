@@ -20,6 +20,7 @@ cursor.close()
 '''
 DEBUG = False
 # LIVE ICIN
+#DEBUG=True
 if(DEBUG == False):
     url = os.getenv("DATABASE_URL")
 else:
@@ -815,6 +816,8 @@ app.add_url_rule("/<int:hospital_id>/hospital_personnel",view_func=hospital_pers
 
 def emergency_shift_page():
     data = []
+    status = session.get('status')
+    status=1
     connection = db.connect(url)
     cursor = connection.cursor()
     statement = """SELECT GENERATED_KEY,HOSPITAL_PERSONNEL.PERSONNEL_ID, SHIFT_BEGIN_DATE,SHIFT_REPEAT_INTERVAL,SHIFT_HOURS,DAYSHIFT ,EMERGENCY_AREA_ASSIGNED, WORKER_NAME FROM DAY_TABLE LEFT JOIN HOSPITAL_PERSONNEL ON DAY_TABLE.PERSONNEL_ID=HOSPITAL_PERSONNEL.PERSONNEL_ID ORDER BY SHIFT_BEGIN_DATE"""
@@ -842,9 +845,21 @@ def emergency_shift_page():
         connection.commit()
         cursor.close()
     delform=HospitalDeleteForm()
-    #if delform.validate_on_submit():
-
-    return render_template('emergency_shift_page.html',form=form,delform=delform, data=data)
+    if delform.validate_on_submit():
+            del_list=request.form.getlist("del_shift")
+            connection=db.connect(url)
+            cursor=connection.cursor()
+            if(len(del_list)>1):
+                del_intro=tuple(del_list)
+                statement="""DELETE FROM DAY_TABLE WHERE GENERATED_KEY IN {}""".format(del_intro)
+            else:
+                del_intro=''.join(str(e) for e in del_list)
+                statement="""DELETE FROM DAY_TABLE WHERE GENERATED_KEY ={}""".format(del_intro)
+            cursor.execute(statement)
+            connection.commit()
+            cursor.close()
+            return redirect(url_for('emergency_shift_page'))
+    return render_template('emergency_shift_page.html',form=form,delform=delform, data=data,stat=status)
 app.add_url_rule("/emergency_shift",
                  view_func=emergency_shift_page, methods=['GET','POST'])
 
