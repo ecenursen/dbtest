@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% block title %}
+<h1>Personnel Add</h1>
+{% endblock %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.csrf_token }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-2">Personnel Add Page</legend>
+                <br></br>
+                <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.worker_name.label(class="form-control-label") }}
+                    {{ form.worker_name(class="form-control") }}
+                </div>
+                <div class="form-group col-md-6">
+                        {{ form.job_title.label(class="form-control-label") }}
+                        {{ form.job_title(class="form-control") }}
+                    </div>
+                <br></br>
+                <div class="form-group col-md-6">
+                    {{ form.job_experience.label(class="form-control-label") }}
+                    {{ form.job_experience(class="form-control") }}
+                </div>
+                <div class="form-group col-md-6">
+                        {{ form.work_days.label(class="form-control-label") }}
+                        {{ form.work_days(class="form-control") }}
+                    </div>
+                <div class="form-group col-md-6">
+                        {{ form.phone_num.label(class="form-control-label") }}
+                        {{ form.phone_num(class="form-control") }}
+                </div>
+                <div class="form-group col-md-6">
+                        {{ form.working_field.label(class="form-control-label") }}
+                        {{ form.working_field(class="form-control") }}
+                    </div>
+                    <div class="form-group col-md-6">
+                            {{ form.hospital_worked.label(class="form-control-label") }}
+                            {{ form.hospital_worked(class="form-control") }}
+                        </div>
+                        <div class="form-group col-md-6">
+                                {{ form.tckn.label(class="form-control-label") }}
+                                {{ form.tckn(class="form-control") }}
+                        </div>   
+                    </div>      
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-info") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <table>
+            <tr>
+                <th>NAME </th>
+                <th>JOB TITLE </th>
+                <th>JOB EXPERIENCE </th>
+                <th>WORKING DAYS </th>
+                <th>PHONE </th>
+                <th>WORK FIELD </th>
+                <th>HOSPITAL </th>
+            </tr>
+            {% for item in personnel %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('single_personnel_page' , personnel_id = item.get_id()) }}">
+                        {{item.get_name()}}
+                    </a>
+                </td>
+                <td>{{item.get_title()}}</td>
+                <td>{{item.get_exp()}}</td>
+                <td>{{item.get_days()}}</td>
+                <td>{{item.get_number()}}</td>
+                <td>{{item.get_field()}}</td>
+                <td>{{item.get_hospital_name()}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endblock content %}

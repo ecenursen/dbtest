@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, session,abort
-from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm,HospitalDeleteForm,inventory_change_form,G_WarehouseSearchForm
+from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm,HospitalDeleteForm,inventory_change_form,G_WarehouseSearchForm,PersonnelSearchForm, PersonnelAddForm, PersonnelDeleteForm
 import datetime
 import os
 import psycopg2 as db
@@ -18,9 +18,9 @@ connection.commit()
 cursor.close()
 '''
 
-#DEBUG = False
+DEBUG = False
 
-DEBUG = True
+#DEBUG = True
 # LIVE ICIN
 if(DEBUG == False):
     url = os.getenv("DATABASE_URL")
@@ -311,8 +311,6 @@ def pharmaceutical_warehouse_page():
 		return redirect(url_for('home_page'))
 	return redirect(url_for('home_page'))
 
-
-status=1
 def hospital_page():
     hospitals = []
     connection = db.connect(url)
@@ -325,7 +323,7 @@ def hospital_page():
         hospitals.append(hospital(db_hosp[0],db_hosp[1],db_hosp[2],db_hosp[3],db_hosp[4],db_hosp[5],db_hosp[6]))
     cursor.close()
     form=HospitalSearchForm()
-    #status = session.get('status')
+    status = session.get('status')
     delform=HospitalDeleteForm()
     if(request.method=='POST'):
         if form.validate_on_submit() and form.submit.data:
@@ -365,7 +363,7 @@ def hospital_page():
 app.add_url_rule("/hospital", view_func=hospital_page, methods=['GET', 'POST'])
 
 def add_hospital():
-    #status=session.get('status')
+    status=session.get('status')
     if status not in (1,7):
         return redirect(url_for('home_page'))
     hospitals=[]
@@ -388,15 +386,15 @@ def add_hospital():
         connection = db.connect(url)
         cursor=connection.cursor()
         statement="""INSERT INTO HOSPITAL(HOSPITAL_NAME,IS_PUBLIC,LOCATION,ADMINISTRATOR,TELEPHONE_NUMBER, AMBULANCE_COUNT) VALUES (\'{}\', \'{}\', \'{}\', \'{}\', \'{}\', \'{}\')""".format(hospital_name,is_public,location,administrator,telephone_number,ambulance_count)
-        print(statement)
         cursor.execute(statement)
         connection.commit()
         cursor.close()
         return redirect(url_for('hospital_page'))
-    return render_template('hospital_add_page.html',hospital=hospitals,form=hosAddForm)
+    return render_template('hospital_add_page.html',hospital=hospitals,form=hosAddForm )
 app.add_url_rule('/hospital/add_hospital',view_func=add_hospital, methods=['GET','POST'])
 
 def edit_hospital(hospital_id):
+    status = session.get('status')
     if status not in (1,7):
         return redirect(url_for('home_page'))
     connection=db.connect(url)
@@ -429,9 +427,11 @@ def edit_hospital(hospital_id):
 app.add_url_rule('/<int:hospital_id>/edit_hospital',view_func=edit_hospital, methods=['GET','POST'])
 
 def single_personnel_page(personnel_id):
+    status = session.get('status')
+    #status=1
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = """SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM,HOSPITAL_WORKED,TCKN, WORKING_FIELD, HOSPITAL_NAME FROM HOSPITAL_PERSONNEL JOIN HOSPITAL ON HOSPITAL_WORKED=HOSPITAL_ID WHERE PERSONNEL_ID ='{}'""".format(
+    statement = """SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM, WORKING_FIELD, HOSPITAL_WORKED, TCKN,  HOSPITAL_NAME FROM HOSPITAL_PERSONNEL JOIN HOSPITAL ON HOSPITAL_WORKED=HOSPITAL_ID WHERE PERSONNEL_ID ='{}'""".format(
         personnel_id)
     cursor.execute(statement)
     connection.commit()
@@ -441,27 +441,116 @@ def single_personnel_page(personnel_id):
     person = hospital_personnel(db_person[0], db_person[1], db_person[2], db_person[3],
                                 db_person[4], db_person[5], db_person[6], db_person[7], db_person[8], db_person[9])
     cursor.close()
-    return render_template('single_personnel_page.html', personnel=person, personnel_id=personnel_id)
+    form=PersonnelAddForm()
+    if form.validate_on_submit():
+        worker_name=form.worker_name.data
+        job_title=form.job_title.data
+        job_experience=form.job_experience.data
+        work_days=form.work_days.data
+        phone_num=form.phone_num.data
+        working_field=form.working_field.data
+        hospital_worked=form.hospital_worked.data
+        tckn=form.tckn.data
+        connection = db.connect(url)
+        cursor=connection.cursor()
+        statement="""UPDATE public.hospital_personnel SET worker_name='{}', job_title='{}', job_experience={}, work_days={}, phone_num='{}', working_field='{}', hospital_worked='{}', tckn='{}'
+         WHERE personnel_id={}""".format(worker_name,job_title,job_experience,work_days,phone_num,working_field,hospital_worked,tckn,personnel_id)
+        cursor.execute(statement)
+        connection.commit()
+        cursor.close()
+    return render_template('single_personnel_page.html', personnel=person,form=form, stat=status,personnel_id=personnel_id)
 app.add_url_rule("/emergency_shift/<int:personnel_id>",view_func=single_personnel_page, methods=['GET','POST'])
 
 
-
 def hospital_personnel_sheet():
+    status = session.get('status')
+    #status=1
     workers = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = """SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM, WORKING_FIELD, HOSPITAL_NAME FROM HOSPITAL_PERSONNEL, HOSPITAL WHERE HOSPITAL_WORKED=HOSPITAL_ID GROUP BY PERSONNEL_ID, HOSPITAL_NAME"""
+    statement = """SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM,WORKING_FIELD, HOSPITAL_WORKED, TCKN,  HOSPITAL_NAME FROM HOSPITAL_PERSONNEL, HOSPITAL WHERE HOSPITAL_WORKED=HOSPITAL_ID GROUP BY PERSONNEL_ID, HOSPITAL_NAME"""
     cursor.execute(statement)
     connection.commit()
-    for row in cursor:
-        workers.append(row)
+    data=cursor.fetchall()
+    for db_hosp_personnel in data:
+        workers.append(hospital_personnel(db_hosp_personnel[0],db_hosp_personnel[1],db_hosp_personnel[2],db_hosp_personnel[3],db_hosp_personnel[4],db_hosp_personnel[5],db_hosp_personnel[6],db_hosp_personnel[7],db_hosp_personnel[8],db_hosp_personnel[9]))
     cursor.close()
-    return render_template('hospital_personnel_page.html', hospital_personnel=workers)
+    searchForm=PersonnelSearchForm()
+    delForm=PersonnelDeleteForm()
+    if request.method=='POST':
+        if searchForm.validate_on_submit():
+            selection=searchForm.selection.data
+            search=searchForm.search.data
+            connection=db.connect(url)
+            cursor =connection.cursor()
+            personnel_form=[]
+            statement="""SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM, WORKING_FIELD, HOSPITAL_WORKED,TCKN, HOSPITAL_NAME FROM HOSPITAL_PERSONNEL, HOSPITAL WHERE HOSPITAL_WORKED=HOSPITAL_ID AND CAST({} AS TEXT) ILIKE  \'%{}%\' ORDER BY {} ASC """.format(selection, search ,selection)
+            cursor.execute(statement)
+            connection.commit()
+            rows=cursor.fetchall()
+            for db_hosp_personnel in rows:
+                personnel_form.append(hospital_personnel(db_hosp_personnel[0],db_hosp_personnel[1],db_hosp_personnel[2],db_hosp_personnel[3],db_hosp_personnel[4],db_hosp_personnel[5],db_hosp_personnel[6],db_hosp_personnel[7],db_hosp_personnel[8],db_hosp_personnel[9]))
+            cursor.close()
+            return render_template('hospital_personnel_page.html',hospital_personnel=personnel_form, searchForm=searchForm,delForm=delForm,stat=status)
+        if delForm.validate_on_submit() and delForm.delete.data:
+            del_list=request.form.getlist("del_personnel")
+            connection=db.connect(url)
+            cursor=connection.cursor()
+            if(len(del_list)>1):
+                del_personnel=tuple(del_list)
+                statement="""DELETE FROM HOSPITAL_PERSONNEL WHERE PERSONNEL_ID IN {}""".format(del_personnel)
+                print(statement)
+            else:
+                del_personnel=''.join(str(e) for e in del_list)
+                statement="""DELETE FROM HOSPITAL_PERSONNEL WHERE PERSONNEL_ID = {}""".format(del_personnel)
+                print(statement)
+            cursor.execute(statement)
+            connection.commit()
+            cursor.close()
+            return redirect(url_for('hospital_personnel_sheet'))
+    return render_template('hospital_personnel_page.html', hospital_personnel=workers,searchForm=searchForm,delForm=delForm,stat=status)
 app.add_url_rule("/hospital_personnel",
-                 view_func=hospital_personnel_sheet, methods=['GET'])
+                 view_func=hospital_personnel_sheet, methods=['GET','POST'])
 
+def add_personnel():
+    status=session.get('status')
+    #status=1
+    if status not in (1,6,7):
+        return redirect(url_for('home_page'))
+    personnel=[]
+    connection=db.connect(url)
+    cursor=connection.cursor()
+    statement = """SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM,WORKING_FIELD, HOSPITAL_WORKED, TCKN,  HOSPITAL_NAME FROM HOSPITAL_PERSONNEL, HOSPITAL WHERE HOSPITAL_WORKED=HOSPITAL_ID GROUP BY PERSONNEL_ID, HOSPITAL_NAME"""
+    cursor.execute(statement)
+    connection.commit()
+    data=cursor.fetchall()
+    for db_hosp_personnel in data:
+        personnel.append(hospital_personnel(db_hosp_personnel[0],db_hosp_personnel[1],db_hosp_personnel[2],db_hosp_personnel[3],db_hosp_personnel[4],db_hosp_personnel[5],db_hosp_personnel[6],db_hosp_personnel[7],db_hosp_personnel[8],db_hosp_personnel[9]))
+    cursor.close()
+    addForm=PersonnelAddForm()
+    if addForm.validate_on_submit():
+        worker_name=addForm.worker_name.data
+        job_title=addForm.job_title.data
+        job_experience=addForm.job_experience.data
+        work_days=addForm.work_days.data
+        phone_num=addForm.phone_num.data
+        working_field=addForm.working_field.data
+        hospital_worked=addForm.hospital_worked.data
+        tckn=addForm.tckn.data
+        connection = db.connect(url)
+        cursor=connection.cursor()
+        statement="""INSERT INTO public.hospital_personnel(worker_name, job_title, job_experience, work_days, phone_num, working_field, hospital_worked, tckn)
+	VALUES (\'{}\',\'{}\',\'{}\',\'{}\', \'{}\', \'{}\', \'{}\', \'{}\')""".format(worker_name,job_title,job_experience,work_days,phone_num,working_field,hospital_worked,tckn)
+        cursor.execute(statement)
+        connection.commit()
+        cursor.close()
+        return redirect(url_for('hospital_personnel_sheet'))
+    return render_template('personnel_add_page.html',personnel=personnel,form=addForm, stat=status)
+app.add_url_rule('/hospital_personnel/add_personnel',view_func=add_personnel, methods=['GET','POST'])
 
 def hospital_personnel_page(hospital_id):
+    status=session.get('status')
+    #status=1
     workers =[]
     connection = db.connect(url)
     cursor=connection.cursor()
@@ -469,10 +558,41 @@ def hospital_personnel_page(hospital_id):
         JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM,WORKING_FIELD, HOSPITAL_WORKED, TCKN , HOSPITAL_NAME FROM HOSPITAL_PERSONNEL RIGHT JOIN HOSPITAL ON HOSPITAL_WORKED=HOSPITAL_ID WHERE HOSPITAL_WORKED =%s"""
     cursor.execute(statement,[hospital_id])
     connection.commit()
-    for row in cursor:
-        workers.append(row)
+    data=cursor.fetchall()
+    for db_hosp_personnel in data:
+        workers.append(hospital_personnel(db_hosp_personnel[0],db_hosp_personnel[1],db_hosp_personnel[2],db_hosp_personnel[3],db_hosp_personnel[4],db_hosp_personnel[5],db_hosp_personnel[6],db_hosp_personnel[7],db_hosp_personnel[8],db_hosp_personnel[9]))
     cursor.close()
-    return render_template('hospital_personnel_page.html',hospital_personnel=workers)
+    searchForm=PersonnelSearchForm()
+    delForm=PersonnelDeleteForm()
+    if request.method=='POST':
+        if searchForm.validate_on_submit():
+            selection=searchForm.selection.data
+            search=searchForm.search.data
+            connection=db.connect(url)
+            cursor =connection.cursor()
+            personnel_form=[]
+            statement="""SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM, WORKING_FIELD, HOSPITAL_WORKED,TCKN, HOSPITAL_NAME FROM HOSPITAL_PERSONNEL, HOSPITAL WHERE HOSPITAL_WORKED=HOSPITAL_ID AND CAST({} AS TEXT) ILIKE  \'%{}%\' ORDER BY {} ASC """.format(selection, search ,selection)
+            cursor.execute(statement)
+            connection.commit()
+            rows=cursor.fetchall()
+            for db_hosp_personnel in rows:
+                personnel_form.append(hospital_personnel(db_hosp_personnel[0],db_hosp_personnel[1],db_hosp_personnel[2],db_hosp_personnel[3],db_hosp_personnel[4],db_hosp_personnel[5],db_hosp_personnel[6],db_hosp_personnel[7],db_hosp_personnel[8],db_hosp_personnel[9]))
+            cursor.close()
+        if delForm.validate_on_submit() and delForm.delete.data:
+            del_list=request.form.getlist("del_personnel")
+            connection=db.connect(url)
+            cursor=connection.cursor()
+            if(len(del_list)>1):
+                del_personnel=tuple(del_list)
+                statement="""DELETE FROM HOSPITAL_PERSONNEL WHERE personnel_id IN {}""".format(del_personnel)
+            else:
+                del_personnel=''.join(str(e) for e in del_list)
+                statement="""DELETE FROM HOSPITAL_PERSONNEL WHERE personnel_id = {}""".format(del_personnel)
+            connection.commit()
+            cursor.close()
+            return redirect(url_for('hospital_personnel_sheet'))
+        return render_template('hospital_personnel_page.html',hospital_personnel=personnel_form, searchForm=searchForm,delForm=delForm,stat=status)
+    return render_template('hospital_personnel_page.html',hospital_personnel=workers, searchForm=searchForm, delForm=delForm, stat=status)
 app.add_url_rule("/<int:hospital_id>/hospital_personnel",view_func=hospital_personnel_page,methods=["GET"])
 
 

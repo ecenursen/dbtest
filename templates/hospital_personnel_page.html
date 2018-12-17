@@ -3,6 +3,33 @@
     <h1>HOSPITAL STAFF</h1>
 {% endblock title %}
 {% block content %}
+{% if stat==1 or stat==6 or stat==7 %}
+<a href="{{url_for('add_personnel')}}" class="btn btn-primary" role="button">Add Hospital Personnel</a>
+<br></br>
+<br></br>
+{% endif %}
+<div class="content-section">
+        <form method="POST" action="">
+            {{ searchForm.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-2">Hospital Personnel Page</legend>
+                <br></br>
+                <div class="form-group">
+                    {{ searchForm.selection.label(class="form-control-label") }}
+                    {{ searchForm.selection(class="form-control form-control-lg") }}
+                </div>
+                <br></br>
+                <div class="form-group">
+                    {{ searchForm.search.label(class="form-control-label") }}
+                    {{ searchForm.search(class="form-control") }}
+                </div>
+                <div class="form-group">
+                        <br></br>
+                    {{ searchForm.submit(class="btn btn-info") }}
+                </div>
+            </fieldset>
+        </form>
+    </div>
 <table>
     <tr>
         <th>NAME </th>
@@ -12,21 +39,45 @@
         <th>PHONE </th>
         <th>WORK FIELD </th>
         <th>HOSPITAL </th>
+        {% if stat==1 %}
+        <th>PERSONNEL ID</th>
+        {% endif %}
+        {% if stat==1 or stat==6 or stat==7 %}
+        <th>TCKN</th>
+        {% endif %}
     </tr>
     {% for item in hospital_personnel %}
-    <tr>
-        <td>
-            <a href="{{ url_for('single_personnel_page' , personnel_id = item[0]) }}">
-                {{item[1]}}
+    <form method="POST" action="">
+        <tr>
+            <td>
+                {% if stat==1 or stat==6 or stat==7 %}
+                <input type="checkbox" name="del_personnel" value="{{item.get_id()}}">
+                {% endif %}
+            <a href="{{ url_for('single_personnel_page' , personnel_id = item.get_id()) }}">
+                {{item.get_name()}}
             </a>
         </td>
-        <td>{{item[2]}}</td>
-        <td>{{item[3]}}</td>
-        <td>{{item[4]}}</td>
-        <td>{{item[5]}}</td>
-        <td>{{item[6]}}</td>
-        <td>{{item[7]}}</td>
+        <td>{{item.get_title()}}</td>
+        <td>{{item.get_exp()}}</td>
+        <td>{{item.get_days()}}</td>
+        <td>{{item.get_number()}}</td>
+        <td>{{item.get_field()}}</td>
+        <td>{{item.get_hospital_name()}}</td>
+        {% if stat==1 %}
+        <td>{{item.get_id()}}</td>
+        {% endif %}
+        {% if stat==1 or stat==6 or stat==7 %}
+        <td>{{item.get_tckn()}}</td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>
+{% if stat==1 or stat==6 or stat==7 %}
+<br></br>
+        {{ delForm.csrf_token }}
+<div class="delForm-group">
+          {{ delForm.delete(class="btn btn-danger") }}
+ </div>
+</form>
+{% endif %}
 {% endblock content %}

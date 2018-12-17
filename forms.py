@@ -64,3 +64,29 @@ class HospitalAddForm(FlaskForm):
 
 class HospitalDeleteForm(FlaskForm):
     delete=SubmitField('Delete')
+
+class PersonnelSearchForm(FlaskForm):
+    choices=[('WORKER_NAME','Personnel Name'),
+    ('JOB_TITLE', 'Job Title'),
+    ('JOB_EXPERIENCE','Job Experience'),
+    ('WORK_DAYS','# of Days Worked'),
+    ('PHONE_NUM','Contact Number'),
+    ('WORK_DAYS','# of Days Worked'),
+    ('WORKING_FIELD', 'Work Field')]
+    selection=SelectField('Personnel Filter:', choices=choices)
+    search=StringField('Keyword')
+    submit=SubmitField('Search')
+
+class PersonnelAddForm(FlaskForm):
+    worker_name=StringField('Personnel Name',validators=[DataRequired()])
+    job_title=StringField('Job Title',validators=[DataRequired()])
+    job_experience=StringField('Job Experience')
+    work_days=StringField('Work Days')
+    phone_num=StringField('Contact Number')
+    working_field=StringField('Work Field')
+    hospital_worked=StringField('Hospital Id')
+    tckn=StringField('Tckn')
+    submit=SubmitField('Insert')
+
+class PersonnelDeleteForm(FlaskForm):
+    delete=SubmitField('Delete')
