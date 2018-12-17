@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Edit Pharmacy Personel Page</h1>
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Telephone number</th>
+		<th>Years worked here</th>
+	</tr>
+	<tr>
+		<td> {{ per[0] }} </td>
+		<td> {{ per[1] }} </td>
+		<td> {{ per[2] }} </td>
+	</tr>
+	<form method="POST" action="">
+	{{ form.hidden_tag() }}
+	<tr>
+		
+		<td> {{ form.submit }} </td>
+		<td> {{form.tel}} </td>
+		<td> {{form.years}} </td>
+		
+	</tr>
+	</form>
+</table>
+
+
+{% endblock content %}

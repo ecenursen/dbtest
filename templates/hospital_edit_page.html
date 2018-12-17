@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}
-<h1>Edit movie</h1>
+<h1>Edit Hospital</h1>
 {% endblock %}
 {% block content %}
 <div class="content-section">
@@ -9,15 +9,18 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-2">Hospital Edit Page</legend>
                 <br></br>
-                <div class="form-group">
+                <div class="form-row">
+                <div class="form-group col-md-8">
                     {{ form.hospital_name.label(class="form-control-label") }}
                     {{ form.hospital_name(class="form-control", value=hospital.get_name()) }}
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-4">
                     {{ form.is_public.label(class="form-control-label") }}
-                    {{ form.is_public(class="form-control", value=hospital.get_public(),checked="checked") }}
-                    <br></br>
+                    {{ form.is_public(class="form-check-input", type="radio", value=hospital.get_public(), checked="checked") }}
                 </div>
+            </div>
+                <br></br>
+                <br></br>
                 <div class="form-group">
                     {{ form.location.label(class="form-control-label") }}
                     {{ form.location(class="form-control", value=hospital.get_location()) }}

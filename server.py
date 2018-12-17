@@ -1,11 +1,17 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, session,abort
-from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm,HospitalDeleteForm,inventory_change_form,G_WarehouseSearchForm
+<<<<<<< HEAD
+from forms import *
+=======
+from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm,HospitalDeleteForm,inventory_change_form,G_WarehouseSearchForm,PharmacyPersonelForm,PharPersonelEditForm,PharPersonelAdd
+from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm,HospitalDeleteForm,inventory_change_form,G_WarehouseSearchForm,PersonnelSearchForm, PersonnelAddForm, PersonnelDeleteForm, ShiftAddForm
+>>>>>>> 6ff870d280c4382758c83cae3be25214a347fb46
 import datetime
 import os
 import psycopg2 as db
 from dbinit import initialize, drop_table
 from classes.hospital import *
 from classes.hospital_personnel import *
+from classes.shift_data import *
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW'
 
@@ -18,7 +24,11 @@ connection.commit()
 cursor.close()
 '''
 
+<<<<<<< HEAD
+DEBUG = True
+=======
 #DEBUG = False
+>>>>>>> 6ff870d280c4382758c83cae3be25214a347fb46
 
 DEBUG = False
 # LIVE ICIN
@@ -43,12 +53,40 @@ def about_page():
     return render_template('about_page.html')
 
 
-@app.route("/patients", methods=['GET', 'POST'])
+@app.route("/patients_page", methods=['GET', 'POST'])
 def patients_page():
+    form = PatientForm()
     patients = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE_COMPANIES WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID ORDER BY PATIENTS.NAME ASC"
+    statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,CUR_COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID ORDER BY PATIENTS.NAME ASC"
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        patients.append(row)
+    cursor.close()
+    print(patients[0])
+    if form.validate_on_submit():
+        name = form.name.data
+        age = form.age.data
+        sex = form.sex.data
+        tckn = form.tckn.data
+        phone = form.phone.data
+        complaint = form.complaint.data
+        insurance = form.insurance.data
+        if form.validate_on_submit():
+            if form.search.data == True:
+                return redirect(url_for("patients_search_page"))
+            elif form.submit.data == True:
+                print("hey")
+    return render_template('patients_page.html',Patients=patients,form=form)
+
+@app.route("/patients_search_page", methods=['GET', 'POST'])
+def patients_search_page():
+    patients = []
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,CUR_COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID ORDER BY PATIENTS.NAME ASC"
     cursor.execute(statement)
     connection.commit()
     for row in cursor:
@@ -61,7 +99,7 @@ def patients_page():
         result = []
         connection = db.connect(url)
         cursor = connection.cursor()
-        statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE_COMPANIES WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID AND CAST({} AS TEXT) ILIKE {} ORDER BY {} ASC".format(
+        statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,CUR_COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID AND CAST({} AS TEXT) ILIKE {} ORDER BY {} ASC".format(
             attr, "\'%" + key + "%\'", attr)
         #statement = """SELECT * FROM PATIENTS WHERE CAST({} AS TEXT) ILIKE {} ORDER BY {} ASC""".format(attr,"\'%" + key + "%\'", attr)
         cursor.execute(statement)
@@ -69,25 +107,122 @@ def patients_page():
         for row in cursor:
             result.append(row)
         cursor.close()
-        return render_template('patients_page.html', Patients=result, form=form)
-    return render_template('patients_page.html', Patients=patients, form=form)
+        return render_template('patients_search_page.html', Patients=result, form=form,filtered=True)
+    return render_template('patients_search_page.html', Patients=patients, form=form,filtered=False)
 
-
-@app.route("/drugs")
+@app.route("/drugs",methods=['GET', 'POST'])
 def drugs_page():
     drugs = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = "SELECT DRUGS.name,DRUG_COMPANIES.name,size,shelf_life,price,DRUG_TYPE.name FROM DRUGS,DRUG_COMPANIES,DRUG_TYPE WHERE company_id=DRUG_COMPANIES.id AND type=DRUG_TYPE.id ORDER BY drugs.NAME ASC"
+    statement= "SELECT DRUGS.name,DRUG_COMPANIES.name,size,shelf_life,price,DRUG_TYPE.name FROM DRUGS,DRUG_COMPANIES,DRUG_TYPE WHERE company_id=DRUG_COMPANIES.id AND type=DRUG_TYPE.id ORDER BY drugs.NAME ASC"
     cursor.execute(statement)
     connection.commit()
     for row in cursor:
         drugs.append(row)
     cursor.close()
-    return render_template('drugs_page.html', Drugs=drugs)
+
+    form = Drugs_Form()
+    if form.validate_on_submit():
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        select = form.select.data
+        name=form.name.data
+        company=form.company.data
+        size=form.size.data
+        shelf=form.shelf.data
+        typ =form.typ.data
+        price = form.price.data
+        if(form.delete.data == True):
+            statement= "select * from drugs where name = \'{}\'".format(name)
+            cursor.execute(statement)
+            connection.commit()
+            result = cursor.fetchone()
+            if result == None:
+                flash("The drug does not exists. Cannot be deleted",'warning')
+                return redirect(url_for("drugs_page"))
+            else:
+                statement = "DELETE FROM DRUGS WHERE NAME = \'{}\'".format(name)
+                cursor.execute(statement)
+                connection.commit()
+                return redirect(url_for("drugs_page"))
+        if(form.submit.data == True):
+            if select == "insert":
+                if(name=="" or company == "" or shelf =="" or size =="" or typ =="" or price == ""):
+                    flash("Please fill in all the boxes.",'warning')
+                    return redirect(url_for('drug_companies_page'))
+
+                statement="SELECT * FROM DRUGS WHERE NAME= \'{}\'".format(name)
+                print(statement)
+                cursor.execute(statement)
+                connection.commit()
+                result = cursor.fetchone()
+                print(result)
+                if not result == None and len(result)>0:
+                    flash("The drug already exists, cannot insert.",'warning')
+                    cursor.close()
+                    return redirect(url_for("drugs_page"))
+                else:
+                    statement = "SELECT * from drug_companies where NAME = \'{}\'".format(company)
+                    cursor.execute(statement)
+                    connection.commit()
+                    result = cursor.fetchone()
+                    if not result == None and len(result) > 0:
+                        company_id = result[0]
+                        statement = "SELECT * FROM DRUG_TYPE WHERE TYPE = \'{}\'".format(typ)
+                        cursor.execute(statement)
+                        connection.commit()
+                        result = cursor.fetchone()
+                        if not result == None and len(result)>0:
+                            drug_type = result[0]
+                            statement = "INSERT INTO public.DRUGS(name,company_id,size,shelf_life,price,type) VALUES (\'{}\',{},{},{},\'{}\',{});".format(name,company_id,size,shelf,price,typ)
+                            print(statement)
+                            cursor.execute(statement)
+                            connection.commit()
+                            return redirect(url_for("drugs_page"))
+                        else:
+                            flash("Drug type is unknown. Please check again",'warning')
+                            return redirect(url_for("drugs_page"))
+                    else:
+                        flash("The Drug Company does not exists.",'warning')          
+                        return redirect(url_for("drugs_page"))
+            elif select == 'update':
+                statement="SELECT * FROM DRUGS WHERE NAME= \'{}\'".format(name)
+                cursor.execute(statement)
+                connection.commit()
+                result = cursor.fetchone()
+                if not result == None and len(result)==0:
+                    print("The drug does not exists, cannot update.")
+                    cursor.close()
+                    return redirect(url_for("drugs_page"))
+                else:
+                    drug_id = result[0]
+                    statement = "SELECT * from drug_companies where NAME = \'{}\'".format(company)
+                    cursor.execute(statement)
+                    connection.commit()
+                    result = cursor.fetchone()
+                    if not result == None and len(result) > 0:
+                        company_id = result[0]
+                        statement = "SELECT * FROM DRUG_TYPE WHERE TYPE = \'{}\'".format(typ)
+                        cursor.execute(statement)
+                        connection.commit()
+                        result = cursor.fetchone()
+                        if not result == None and len(result)>0:
+                            drug_type = result[0]
+                            statement = "UPDATE public.drugs SET name=\'{}\',company_id={},size={},shelf_life={},price=\'{}\',type={} WHERE id = {};".format(name,company_id,size,shelf,price,typ,drug_id)
+                            cursor.execute(statement)
+                            connection.commit()
+                            return redirect(url_for("drugs_page"))
+                        else:
+                            flash("Drug type is unknown.",'warning')
+                            return redirect(url_for("drugs_page"))
+                    else:
+                        flash("The company does not exists.",'warning')
+            return redirect(url_for("drugs_page"))
+    return render_template('drugs_page.html', Drugs=drugs,form=form)
 
 
-@app.route("/drug_companies")
+@app.route("/drug_companies",methods=['GET', 'POST'])
 def drug_companies_page():
     companies = []
     connection = db.connect(url)
@@ -98,7 +233,66 @@ def drug_companies_page():
     for row in cursor:
         companies.append(row)
     cursor.close()
-    return render_template('drug_companies_page.html', DrugCompanies=companies)
+
+    form = DrugCompanies_Form()
+    if form.validate_on_submit():
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        if(form.delete.data == True):
+            name = form.name.data
+            if name=="":
+                flash("Please write the name of the company to be deleted...",'info')
+                return redirect(url_for('drug_companies_page'))
+            else:
+                statement = "DELETE FROM DRUG_COMPANIES WHERE NAME = \'{}\'".format(name)
+                cursor.execute(statement)
+                connection.commit()
+                return redirect(url_for('drug_companies_page'))
+        if(form.submit.data == True):
+            select = form.select.data
+            name=form.name.data
+            year=form.year.data
+            founder=form.founder.data
+            country=form.country.data
+            workers =form.workers.data
+            factories = form.factories.data
+            if(name=="" or year =="" or founder =="" or country == "" or factories ==""):
+                flash("Please fill in all the boxes.",'warning')
+                return redirect(url_for('drug_companies_page'))
+            if select == "insert":
+                checkIfExist = "SELECT * FROM PUBLIC.DRUG_COMPANIES WHERE NAME = \'{}\'".format(name)
+                print(checkIfExist)
+                cursor.execute(checkIfExist)
+                connection.commit()
+                result = cursor.fetchone()
+                print(result)
+                if not result == None and len(result)>0:
+                    print("Company already exists. Cannot insert")
+                else:
+                    statement = "INSERT INTO PUBLIC.DRUG_COMPANIES(NAME,FOUNDATION_YEAR,FOUNDER,COUNTRY,WORKER_NUM,FACTORY_NUM) VALUES(\'{}\',{},\'{}\',\'{}\',{},{});".format(
+                        name,year,founder,country,workers,factories
+                    )
+                    print(statement)
+                    cursor.execute(statement)
+                    connection.commit()
+                    cursor.close()
+                return redirect(url_for('drug_companies_page'))
+            elif select == "update":
+                statement = "SELECT * FROM DRUG_COMPANIES WHERE NAME = \'{}\'".format(name)
+                cursor.execute(statement)
+                connection.commit()
+                result = cursor.fetchone()
+                if not result == None and len(result)>0:
+                    statement = "update public.drug_companies SET name=\'{}\',foundation_year={},FOUNDER=\'{}\',COUNTRY=\'{}\',WORKER_NUM={},FACTORY_NUM={}".format(
+                    name,year,founder,country,workers,factories 
+                    )
+                    cursor.execute(statement)
+                    connection.commit()
+                    cursor.close()
+                return redirect(url_for('drug_companies_page'))
+
+    return render_template('drug_companies_page.html', DrugCompanies=companies,form=form)
+
 
 
 @app.route("/pharmacy", methods=['GET', 'POST'])
@@ -161,100 +355,98 @@ def pharmacy_page():
 @app.route("/inventory/<id>/<mode>",methods=['GET', 'POST'])
 def inventory_page(id,mode):
 	#logged_in = session.get('logged_in') and (session.get('status')==4 or session.get('status')==5)
-	logged_in = True #test
+	logged_in = True  # test
 
 	connection = db.connect(url)
 	cursor = connection.cursor()
-	if (logged_in): #pharma or pwarehouse
+	if (logged_in):  # pharma or pwarehouse
 		if (mode == 'p'):
 			statement = "select name from pharmacies where id={} ".format(id)
 			cursor.execute(statement)
 			connection.commit()
-			name = cursor.fetchone()[0]		
+			name = cursor.fetchone()[0]
 
 			#self = session.get('status')==4 and session.get['id']==id
 			self = True
 			if (self):
-				forms = []
-				i=[]
+				forms = inventory_change_form()
+				i = []
 				statement = "select NAME , number, drugs_id from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
 				cursor.execute(statement)
 				connection.commit()
 				inventory = cursor.fetchall()
-				for k in range(0,len(inventory)):
-					forms.append(inventory_change_form())
+				for k in range(0, len(inventory)):
 					i.append(k)
-					
-					
-				for k in range(0,len(inventory)):
-					
-					if forms[k].validate_on_submit():
-						if forms[k].bought.data:
-							new_value = 1
-						elif forms[k].sold.data:
-							new_value = -1
-					
-						new_value = inventory[k][1] + new_value
-						if new_value==0:
-							statement ="DELETE FROM public.pharmacy_inventory WHERE drugs_id={} and pharmacy_id = {};".format(inventory[k][2] , id)
-							del i[-1]
-						else:
-							#print ("aaaaaaaa")
-							statement ="UPDATE public.pharmacy_inventory SET number={} WHERE drugs_id={} and pharmacy_id = {};".format(new_value,inventory[k][2] , id)
-					cursor.execute(statement)
-					connection.commit()
-					statement = "select NAME , number from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
-					cursor.execute(statement)
-					connection.commit()
-					inventory = cursor.fetchall()
-					cursor.close()
 
-					return render_template('inventory_page.html' , self = True , name = name, results = inventory,i = i,forms = forms)
+				
+				if forms.validate_on_submit():
+					k = int(forms.request_id.data)
+					if forms.bought.data:
+						new_value = 1
+					elif forms.sold.data:
+						new_value = -1
+
+					new_value = int(inventory[k][1]) + new_value
+					if new_value == 0:
+						statement = "DELETE FROM public.pharmacy_inventory WHERE drugs_id={} and pharmacy_id = {};".format(inventory[k][2], id)
+						del i[-1]
+					else:
+						#print ("aaaaaaaa")
+						statement = "UPDATE public.pharmacy_inventory SET number={} WHERE drugs_id={} and pharmacy_id = {};".format(new_value, inventory[k][2], id)
+
+				cursor.execute(statement)
+				connection.commit()
+				statement = "select NAME , number from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
+				cursor.execute(statement)
+				connection.commit()
+				inventory = cursor.fetchall()
+				cursor.close()
+
+				return render_template('inventory_page.html', self=True, name=name, results=inventory, i=i, forms=forms)
 			else:
 				statement = "select NAME from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
 				cursor.execute(statement)
 				connection.commit()
 				inventory = cursor.fetchall()
 				cursor.close()
-				return render_template('inventory_page.html' , self = False , name = name, results = inventory)
-			
+				return render_template('inventory_page.html', self=False, name=name, results=inventory)
+
 		elif (mode == 'w'):
 			if (self):
-				forms = []
-				i=[]
+				forms = inventory_change_form()
+				i = []
 				statement = "select NAME , number, drugs_id from DRUGS,warehouse_inventory where warehouse_inventory.warehouse_id = {} and drugs_id = ID".format(id)
 				cursor.execute(statement)
 				connection.commit()
 				inventory = cursor.fetchall()
-				for k in range(0,len(inventory)):
-					forms.append(inventory_change_form())
+				for k in range(0, len(inventory)):
 					i.append(k)
-					
-					
-				for k in range(0,len(inventory)):
-					
-					if forms[k].validate_on_submit():
-						if forms[k].bought.data:
-							new_value = 1
-						elif forms[k].sold.data:
-							new_value = -1
-					
-						new_value = inventory[k][1] + new_value
-						if new_value==0:
-							statement ="DELETE FROM public.warehouse_inventory WHERE drugs_id={} and warehouse_id = {};".format(inventory[k][2] , id)
-							del i[-1]
-						else:
-							#print ("aaaaaaaa")
-							statement ="UPDATE public.warehouse_inventory SET number={} WHERE drugs_id={} and warehouse_id = {};".format(new_value,inventory[k][2] , id)
-					cursor.execute(statement)
-					connection.commit()
-					statement = "select NAME , number from DRUGS,warehouse_inventory where warehouse_inventory.warehouse_id = {} and drugs_id = ID".format(id)
-					cursor.execute(statement)
-					connection.commit()
-					inventory = cursor.fetchall()
-					cursor.close()
 
-					return render_template('inventory_page.html' , self = True , name = name, results = inventory,i = i,forms = forms)
+				
+				if forms.validate_on_submit():
+					k = int(forms.request_id.data)
+					if forms.bought.data:
+						new_value = 1
+					elif forms.sold.data:
+						new_value = -1
+
+					new_value = int(inventory[k][1]) + new_value
+					if new_value == 0:
+						statement = "DELETE FROM public.warehouse_inventory WHERE drugs_id={} and warehouse_id = {};".format(inventory[k][2], id)
+						del i[-1]
+					else:
+						#print ("aaaaaaaa")
+						statement = "UPDATE public.warehouse_inventory SET number={} WHERE drugs_id={} and warehouse_id = {};".format(new_value, inventory[k][2], id)
+
+				cursor.execute(statement)
+				connection.commit()
+				statement = "select NAME , number from DRUGS,warehouse_inventory where warehouse_inventory.warehouse_id = {} and drugs_id = ID".format(id)
+				cursor.execute(statement)
+				connection.commit()
+				inventory = cursor.fetchall()
+				cursor.close()
+
+				return render_template('inventory_page.html', self=True, name=name, results=inventory, i=i, forms=forms)
 			else:
 				statement = "select name from pharmaceutical_warehouse where id={} ".format(id)
 				cursor.execute(statement)
@@ -265,54 +457,84 @@ def inventory_page(id,mode):
 				connection.commit()
 				inventory = cursor.fetchall()
 				cursor.close()
-				return render_template('inventory_page.html' , self = True , name = name, results = inventory)
+				return render_template('inventory_page.html', self=True, name=name, results=inventory)
 		else:
 			return redirect(url_for('home_page'))
-		
+
 	else:
 		return redirect(url_for('home_page'))
 	return redirect(url_for('home_page'))
 
-@app.route("/pharmaceutical_warehouse",methods=['GET', 'POST'])
+
+@app.route("/pharmaceutical_warehouse", methods=['GET', 'POST'])
 def pharmaceutical_warehouse_page():
-	
+
 	logged_in = session.get('logged_in')
 	status = session.get('status')
 	if (logged_in):
-		id = session.get['id'] #=warehouse id
+		id = session.get['id']  # =warehouse id
 	#logged_in = True
-	if (logged_in and (status==5 or status==4)):
+	if (logged_in and (status == 5 or status == 4)):
 		form = G_WarehouseSearchForm()
 		if form.validate_on_submit():
 			attr = form.select.data
 			key = form.search.data
-			results=[]
+			results = []
 			connection = db.connect(url)
 			cursor = connection.cursor()
-			statement = """SELECT id, name, tel_num, years_worked, adress, region, carriers FROM public.pharmaceutical_warehouse WHERE """"" + "CAST(pharmaceutical_warehouse.{} AS TEXT) ILIKE  \'%{}%\' ORDER BY pharmaceutical_warehouse.{} ASC".format(attr,key,attr)
+			statement = """SELECT id, name, tel_num, years_worked, adress, region, carriers FROM public.pharmaceutical_warehouse WHERE """"" + \
+				"CAST(pharmaceutical_warehouse.{} AS TEXT) ILIKE  \'%{}%\' ORDER BY pharmaceutical_warehouse.{} ASC".format(
+					attr, key, attr)
 			cursor.execute(statement)
 			connection.commit()
 			for row in cursor:
 				results.append(row)
 			cursor.close()
-			return render_template('pharmaceutical_warehouse_page.html',logged_in=False,searched = True,results=results,search_form=form)
-		elif (logged_in and status==5):
+			return render_template('pharmaceutical_warehouse_page.html', logged_in=False, searched=True, results=results, search_form=form)
+		elif (logged_in and status == 5):
 			connection = db.connect(url)
 			cursor = connection.cursor()
-			statement = "SELECT id, name, tel_num, years_worked, adress, region, carriers FROM public.pharmaceutical_warehouse WHERE id = {}".format(id)
+			statement = "SELECT id, name, tel_num, years_worked, adress, region, carriers FROM public.pharmaceutical_warehouse WHERE id = {}".format(
+				id)
 			cursor.execute(statement)
 			connection.commit()
 			info = cursor.fetchone
-			return render_template('pharmaceutical_warehouse_page.html',logged_in=True,searched = False,ware=info,search_form=form)
-		elif (logged_in and status==5):
-			return render_template('pharmaceutical_warehouse_page.html',logged_in=False,searched = False,results=results,search_form=form)
+			return render_template('pharmaceutical_warehouse_page.html', logged_in=True, searched=False, ware=info, search_form=form)
+		elif (logged_in and status == 5):
+			return render_template('pharmaceutical_warehouse_page.html', logged_in=False, searched=False, results=results, search_form=form)
 
 	else:
 		return redirect(url_for('home_page'))
 	return redirect(url_for('home_page'))
 
 
-status=1
+@app.route("/edit_p_personel", methods=['GET', 'POST'])
+def edit_p_personel_page():
+	per_id = session['per_id']
+	if (per_id):
+		connection = db.connect(url)
+		cursor = connection.cursor()
+		statement = """SELECT name,tel_num,years_worked FROM pharmacy_personel WHERE id = '{}' """.format(per_id)
+		cursor.execute(statement)
+		connection.commit()
+		person = cursor.fetchone()
+		form = PharPersonelEditForm()
+		if form.validate_on_submit():
+			print("hops")
+			tel = form.tel.data
+			years = form.years.data
+			statement = "UPDATE public.pharmacy_personel SET tel_num={}, years_worked={}	WHERE id = {};".format(tel,years,per_id)
+			cursor.execute(statement)
+			connection.commit()
+			session['per_id'] = None
+			cursor.close()
+			return  redirect(url_for('pharmacy_page'))
+		cursor.close()
+		return render_template('edit_p_personel_page.html',per=person,form=form)
+	else: 
+		return redirect(url_for('home_page'))
+	return
+
 def hospital_page():
     hospitals = []
     connection = db.connect(url)
@@ -325,7 +547,7 @@ def hospital_page():
         hospitals.append(hospital(db_hosp[0],db_hosp[1],db_hosp[2],db_hosp[3],db_hosp[4],db_hosp[5],db_hosp[6]))
     cursor.close()
     form=HospitalSearchForm()
-    #status = session.get('status')
+    status = session.get('status')
     delform=HospitalDeleteForm()
     if(request.method=='POST'):
         if form.validate_on_submit() and form.submit.data:
@@ -365,7 +587,7 @@ def hospital_page():
 app.add_url_rule("/hospital", view_func=hospital_page, methods=['GET', 'POST'])
 
 def add_hospital():
-    #status=session.get('status')
+    status=session.get('status')
     if status not in (1,7):
         return redirect(url_for('home_page'))
     hospitals=[]
@@ -388,15 +610,15 @@ def add_hospital():
         connection = db.connect(url)
         cursor=connection.cursor()
         statement="""INSERT INTO HOSPITAL(HOSPITAL_NAME,IS_PUBLIC,LOCATION,ADMINISTRATOR,TELEPHONE_NUMBER, AMBULANCE_COUNT) VALUES (\'{}\', \'{}\', \'{}\', \'{}\', \'{}\', \'{}\')""".format(hospital_name,is_public,location,administrator,telephone_number,ambulance_count)
-        print(statement)
         cursor.execute(statement)
         connection.commit()
         cursor.close()
         return redirect(url_for('hospital_page'))
-    return render_template('hospital_add_page.html',hospital=hospitals,form=hosAddForm)
+    return render_template('hospital_add_page.html',hospital=hospitals,form=hosAddForm )
 app.add_url_rule('/hospital/add_hospital',view_func=add_hospital, methods=['GET','POST'])
 
 def edit_hospital(hospital_id):
+    status = session.get('status')
     if status not in (1,7):
         return redirect(url_for('home_page'))
     connection=db.connect(url)
@@ -429,9 +651,11 @@ def edit_hospital(hospital_id):
 app.add_url_rule('/<int:hospital_id>/edit_hospital',view_func=edit_hospital, methods=['GET','POST'])
 
 def single_personnel_page(personnel_id):
+    status = session.get('status')
+    #status=1
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = """SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM,HOSPITAL_WORKED,TCKN, WORKING_FIELD, HOSPITAL_NAME FROM HOSPITAL_PERSONNEL JOIN HOSPITAL ON HOSPITAL_WORKED=HOSPITAL_ID WHERE PERSONNEL_ID ='{}'""".format(
+    statement = """SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM, WORKING_FIELD, HOSPITAL_WORKED, TCKN,  HOSPITAL_NAME FROM HOSPITAL_PERSONNEL JOIN HOSPITAL ON HOSPITAL_WORKED=HOSPITAL_ID WHERE PERSONNEL_ID ='{}'""".format(
         personnel_id)
     cursor.execute(statement)
     connection.commit()
@@ -441,27 +665,117 @@ def single_personnel_page(personnel_id):
     person = hospital_personnel(db_person[0], db_person[1], db_person[2], db_person[3],
                                 db_person[4], db_person[5], db_person[6], db_person[7], db_person[8], db_person[9])
     cursor.close()
-    return render_template('single_personnel_page.html', personnel=person, personnel_id=personnel_id)
+    form=PersonnelAddForm()
+    if form.validate_on_submit():
+        worker_name=form.worker_name.data
+        job_title=form.job_title.data
+        job_experience=form.job_experience.data
+        work_days=form.work_days.data
+        phone_num=form.phone_num.data
+        working_field=form.working_field.data
+        hospital_worked=form.hospital_worked.data
+        tckn=form.tckn.data
+        connection = db.connect(url)
+        cursor=connection.cursor()
+        statement="""UPDATE hospital_personnel SET worker_name='{}', job_title='{}', job_experience={}, work_days={}, phone_num='{}', working_field='{}', hospital_worked='{}', tckn='{}'
+         WHERE personnel_id={}""".format(worker_name,job_title,job_experience,work_days,phone_num,working_field,hospital_worked,tckn,personnel_id)
+        cursor.execute(statement)
+        connection.commit()
+        cursor.close()
+        return redirect(url_for('hospital_personnel_sheet'))
+    return render_template('single_personnel_page.html', personnel=person,form=form, stat=status,personnel_id=personnel_id)
 app.add_url_rule("/emergency_shift/<int:personnel_id>",view_func=single_personnel_page, methods=['GET','POST'])
 
 
-
 def hospital_personnel_sheet():
+    status = session.get('status')
+    status=1
     workers = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = """SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM, WORKING_FIELD, HOSPITAL_NAME FROM HOSPITAL_PERSONNEL, HOSPITAL WHERE HOSPITAL_WORKED=HOSPITAL_ID GROUP BY PERSONNEL_ID, HOSPITAL_NAME"""
+    statement = """SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM,WORKING_FIELD, HOSPITAL_WORKED, TCKN,  HOSPITAL_NAME FROM HOSPITAL_PERSONNEL, HOSPITAL WHERE HOSPITAL_WORKED=HOSPITAL_ID GROUP BY PERSONNEL_ID, HOSPITAL_NAME"""
     cursor.execute(statement)
     connection.commit()
-    for row in cursor:
-        workers.append(row)
+    data=cursor.fetchall()
+    for db_hosp_personnel in data:
+        workers.append(hospital_personnel(db_hosp_personnel[0],db_hosp_personnel[1],db_hosp_personnel[2],db_hosp_personnel[3],db_hosp_personnel[4],db_hosp_personnel[5],db_hosp_personnel[6],db_hosp_personnel[7],db_hosp_personnel[8],db_hosp_personnel[9]))
     cursor.close()
-    return render_template('hospital_personnel_page.html', hospital_personnel=workers)
+    searchForm=PersonnelSearchForm()
+    delForm=PersonnelDeleteForm()
+    if request.method=='POST':
+        if searchForm.validate_on_submit():
+            selection=searchForm.selection.data
+            search=searchForm.search.data
+            connection=db.connect(url)
+            cursor =connection.cursor()
+            personnel_form=[]
+            statement="""SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM, WORKING_FIELD, HOSPITAL_WORKED,TCKN, HOSPITAL_NAME FROM HOSPITAL_PERSONNEL, HOSPITAL WHERE HOSPITAL_WORKED=HOSPITAL_ID AND CAST({} AS TEXT) ILIKE  \'%{}%\' ORDER BY {} ASC """.format(selection, search ,selection)
+            cursor.execute(statement)
+            connection.commit()
+            rows=cursor.fetchall()
+            for db_hosp_personnel in rows:
+                personnel_form.append(hospital_personnel(db_hosp_personnel[0],db_hosp_personnel[1],db_hosp_personnel[2],db_hosp_personnel[3],db_hosp_personnel[4],db_hosp_personnel[5],db_hosp_personnel[6],db_hosp_personnel[7],db_hosp_personnel[8],db_hosp_personnel[9]))
+            cursor.close()
+            return render_template('hospital_personnel_page.html',hospital_personnel=personnel_form, searchForm=searchForm,delForm=delForm,stat=status)
+        if delForm.validate_on_submit() and delForm.delete.data:
+            del_list=request.form.getlist("del_personnel")
+            connection=db.connect(url)
+            cursor=connection.cursor()
+            if(len(del_list)>1):
+                del_personnel=tuple(del_list)
+                statement="""DELETE FROM HOSPITAL_PERSONNEL WHERE PERSONNEL_ID IN {}""".format(del_personnel)
+                print(statement)
+            else:
+                del_personnel=''.join(str(e) for e in del_list)
+                statement="""DELETE FROM HOSPITAL_PERSONNEL WHERE PERSONNEL_ID = {}""".format(del_personnel)
+                print(statement)
+            cursor.execute(statement)
+            connection.commit()
+            cursor.close()
+            return redirect(url_for('hospital_personnel_sheet'))
+    return render_template('hospital_personnel_page.html', hospital_personnel=workers,searchForm=searchForm,delForm=delForm,stat=status)
 app.add_url_rule("/hospital_personnel",
-                 view_func=hospital_personnel_sheet, methods=['GET'])
+                 view_func=hospital_personnel_sheet, methods=['GET','POST'])
 
+def add_personnel():
+    status=session.get('status')
+    status=1
+    if status not in (1,6,7):
+        return redirect(url_for('home_page'))
+    personnel=[]
+    connection=db.connect(url)
+    cursor=connection.cursor()
+    statement = """SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM,WORKING_FIELD, HOSPITAL_WORKED, TCKN,  HOSPITAL_NAME FROM HOSPITAL_PERSONNEL, HOSPITAL WHERE HOSPITAL_WORKED=HOSPITAL_ID GROUP BY PERSONNEL_ID, HOSPITAL_NAME"""
+    cursor.execute(statement)
+    connection.commit()
+    data=cursor.fetchall()
+    for db_hosp_personnel in data:
+        personnel.append(hospital_personnel(db_hosp_personnel[0],db_hosp_personnel[1],db_hosp_personnel[2],db_hosp_personnel[3],db_hosp_personnel[4],db_hosp_personnel[5],db_hosp_personnel[6],db_hosp_personnel[7],db_hosp_personnel[8],db_hosp_personnel[9]))
+    cursor.close()
+    addForm=PersonnelAddForm()
+    if addForm.validate_on_submit():
+        worker_name=addForm.worker_name.data
+        job_title=addForm.job_title.data
+        job_experience=addForm.job_experience.data
+        work_days=addForm.work_days.data
+        phone_num=addForm.phone_num.data
+        working_field=addForm.working_field.data
+        hospital_worked=addForm.hospital_worked.data
+        tckn=addForm.tckn.data
+        connection = db.connect(url)
+        cursor=connection.cursor()
+        statement="""INSERT INTO public.hospital_personnel(worker_name, job_title, job_experience, work_days, phone_num, working_field, hospital_worked, tckn)
+	VALUES (\'{}\',\'{}\',\'{}\',\'{}\', \'{}\', \'{}\', \'{}\', \'{}\')""".format(worker_name,job_title,job_experience,work_days,phone_num,working_field,hospital_worked,tckn)
+        cursor.execute(statement)
+        connection.commit()
+        cursor.close()
+        return redirect(url_for('hospital_personnel_sheet'))
+    return render_template('personnel_add_page.html',personnel=personnel,form=addForm, stat=status)
+app.add_url_rule('/hospital_personnel/add_personnel',view_func=add_personnel, methods=['GET','POST'])
 
 def hospital_personnel_page(hospital_id):
+    status=session.get('status')
+    status=1
     workers =[]
     connection = db.connect(url)
     cursor=connection.cursor()
@@ -469,28 +783,72 @@ def hospital_personnel_page(hospital_id):
         JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM,WORKING_FIELD, HOSPITAL_WORKED, TCKN , HOSPITAL_NAME FROM HOSPITAL_PERSONNEL RIGHT JOIN HOSPITAL ON HOSPITAL_WORKED=HOSPITAL_ID WHERE HOSPITAL_WORKED =%s"""
     cursor.execute(statement,[hospital_id])
     connection.commit()
-    for row in cursor:
-        workers.append(row)
+    data=cursor.fetchall()
+    for db_hosp_personnel in data:
+        workers.append(hospital_personnel(db_hosp_personnel[0],db_hosp_personnel[1],db_hosp_personnel[2],db_hosp_personnel[3],db_hosp_personnel[4],db_hosp_personnel[5],db_hosp_personnel[6],db_hosp_personnel[7],db_hosp_personnel[8],db_hosp_personnel[9]))
     cursor.close()
-    return render_template('hospital_personnel_page.html',hospital_personnel=workers)
-app.add_url_rule("/<int:hospital_id>/hospital_personnel",view_func=hospital_personnel_page,methods=["GET"])
+    searchForm=PersonnelSearchForm()
+    delForm=PersonnelDeleteForm()
+    if request.method=='POST':
+        if searchForm.validate_on_submit():
+            selection=searchForm.selection.data
+            search=searchForm.search.data
+            connection=db.connect(url)
+            cursor =connection.cursor()
+            personnel_form=[]
+            statement="""SELECT PERSONNEL_ID, WORKER_NAME, JOB_TITLE, JOB_EXPERIENCE, WORK_DAYS, PHONE_NUM, WORKING_FIELD, HOSPITAL_WORKED,TCKN, HOSPITAL_NAME FROM HOSPITAL_PERSONNEL, HOSPITAL WHERE HOSPITAL_WORKED=HOSPITAL_ID AND CAST({} AS TEXT) ILIKE  \'%{}%\' ORDER BY {} ASC """.format(selection, search ,selection)
+            cursor.execute(statement)
+            connection.commit()
+            rows=cursor.fetchall()
+            for db_hosp_personnel in rows:
+                personnel_form.append(hospital_personnel(db_hosp_personnel[0],db_hosp_personnel[1],db_hosp_personnel[2],db_hosp_personnel[3],db_hosp_personnel[4],db_hosp_personnel[5],db_hosp_personnel[6],db_hosp_personnel[7],db_hosp_personnel[8],db_hosp_personnel[9]))
+            cursor.close()
+        if delForm.validate_on_submit() and delForm.delete.data:
+            del_list=request.form.getlist("del_personnel")
+            connection=db.connect(url)
+            cursor=connection.cursor()
+            if(len(del_list)>1):
+                del_personnel=tuple(del_list)
+                statement="""DELETE FROM HOSPITAL_PERSONNEL WHERE personnel_id IN {}""".format(del_personnel)
+            else:
+                del_personnel=''.join(str(e) for e in del_list)
+                statement="""DELETE FROM HOSPITAL_PERSONNEL WHERE personnel_id = {}""".format(del_personnel)
+            connection.commit()
+            cursor.close()
+            return redirect(url_for('hospital_personnel_sheet'))
+        return render_template('hospital_personnel_page.html',hospital_personnel=personnel_form, searchForm=searchForm,delForm=delForm,stat=status)
+    return render_template('hospital_personnel_page.html',hospital_personnel=workers, searchForm=searchForm, delForm=delForm, stat=status)
+app.add_url_rule("/<int:hospital_id>/hospital_personnel",view_func=hospital_personnel_page,methods=["GET","POST"])
 
 
 def emergency_shift_page():
     data = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = """SELECT HOSPITAL_PERSONNEL.PERSONNEL_ID, WORKER_NAME, SHIFT_BEGIN_DATE,SHIFT_REPEAT_INTERVAL,SHIFT_HOURS,DAYSHIFT ,EMERGENCY_AREA_ASSIGNED FROM DAY_TABLE LEFT JOIN HOSPITAL_PERSONNEL ON DAY_TABLE.PERSONNEL_ID=HOSPITAL_PERSONNEL.PERSONNEL_ID ORDER BY SHIFT_BEGIN_DATE"""
+    statement = """SELECT GENERATED_KEY,HOSPITAL_PERSONNEL.PERSONNEL_ID, SHIFT_BEGIN_DATE,SHIFT_REPEAT_INTERVAL,SHIFT_HOURS,DAYSHIFT ,EMERGENCY_AREA_ASSIGNED, WORKER_NAME FROM DAY_TABLE LEFT JOIN HOSPITAL_PERSONNEL ON DAY_TABLE.PERSONNEL_ID=HOSPITAL_PERSONNEL.PERSONNEL_ID ORDER BY SHIFT_BEGIN_DATE"""
     cursor.execute(statement)
     connection.commit()
-    for row in cursor:
-        data.append(row)
+    fetcheddata=cursor.fetchall()
+    for row in fetcheddata:
+        data.append(shift_data(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7]))
     cursor.close()
-    return render_template('emergency_shift_page.html', data=data)
-
-
+    form=ShiftAddForm()
+    if form.validate_on_submit():
+        personnel_id=form.personnel_id.data
+        shift_begin_date=form.shift_begin_date.data
+        shift_repeat_interval=form.shift_repeat_interval.data
+        shift_hours=form.shift_hours.data
+        dayshift=form.dayshift.data
+        emergency_area_assigned=form.emergency_area_assigned.data
+        connection =db.connect(url)
+        cursor = connection.cursor()
+        statement="""INSERT INTO day_table(
+	personnel_id, shift_begin_date, shift_repeat_interval, shift_hours, dayshift, emergency_area_assigned)
+	VALUES ( \'{}\', \'{}\',\'{}\', \'{}\', \'{}\', \'{}\')""".format(personnel_id,shift_begin_date,shift_repeat_interval,shift_hours,dayshift,emergency_area_assigned)
+    print(statement)
+    return render_template('emergency_shift_page.html',form=form, data=data)
 app.add_url_rule("/emergency_shift",
-                 view_func=emergency_shift_page, methods=["GET"])
+                 view_func=emergency_shift_page, methods=['GET','POST'])
 
 @app.route("/policlinics/")
 def choose_hospital():
