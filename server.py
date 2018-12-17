@@ -308,6 +308,8 @@ def drug_companies_page():
 
 @app.route("/pharmacy", methods=['GET', 'POST'])
 def pharmacy_page():
+    add_form = PharPersonelAdd()
+    delete_form=delete_pharmacy_form()
     date = str(datetime.datetime.now().date())
     print(date)
     connection = db.connect(url)
@@ -341,7 +343,7 @@ def pharmacy_page():
         for row in cursor:
             results.append(row)
             cursor.close()
-        return render_template('pharmacy_page.html', on_duty = on_duty,   search_form = form1,logged_in=False, results = results,searched = True)
+        return render_template('pharmacy_page.html', on_duty = on_duty,   search_form = form1,logged_in=False, results = results,searched = True,add_form=add_form,delete_form=delete_form)
 	
     if ((logged_in) and ( s )):
 		#phar_id = session.get('id')
@@ -360,8 +362,8 @@ def pharmacy_page():
         connection.commit()
         employees = cursor.fetchall() 
         cursor.close()
-        return render_template('pharmacy_page.html',on_duty = on_duty , id = phar_id,Pharma = phar_detail,Employees = employees,search_form = form1,logged_in=logged_in)
-    return render_template('pharmacy_page.html' , on_duty = on_duty , search_form = form1,logged_in=False,searched = False)
+        return render_template('pharmacy_page.html',on_duty = on_duty , id = phar_id,Pharma = phar_detail,Employees = employees,search_form = form1,logged_in=logged_in,add_form=add_form,delete_form=delete_form)
+    return render_template('pharmacy_page.html' , on_duty = on_duty , search_form = form1,logged_in=False,searched = False,add_form=add_form,delete_form=delete_form)
 	
 @app.route("/inventory/<id>/<mode>",methods=['GET', 'POST'])
 def inventory_page(id,mode):
