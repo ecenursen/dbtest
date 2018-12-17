@@ -18,7 +18,7 @@ for statement in INIT_STATEMENTS:
 connection.commit()
 cursor.close()
 '''
-DEBUG = False
+DEBUG = True
 # LIVE ICIN
 if(DEBUG == False):
     url = os.getenv("DATABASE_URL")
@@ -52,8 +52,6 @@ def patients_page():
     connection.commit()
     for row in cursor:
         patients.append(row)
-    cursor.close()
-    print(patients[0])
     if form.validate_on_submit():
         name = form.name.data
         age = form.age.data
@@ -63,10 +61,34 @@ def patients_page():
         complaint = form.complaint.data
         insurance = form.insurance.data
         if form.validate_on_submit():
+            
             if form.search.data == True:
                 return redirect(url_for("patients_search_page"))
             elif form.submit.data == True:
-                print("hey")
+                if(name == "" or age == "" or tckn == "" or phone == "" or complaint == "" or insurance ==""):
+                    flash("Fill in the boxes")
+                    return redirect(url_for("patients_page"))
+                else:
+                    insurance = "SELECT * FROM INSURANCE WHERE INSURANCE_NAME = \'{}\'".format(insurance)
+                    cursor.execute(insurance)
+                    connection.commit()
+                    result = cursor.fetchone()
+                    print(insurance)
+                    print(result)
+                    if not result == None and len(result) > 0:
+                        insurance_id = result[0]
+                        sex = True if sex == "Male" else False
+                        insert = "INSERT INTO PATIENTS(NAME,AGE,SEX,TCKN,PHONE,CUR_COMPLAINT,INSURANCE) VALUES(\'{}\',{},{},\'{}\',\'{}\',\'{}\',{});".format(
+                            name,age,sex,tckn,phone,complaint,insurance_id
+                            )
+                        cursor.execute(insert)
+                        connection.commit()
+                        return redirect(url_for("patients_page"))
+                    else:
+                        flash("Insurance company is unknown.",'warning')
+                        return redirect(url_for("patients_page"))
+                return redirect(url_for("patients_page"))
+    cursor.close()
     return render_template('patients_page.html',Patients=patients,form=form)
 
 @app.route("/patients_search_page", methods=['GET', 'POST'])
