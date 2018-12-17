@@ -51,9 +51,7 @@ class G_WarehouseSearchForm(FlaskForm):
     ]
     select = RadioField('Search for Pharmaceutical Warehouses' , choices = c)
     search = StringField('')
-    submit = SubmitField('Search') 
-    submit = SubmitField('Save Changes')
-    value = IntegerField('')
+    submit = SubmitField('Search')
 
 class PharmacyPersonelForm(FlaskForm):
     delete = SubmitField('Delete')
@@ -90,11 +88,12 @@ class HospitalAddForm(FlaskForm):
     is_public=RadioField('Public Hospital?',choices=[('True','Public'),('False','Private')],validators=[DataRequired()])
     location=StringField('Location')
     administrator=StringField('Administrator Name')
-    telephone_number=StringField('Phone Number, 11 digit required',validators=[Length(min=11,max=11)])
+    telephone_number=StringField('Phone Number, 11 digit required')#,validators=[Length(min=11,max=11)])
     ambulance_count= StringField('Number of ambulances')
     submit=SubmitField('Insert')
 
 class HospitalDeleteForm(FlaskForm):
+<<<<<<< HEAD
     submit=SubmitField('Delete')
 class Drugs_Form(FlaskForm):
     choices = [('insert','Insert'),('update','Update')]
@@ -119,3 +118,41 @@ class DrugCompanies_Form(FlaskForm):
     factories=StringField('Factory Number')
     submit = SubmitField('Submit')
     delete = SubmitField('Delete')
+=======
+    delete=SubmitField('Delete')
+
+class PersonnelSearchForm(FlaskForm):
+    choices=[('WORKER_NAME','Personnel Name'),
+    ('JOB_TITLE', 'Job Title'),
+    ('JOB_EXPERIENCE','Job Experience'),
+    ('WORK_DAYS','# of Days Worked'),
+    ('PHONE_NUM','Contact Number'),
+    ('WORK_DAYS','# of Days Worked'),
+    ('WORKING_FIELD', 'Work Field')]
+    selection=SelectField('Personnel Filter:', choices=choices)
+    search=StringField('Keyword')
+    submit=SubmitField('Search')
+
+class PersonnelAddForm(FlaskForm):
+    worker_name=StringField('Personnel Name',validators=[DataRequired()])
+    job_title=StringField('Job Title',validators=[DataRequired()])
+    job_experience=StringField('Job Experience')
+    work_days=StringField('Work Days')
+    phone_num=StringField('Contact Number')
+    working_field=StringField('Work Field')
+    hospital_worked=StringField('Hospital Id')
+    tckn=StringField('Tckn')
+    submit=SubmitField('Insert')
+
+class PersonnelDeleteForm(FlaskForm):
+    delete=SubmitField('Delete')
+
+class ShiftAddForm(FlaskForm):
+    personnel_id=StringField('Personnel Id ',validators=[DataRequired()])
+    shift_begin_date=StringField('Shift Begin Date YYYY-MM-DD')
+    shift_repeat_interval=StringField('Shift Repeat Interval')
+    shift_hours=StringField('Shift length -hours-')
+    dayshift=RadioField('Shift in daytime?',choices=[('True','Daytime'),('False','Nighttime')],validators=[DataRequired()])
+    emergency_area_assigned=StringField('Emergency area(Green, Yellow, Red)')
+    submit=SubmitField('Insert')
+>>>>>>> 6ff870d280c4382758c83cae3be25214a347fb46
