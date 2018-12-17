@@ -3,41 +3,24 @@
     <h1>PRESCRIPTIONS</h1>
 {% endblock title %}
 {% block content %}
------buraya ikili if
 <table>
     <tr>
         <th>PRESCRIPTION ID </th>
         <th>HOSPITAL NAME </th>
         <th>DOCTOR NAME </th>
-        <th>PATIENT NAME </th>
-        <th>PRESCRIPTION DATE </th>
-        <th>VALID FOR </th>
+        <th>VALID UNTIL </th>
     </tr>
     {% for item in Prescriptions %}
     <tr>
-        <td><a href="{{ url_for('det_prescription_page',id=id,pid=item[0]) }}">{{item[0]}}</a>
-        <form action="{{url_for('pres_del',id = id,pid=item[0])}}">
-                <input type="submit" value="delete" /> 
-            </form></td>
-        <td>{{item[4]}}</td>
-        <td>{{item[5]}}</td>
-        <td>{{item[6]}}</td>
-        <td>{{item[7]}}</td>
-        <td>{{item[8]}}</td>
+        <td><a href="{{ url_for('det_prescription_page',id=id,pid=item[0]) }}">{{item[0]}}</a></td>
+        <td>{{item[1]}}</td>
+        <td>{{item[2]}}</td>
+        <td>{{item[3]}}</td>
     </tr>
     {% endfor %}
 
 </table>
---------buraya tek if
 <form action="{{url_for('prescription_add_page',id=id)}}">
     <input type="submit" value="Add Prescription for" />
 </form>
-{% if log_id == 3 %}
-{% endif %}
-{% if log_id == 2 or log_id == 3 %} 
-{% else %}
-<div class="alert alert-danger" role="alert">
-    Your are not authorized to access this page! Please go back to home page!
-</div>
-{% endif %}
 {% endblock content %}
