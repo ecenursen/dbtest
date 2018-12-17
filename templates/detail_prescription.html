@@ -6,11 +6,14 @@
 {% if log_id == 3 or log_id == 1 or log_id == 2 or log_id == 6 %}
     <table>
         <tr>
-            <th>PRESCRIPTION ID </th>
+            <th>DRUG ID </th>
             <th>DRUG NAME </th>
-            <th>DOSAGE </th>
+            <th>DOSAGE PER TAKE </th>
+            <th>TIMES PER DAY </th>
+            <th>DURATION </th>
             <th>REGULAR DRUG </th>
         </tr>
+        {% if P_Drugs %}
         {% for item in P_Drugs %}
         <tr>
             <td>{{item[2]}}
@@ -25,6 +28,9 @@
             </td>
             <td>{{item[3]}}</td>
             <td>{{item[4]}}</td>
+            <td>{{item[5]}}</td>
+            <td>{{item[6]}}</td>
+            <td>{{item[7]}}</td>
         </tr>
         {% endfor %}
         {% endif %}
@@ -36,12 +42,13 @@
     {% endif %}
     <table>
         <tr>
-            <th>PRESCRIPTION ID </th>
+            <th>EXAMINATION ID </th>
             <th>EXAMINATION TYPE </th>
             <th>DURATION </th>
             <th>PLACE </th>
 
         </tr>
+    {% if P_Examination %}
         {% for item in P_Examination %}
         <tr>
             <td>{{item[0]}}
