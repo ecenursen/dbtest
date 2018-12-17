@@ -536,6 +536,7 @@ def hospital_page():
     cursor.close()
     form=HospitalSearchForm()
     status = session.get('status')
+    status=1
     delform=HospitalDeleteForm()
     if(request.method=='POST'):
         if form.validate_on_submit() and form.submit.data:
@@ -576,6 +577,7 @@ app.add_url_rule("/hospital", view_func=hospital_page, methods=['GET', 'POST'])
 
 def add_hospital():
     status=session.get('status')
+    status=1
     if status not in (1,7):
         return redirect(url_for('home_page'))
     hospitals=[]
@@ -607,6 +609,8 @@ app.add_url_rule('/hospital/add_hospital',view_func=add_hospital, methods=['GET'
 
 def edit_hospital(hospital_id):
     status = session.get('status')
+    status=1
+
     if status not in (1,7):
         return redirect(url_for('home_page'))
     connection=db.connect(url)
@@ -832,9 +836,15 @@ def emergency_shift_page():
         cursor = connection.cursor()
         statement="""INSERT INTO day_table(
 	personnel_id, shift_begin_date, shift_repeat_interval, shift_hours, dayshift, emergency_area_assigned)
-	VALUES ( \'{}\', \'{}\',\'{}\', \'{}\', \'{}\', \'{}\')""".format(personnel_id,shift_begin_date,shift_repeat_interval,shift_hours,dayshift,emergency_area_assigned)
-    print(statement)
-    return render_template('emergency_shift_page.html',form=form, data=data)
+	VALUES ( \'{}\',\'{}\',\'{}\', \'{}\', \'{}\', \'{}\')""".format(personnel_id,shift_begin_date,shift_repeat_interval,shift_hours,dayshift,emergency_area_assigned)
+        print(statement)
+        cursor.execute(statement)
+        connection.commit()
+        cursor.close()
+    delform=HospitalDeleteForm()
+    #if delform.validate_on_submit():
+
+    return render_template('emergency_shift_page.html',form=form,delform=delform, data=data)
 app.add_url_rule("/emergency_shift",
                  view_func=emergency_shift_page, methods=['GET','POST'])
 

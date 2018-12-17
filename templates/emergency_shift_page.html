@@ -3,6 +3,46 @@
     <h1>SHIFT TABLE </h1>
 {% endblock title %}
 {% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-2">Shift Page</legend>
+            <br></br>
+            <div class="form-group">
+                {{ form.personnel_id.label(class="form-control-label") }}
+                {{ form.personnel_id(class="form-control") }}
+            </div>
+            <div class="form-group col">
+                {{ form.shift_begin_date.label(class="form-control-label") }}
+                {{ form.shift_begin_date(class="form-control", placeholder="YYYY-MM-DD") }}
+            </div>
+            <div class="form-group col">
+                {{ form.shift_repeat_interval.label(class="form-control-label") }}
+                {{ form.shift_repeat_interval(class="form-control", placeholder="'4 days'") }}
+            </div>
+            <div class=form-row>
+            <div class="form-group col-md-8">
+                {{ form.shift_hours.label(class="form-control-label") }}
+                {{ form.shift_hours(class="form-control", placeholder="'8 hours'") }}
+            </div>
+            <div class="form-group col-md-4">
+                {{ form.dayshift.label(class="form-control-label",) }}
+                {{ form.dayshift(class="form-check-input", type="radio" ) }}
+            </div>
+            <div class="form-group col-md-8">
+                {{ form.emergency_area_assigned.label(class="form-control-label") }}
+                {{ form.emergency_area_assigned(class="form-control", placeholder="(Green,Yellow,Red)") }}
+            </div>
+        </div>
+            <div class="form-group">
+                    <br></br>
+                    <br></br>
+                {{ form.submit(class="btn btn-info") }}
+            </div>
+        </fieldset>
+    </form>
+</div>
 <table>
     <tr>
         <th>PERSONNEL NAME </th>
@@ -15,16 +55,30 @@
     {% for item in data %}
     <tr>
         <td>
-            <a href="{{ url_for('single_personnel_page' , personnel_id = item[0]) }}">
-                    {{item[1]}}
+                {% if stat==1 or stat==7 %}
+                <form method="POST" action="">
+                <input type="checkbox" name="del_hospitals" value="{{item.get_id()}}">
+                </form>
+                {% endif %}
+            <a href="{{ url_for('single_personnel_page' , personnel_id = item.get_personnel_id()) }}">
+                    {{item.get_name()}}
             </a>
         </td>
-        <td>{{item[2]}}</td>
-        <td>{{item[3]}}</td>
-        <td>{{item[4]}}</td>
-        <td>{{item[5]}}</td>
-        <td>{{item[6]}}</td>
+        <td>{{item.get_begin()}}</td>
+        <td>{{item.get_repeat()}}</td>
+        <td>{{item.get_hours()}}</td>
+        <td>{{item.get_dayshift()}}</td>
+        <td>{{item.get_ea()}}</td>
     </tr>
     {% endfor %}
 </table>
+{% if stat==1 or stat==7%}
+<br></br>
+<form method="POST" action="">
+        {{ delform.csrf_token }}
+<div class="delform-group">
+          {{ delform.submit(class="btn btn-danger") }}
+ </div>
+</form>
+{% endif %}
 {% endblock content %}
