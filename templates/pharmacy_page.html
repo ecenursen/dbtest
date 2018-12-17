@@ -39,18 +39,93 @@
     </br>
     <table>
         <caption>Employees working here</caption>
+        {% if pharmacist %}
         <tr>
             <th>Name</th>
             <th>Telephone number</th>
-        </tr>
+        </tr>{% else %}
+	</table>
+	<table>
+		<tr>
+			<th>Pharmacist</th>
+			<th>tckn</th>
+			<th>name</th>
+			<th>telephone number</th>
+			<th>school</th>
+			<th>graduation year</th>
+			<th> years worked here</th>
+		</tr>
+		<tr><form method="POST" action="">
+                {{ add_form.csrf_token() }}
+			{{ add_form.request_id(value=0) }}
+			<td> {{add_form.submit}} </td>
+			<td> {{ add_form.tckn}} </td>
+			<td> {{add_form.name}} </td>
+			<td> {{ add_form.tel_num}} </td>
+			<td> {{add_form.school}} </td>
+			<td> {{add_form.graduation_year}} </td>
+			<td> {{add_form.years_worked}} </td>
+			</form>
+		</tr>
+        {% endif %}
         <tr>
-            <td>{{Employees[0][0]}}</td>
-            <td>{{Employees[0][1]}}</td>
+            <td>{{pharmacist[0]}}</td>
+            <td>{{pharmacist[1]}}</td>
+            <td><form method="POST" action="">
+                {{ forms.csrf_token() }}
+			{{ forms.request_id(value=0) }}
+                <fieldset class="form-group">
+                    <div class="form-group">
+                        {{ forms.delete(class="btn btn-outline-info") }}
+                    </div>
+                    <div class="form-group">
+                        {{ forms.edit(class="btn btn-outline-info") }}
+                    </div>
+                </fieldset>
+            </form> </td>
         </tr>
+        {% if helper %}
         <tr>
-            <td>{{Employees[1][0]}}</td>
-            <td>{{Employees[1][1]}}</td>
-        </tr>
+            <td>{{helper[0]}}</td>
+            <td>{{helper[1]}}</td>
+            <td><form method="POST" action="">
+                {{ forms.csrf_token() }}
+			{{ forms.request_id(value=1) }}
+                <fieldset class="form-group">
+                    <div class="form-group">
+                        {{ forms.delete(class="btn btn-outline-info") }}
+                    </div>
+                    <div class="form-group">
+                        {{ forms.edit(class="btn btn-outline-info") }}
+                    </div>
+                </fieldset>
+            </form> </td>
+		</tr>
+		{% else %}
+	</table>
+	<table>
+		<tr>
+			<th>Helper</th>
+			<th>tckn</th>
+			<th>name</th>
+			<th>telephone number</th>
+			<th>school</th>
+			<th>graduation year</th>
+			<th> years worked here</th>
+		</tr>
+		<tr><form method="POST" action="">
+                {{ add_form.csrf_token() }}
+			{{ add_form.request_id(value=1) }}
+			<td> {{add_form.submit}} </td>
+			<td> {{ add_form.tckn}} </td>
+			<td> {{add_form.name}} </td>
+			<td> {{ add_form.tel_num}} </td>
+			<td> {{add_form.school}} </td>
+			<td> {{add_form.graduation_year}} </td>
+			<td> {{add_form.years_worked}} </td>
+			</form>
+		</tr>
+        {% endif %}
     </table>
     </br>
     
