@@ -4,7 +4,8 @@
 {% endblock title %}
 {% block content %}
 {% if stat==1 or stat==7 %}
-    <a href="{{url_for('add_hospital')}}" class="btn btn-light">Add Hospital</a>
+    <a href="{{url_for('add_hospital')}}" class="btn btn-primary" role="button">Add Hospital</a>
+    <br></br>
 {% endif %}
 <div class="content-section">
     <form method="POST" action="">
@@ -15,6 +16,7 @@
                 {{ form.selection.label(class="form-control-label") }}
                 {{ form.selection(class="form-control") }}
             </div>
+            <br></br>
             <div class="form-group">
                 {{ form.search.label(class="form-control-label") }}
                 {{ form.search(class="form-control") }}
@@ -23,9 +25,10 @@
                 {{ form.publicHos.label(class="form-control-label") }}
                 {{ form.publicHos(class="form-control") }}
             </div>
-            <br></br>
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                    <br></br>
+                    <br></br>
+                {{ form.submit(class="btn btn-info") }}
             </div>
         </fieldset>
     </form>
@@ -38,19 +41,38 @@
         <th>ADMINISTRATOR </th>
         <th>PHONE NUMBER </th>
         <th>AMBULANCE COUNT </th>
+        {% if stat==1 or stat==7 %}
+        <th>EDIT LINK </th>
+        {% endif %}
     </tr>
     {% for item in hospital %}
+    <form method="POST" action="">
     <tr>
         <td>
-                <a href="{{ url_for('hospital_personnel_page' , hospital_id = item[0]) }}">
-                        {{item[1]}}
+                {% if stat==1 or stat==7 %}
+                <input type="checkbox" name="del_hospitals" value="{{item.get_id()}}">
+                {% endif %}
+                <a href="{{ url_for('hospital_personnel_page' , hospital_id = item.get_id()) }}">
+                        {{item.get_name()}}
                 </a>
-        <td>{{item[2]}}</td>
-        <td>{{item[3]}}</td>
-        <td>{{item[4]}}</td>
-        <td>{{item[5]}}</td>
-        <td>{{item[6]}}</td>
+            </td>
+        <td>{{item.get_public()}}</td>
+        <td>{{item.get_location()}}</td>
+        <td>{{item.get_administrator()}}</td>
+        <td>{{item.get_telephone_number()}}</td>
+        <td>{{item.get_ambulance_count()}}</td>
+        {% if stat==1 or stat==7 %}
+        <td><a href="{{url_for('edit_hospital',hospital_id=item.get_id())}}" class='btn btn-success' role="button">Edit Hospital</a></td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>
+{% if stat==1 or stat==7 %}
+<br></br>
+        {{ delform.csrf_token }}
+<div class="delform-group">
+          {{ delform.delete(class="btn btn-danger") }}
+ </div>
+</form>
+{% endif %}
 {% endblock content %}
