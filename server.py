@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, session,abort
-from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm,HospitalDeleteForm,inventory_change_form,G_WarehouseSearchForm
+from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm,HospitalDeleteForm,inventory_change_form,G_WarehouseSearchForm,PharmacyPersonelForm,PharPersonelEditForm,PharPersonelAdd
 import datetime
 import os
 import psycopg2 as db
@@ -103,19 +103,21 @@ def drug_companies_page():
 
 @app.route("/pharmacy", methods=['GET', 'POST'])
 def pharmacy_page():
-    date = str(datetime.datetime.now().date())
-    print(date)
-    connection = db.connect(url)
-    cursor = connection.cursor()
-    statement = """SELECT name,location,tel_num FROM pharmacies WHERE next_night_shift = '{}' """.format(date)
-    cursor.execute(statement)
-    connection.commit
+	add_form = PharPersonelAdd()
+	date = str(datetime.datetime.now().date())
+	print(date)
+	connection = db.connect(url)
+	cursor = connection.cursor()
+	statement = """SELECT name,location,tel_num FROM pharmacies WHERE next_night_shift = '{}' """.format(date)
+	cursor.execute(statement)
+	connection.commit
 	on_duty = cursor.fetchall()
 	cursor.close()
 	#id = session.get('id') # =pharmacy id
 	#stat = session.get('status')
 	#if (stat == 4):
 	form1 = G_PharmacySearchForm()
+	form2 = PharmacyPersonelForm()
 	logged_in = session.get('logged_in')
 	#print(logged_in)
 	s = (session.get('status') == 4)
@@ -148,16 +150,50 @@ def pharmacy_page():
 		cursor.execute(statement)
 		connection.commit()
 		phar_detail = cursor.fetchone()
-		pharmacist_id=phar_detail[4]
-		helper_id=phar_detail[5]
+		pharmacist_id = phar_detail[4]
+		helper_id = phar_detail[5]
+		helper = None
+		pharmacist = None
+		if form2.validate_on_submit():
+			i = int(form2.request_id.data)
+			if form2.delete.data:
+				if (i == 0):
+					s = pharmacist_id
+					pharmacist_id = None
+				else:
+					s = helper_id
+					helper_id = None
+				statement = "DELETE FROM public.pharmacy_personel WHERE id={};".format(s)
+				cursor.execute(statement)
+				connection.commit()
+			elif form2.edit.data:
+				if (i == 0):
+					session['per_id'] = pharmacist_id
+				else:
+					session['per_id'] = helper_id
+				#session['phar_id'] = phar_id
+				return redirect(url_for('edit_p_personel_page'))
+		if add_form.validate_on_submit():
+			i = int(add_form.request_id.data)
+			s = "{},{},{},{},{},{},{}".format(add_form.tckn.data,add_form.name.data,add_form.tel_num.data,i,add_form.school.data,add_form.graduation_year.data,add_form.years_worked.data)
+			statement = "INSERT INTO public.pharmacy_personel( tckn, name, tel_num, job, school, graduation_year, years_worked) VALUES ({});".format(s)
+			cursor.execute(statement)
+			connection.commit()
 
-		statement = """ SELECT name,tel_num FROM pharmacy_personel
-						WHERE (id ={} or id={})""".format(pharmacist_id,helper_id)
-		cursor.execute(statement)
-		connection.commit()
-		employees = cursor.fetchall() 
+		if (pharmacist_id):
+			statement = """ SELECT name,tel_num FROM pharmacy_personel
+							WHERE (id ={})""".format(pharmacist_id)
+			cursor.execute(statement)
+			connection.commit()
+			pharmacist = cursor.fetchone()
+		if (helper_id):
+			statement = """ SELECT name,tel_num FROM pharmacy_personel
+							WHERE (id ={})""".format(helper_id)
+			cursor.execute(statement)
+			connection.commit()
+			helper = cursor.fetchone()
 		cursor.close()
-		return render_template('pharmacy_page.html',on_duty = on_duty , id = phar_id,Pharma = phar_detail,Employees = employees,search_form = form1,logged_in=logged_in)
+		return render_template('pharmacy_page.html', on_duty=on_duty, id=phar_id, Pharma=phar_detail, helper=helper, pharmacist=pharmacist, search_form=form1, logged_in=logged_in, forms=form2,add_form=add_form)
 	
 	return render_template('pharmacy_page.html' , on_duty = on_duty , search_form = form1,logged_in=False,searched = False)
 	
@@ -313,10 +349,6 @@ def pharmaceutical_warehouse_page():
 	else:
 		return redirect(url_for('home_page'))
 	return redirect(url_for('home_page'))
-
-    else:
-        return redirect(url_for('home_page'))
-    return
 
 status=1
 def hospital_page():
