@@ -8,7 +8,18 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
-    
+class PatientForm(FlaskForm):
+    choices = [('insert','Insert'),('update','Update')]
+    select = RadioField('Choose an operation',choices=choices,default='insert')
+    name=StringField('Name')
+    age=StringField('Age')
+    sex=StringField('Sex')
+    tckn=StringField('TCKN')
+    phone = StringField('Phone')
+    complaint = StringField('Current Complaint')
+    insurance = StringField('Insurance')
+    submit = SubmitField('Submit')
+    search = SubmitField('Search')
 class PatientSearchForm(FlaskForm):
     choices = [('Name','Name'),
     ('Age','Age'),
@@ -82,6 +93,30 @@ class HospitalAddForm(FlaskForm):
     submit=SubmitField('Insert')
 
 class HospitalDeleteForm(FlaskForm):
+    submit=SubmitField('Delete')
+class Drugs_Form(FlaskForm):
+    choices = [('insert','Insert'),('update','Update')]
+    select = RadioField('Choose an operation',choices=choices,default='insert')
+    name=StringField('Name')
+    company=StringField('Company')
+    size=StringField('Size')
+    shelf=StringField('Shelf life')
+    typ = StringField('Type')
+    price = StringField('Price')
+    submit = SubmitField('Submit')
+    delete = SubmitField('Delete')
+
+class DrugCompanies_Form(FlaskForm):
+    choices = [('insert','Insert'),('update','Update')]
+    select = RadioField('Choose an operation',choices=choices,default='insert')
+    name=StringField('Name')
+    year=StringField('Foundation Year')
+    founder=StringField('Founder')
+    country=StringField('Country')
+    workers=StringField('Worker Number')
+    factories=StringField('Factory Number')
+    submit = SubmitField('Submit')
+    delete = SubmitField('Delete')
     delete=SubmitField('Delete')
 
 class PersonnelSearchForm(FlaskForm):

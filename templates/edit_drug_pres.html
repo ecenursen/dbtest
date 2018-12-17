@@ -4,40 +4,38 @@
 {% endblock title %}
 {% block content %}
 {% if log_id == 3 or log_id == 1 %}
-<form role="form" action="{{url_for('add_drug_pres',id =id,pid =pid)}}" method="post" name="submit" class="form-horizontal">
+<form role="form" action="{{url_for('edit_drug_pres',id =id,pid =pid,did=did)}}" method="post" name="submit" class="form-horizontal">
     <div class="col-xs-12">
         <div class="col-md-12" >
             <h3> Drugs</h3>
                 <div class="form-group">
                     <label class="col-md-4 control-label" for="drug_id">Drug ID</label>  
                     <div class="col-md-5">
-                        <input id="drug_id" name="drug_id" type="int" class="form-control input-md" required>
+                        <input id="drug_id" name="drug_id" type="int" class="form-control input-md" >
                     </div>
 
                     <label class="col-md-4 control-label" for="dosage">Dosage Per Take</label>  
                     <div class="col-md-5">
-                        <input id="dosage" name="dosage" type="int" placeholder="1" class="form-control input-md">
+                        <input id="dosage" name="dosage" type="int"  class="form-control input-md">
                     </div>
 
                     <label class="col-md-4 control-label" for="times">Times Per Day</label>  
                     <div class="col-md-5">
-                        <input id="times" name="times" type="int" placeholder="1" class="form-control input-md">
+                        <input id="times" name="times" type="int"  class="form-control input-md">
                     </div>
 
                     <label class="col-md-4 control-label" for="duration">Duration</label>  
                     <div class="col-md-5">
-                        <input id="duration" name="duration" type="int" placeholder="3" class="form-control input-md">
+                        <input id="duration" name="duration" type="int"  class="form-control input-md">
                     </div>
 
                     <input type="checkbox" name="regular" value="True"> Regular<br>
                 </div>
         </div>
     </div>
-    
-
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" value="Submit" name="Add" class="btn btn-primary">Add</button>
+            <button type="submit" value="Submit" name="Edit" class="btn btn-primary">Edit</button>
         </div> 
     </div>
 </form>

@@ -3,7 +3,7 @@
     <h1>PRESCRIPTION</h1>
 {% endblock title %}
 {% block content %}
-
+{% if log_id == 3 or log_id == 1 or log_id == 2 or log_id == 6 %}
     <table>
         <tr>
             <th>DRUG ID </th>
@@ -16,9 +16,16 @@
         {% if P_Drugs %}
         {% for item in P_Drugs %}
         <tr>
-            <td>{{item[2]}}<form action="{{url_for('drug_pres_del',id = id,pid=pid,did=item[0])}}">
-                    <input type="submit" value="delete" /> 
-                </form></td>
+            <td>{{item[2]}}
+                    {% if log_id == 3 or log_id == 1 %}
+                    <form action="{{url_for('drug_pres_del',id = id,pid=pid,did=item[0])}}">
+                        <input type="submit" value="delete" /> 
+                    </form>
+                    <form action="{{url_for('edit_drug_pres',id = id,pid=pid,did=item[0])}}">
+                            <input type="submit" value="edit" /> 
+                    </form>
+                    {% endif %}
+            </td>
             <td>{{item[3]}}</td>
             <td>{{item[4]}}</td>
             <td>{{item[5]}}</td>
@@ -28,9 +35,11 @@
         {% endfor %}
         {% endif %}
     </table>
+    {% if log_id == 3 or log_id == 1 %}
     <form action="{{url_for('add_drug_pres',id =id, pid=pid)}}">
         <input type="submit" value="Add Drug" /> 
     </form>
+    {% endif %}
     <table>
         <tr>
             <th>EXAMINATION ID </th>
@@ -42,9 +51,13 @@
     {% if P_Examination %}
         {% for item in P_Examination %}
         <tr>
-            <td>{{item[0]}}<form action="{{url_for('exam_pres_del',id = id,pid=pid,did=item[0])}}">
+            <td>{{item[0]}}
+                {% if log_id == 3 or log_id == 1 %}
+                <form action="{{url_for('exam_pres_del',id = id,pid=pid,did=item[0])}}">
                     <input type="submit" value="delete" /> 
-                </form></td>
+                </form>
+                {% endif %}
+            </td>
             <td>{{item[2]}}</td>
             <td>{{item[3]}}</td>
             <td>{{item[4]}}</td>
@@ -54,7 +67,14 @@
     
     </table>
     {% endif %}
+    {% if log_id == 3 or log_id == 1 %}
     <form action="{{url_for('add_exam_pres',id =id, pid=pid)}}">
         <input type="submit" value="Add Examination" /> 
     </form>
+    {% endif %}
+{% else %}
+    <div class="alert alert-danger" role="alert">
+        Your are not authorized to access this page! Please go back to home page!
+    </div>
+{% endif %}
 {% endblock content %}

@@ -14,9 +14,13 @@
     </tr>
     {% for item in policlinic %}
     <tr>
-        <td><form action="{{url_for('det_pol_del',id=item[0])}}">
-                {{item[0]}}<input type="submit" value="delete" /> 
-            </form></td>
+        <td>{{item[0]}}
+            {% if log_id == 1  or log_id == 7 %}
+            <form action="{{url_for('det_pol_del',id=item[0])}}">
+                <input type="submit" value="delete" /> 
+            </form>
+            {% endif %}
+        </td>
         <td>{{item[6]}}</td>
         <td>{{item[7]}}</td>
         <td>{{item[8]}}</td>
@@ -26,7 +30,9 @@
     </tr>
     {% endfor %}
 </table>
+{% if log_id == 1  or log_id == 7 %}
 <form action="{{url_for('add_pol_det',hospital_id = hospital_id, pol_id = pol_id)}}">
     <input type="submit" value="Add" /> 
 </form>
+{% endif %}
 {% endblock content %}

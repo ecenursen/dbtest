@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-2">Patients Page</legend>
+            <div class="form-group">
+                {{ form.select.label(class="form-control-label") }}
+                {{ form.select(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.search.label(class="form-control-label") }}
+                {{ form.search(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+{% if filtered %}
+<div class="table-responsive">
+    <table class = "table" style='margin-top: 2%; table-layout: fixed;'>
+        <tr>
+            <th>NAME</th>
+            <th>AGE</th>
+            <th>SEX</th>
+            <th>TCKN</th>
+            <th>PHONE</th>
+            <th>COMPLAINT</th>
+            <th>INSURANCE</th>
+        </tr>
+        {% for item in Patients %}
+        <tr>
+                <td><a href="{{ url_for('prescription_page',id=item[0]) }}">{{item[0]}}</a></td>
+                {% if item[1] %}
+                    <td>Female</td>
+                {% else %}
+                    <td>Male</td>
+                {% endif %}
+                <td>{{item[2]}}</td>
+                <td>{{item[3]}}</td>
+                <td>{{item[4]}}</td>
+                <td>{{item[5]}}</td>
+                <td>{{item[6]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
+
+
+{% endblock content %}
