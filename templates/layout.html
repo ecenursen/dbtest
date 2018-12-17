@@ -18,9 +18,9 @@
                 var addto = "#field_d" + drugnext;
                 var addRemove = "#field_d" + (drugnext);
                 drugnext = drugnext + 1;
-                var newIn = ' <div id="field_d'+ drugnext +'" name="field_d'+ drugnext +'"><div class="form-group"><label class="col-md-4 control-label" for="drug_id">Drug ID</label>  <div class="col-md-5"><input id="drug_id" name="drug_id'+drugnext+'" type="int" class="form-control input-md"></div><label class="col-md-4 control-label" for="dosage">Dosage Per Take</label>  <div class="col-md-5"><input id="dosage" name="dosage'+drugnext+'" type="int" placeholder="1" class="form-control input-md"></div><label class="col-md-4 control-label" for="times">Times Per Day</label>  <div class="col-md-5"><input id="times" name="times'+drugnext+'" type="int" placeholder="1" class="form-control input-md"></div><label class="col-md-4 control-label" for="d_duration">Duration</label>  <div class="col-md-5"><input id="d_duration" name="d_duration'+drugnext+'" type="int" placeholder="3" class="form-control input-md"></div><input type="checkbox" name="regular'+drugnext+'" value="True"> Regular<br></div></div></div>';
+                var newIn = ' <div id="field_d'+ drugnext +'" name="field_d'+ drugnext +'"><!-- Text input--><div class="form-group"><label class="col-md-4 control-label" for="drug_name">Drug Name</label>  <div class="col-md-5"><input id="drug_name" name="drug_name" type="text" placeholder="" class="form-control input-md"></div><label class="col-md-4 control-label" for="dosage">Dosage</label>  <div class="col-md-5"><input id="dosage" name="dosage" type="text" placeholder="" class="form-control input-md"></div><input type="checkbox" name="regular" value="True"> Regular?<br></div></div></div>';
                 var newInput = $(newIn);
-                var removeBtn = '<button id="remove_drug' + (drugnext) + '" class="btn btn-danger remove-drug" >Remove</button></div></div><div id="field_d">';
+                var removeBtn = '<button id="remove_drug' + (drugnext - 1) + '" class="btn btn-danger remove-drug" >Remove</button></div></div><div id="field_d">';
                 var removeButton = $(removeBtn);
                 $(addto).after(newInput);
                 $(addRemove).after(removeButton);
@@ -125,7 +125,6 @@
                         <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('emergency_shift_page') }}">Shift Sheet</a>
                         <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('hospital_personnel_sheet') }}">Hospital Workers</a>
                         <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('pharmaceutical_warehouse_page') }}">Pharmaceutical Warehouse</a>
-                        <a class="list-group-item list-group-item-action list-group-item-info" href="{{ url_for('choose_hospital') }}">Policlinics</a>
                     </ul>
                     </p>
                 </div>
