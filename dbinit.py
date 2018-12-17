@@ -7,9 +7,10 @@ import psycopg2 as dbapi2
 
 INIT_STATEMENTS = [
     """CREATE TABLE IF NOT EXISTS USERS (
-        ID VARCHAR UNIQUE PRIMARY KEY,
+        ID VARCHAR NOT NULL,
         PASSWORD VARCHAR NOT NULL,
-        STATUS INTEGER NOT NULL
+        STATUS INTEGER NOT NULL,
+        CONSTRAINT pkey PRIMARY KEY (ID,PASSWORD)
     )""",
     # unique kalkması lazım sanki - primary de patlar primary id ve password olmalı olcak
     #GOKTUG
@@ -142,8 +143,8 @@ INIT_STATEMENTS = [
         id SERIAL PRIMARY KEY,
         name VARCHAR NOT NULL,
         location VARCHAR,
-        pharmacist INTEGER REFERENCES  pharmacy_personel(id) ON DELETE SET NULL,
-        helper INTEGER REFERENCES  pharmacy_personel(id) ON DELETE SET NULL,
+        pharmacist INTEGER REFERENCES  pharmacy_personel(id) ON DELETE SET NULL ON UPDATE CASCADE,
+        helper INTEGER REFERENCES  pharmacy_personel(id) ON DELETE SET NULL ON UPDATE CASCADE,
         next_night_shift DATE,
         tel_num INTEGER
     )""",
@@ -159,14 +160,14 @@ INIT_STATEMENTS = [
     )""",
     """
     CREATE TABLE IF NOT EXISTS pharmacy_inventory (
-        drugs_id INTEGER REFERENCES DRUGS(ID) ON DELETE CASCADE,
-        pharmacy_id INTEGER REFERENCES pharmacies(id) ON DELETE CASCADE,
+        drugs_id INTEGER REFERENCES DRUGS(ID) ON DELETE CASCADE ON UPDATE CASCADE,
+        pharmacy_id INTEGER REFERENCES pharmacies(id) ON DELETE CASCADE ON UPDATE CASCADE,
         number INTEGER DEFAULT 0
     )""",
     """
     CREATE TABLE IF NOT EXISTS warehouse_inventory (
-        drugs_id INTEGER REFERENCES DRUGS(ID) ON DELETE CASCADE,
-        warehouse_id INTEGER REFERENCES pharmaceutical_warehouse(id) ON DELETE CASCADE,
+        drugs_id INTEGER REFERENCES DRUGS(ID) ON DELETE CASCADE ON UPDATE CASCADE,
+        warehouse_id INTEGER REFERENCES pharmaceutical_warehouse(id) ON DELETE CASCADE ON UPDATE CASCADE,
         number INTEGER DEFAULT 0
     )
     """,
