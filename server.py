@@ -24,11 +24,7 @@ connection.commit()
 cursor.close()
 '''
 
-<<<<<<< HEAD
-DEBUG = True
-=======
 #DEBUG = False
->>>>>>> 6ff870d280c4382758c83cae3be25214a347fb46
 
 DEBUG = False
 # LIVE ICIN
