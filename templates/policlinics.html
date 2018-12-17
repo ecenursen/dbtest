@@ -3,10 +3,43 @@
     Policlinics
 {% endblock title %}
 {% block content %}
-    <h1>
-        <ul>
-            <li> {{ myrow}}</li>
-        </ul>
-
-    </h1>
+<div class="alert alert-info" role="alert">
+    Choose a policlinic from list!
+</div>
+<table>
+    <tr>
+        <th>HOSPITAL NAME </th>
+        <th>POLICLINIC NAME </th>
+        <th>RECEPTIONIST NAME </th>
+        <th>EXAMINATION ROOMS </th>
+        <th>OPERATION ROOMS </th>
+        <th>PRIVATE </th>
+        <th>CHILDREN </th>
+    </tr>
+    {% for item in policlinics %}
+    <tr>
+        <td>{{item[8]}}</td>
+        <td><a href="{{ url_for('det_policlinic' , hospital_id = hospital_id, pol_id = item[0] ) }}">{{item[3]}}</a>
+            {% if log_id == 1 or log_id == 7 %}
+            <form action="{{url_for('pol_del',id=item[0])}}">
+                <input type="submit" value="delete" /> 
+            </form>
+            <form action="{{url_for('edit_pol',hospital_id = hospital_id,id=item[0])}}">
+                <input type="submit" value="edit" /> 
+            </form>
+            {% endif %}
+        </td>
+        <td>{{item[9]}}</td>
+        <td>{{item[4]}}</td>
+        <td>{{item[5]}}</td>
+        <td>{{item[6]}}</td>
+        <td>{{item[7]}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% if log_id == 1  or log_id == 7 %}
+<form action="{{url_for('add_pol',hospital_id = hospital_id)}}">
+    <input type="submit" value="Add" /> 
+</form>
+{% endif %}
 {% endblock content %}
