@@ -13,7 +13,8 @@
         <td> {{results[k][0]}} </td>
         {% if self %}
         <td> {{results[k][1]}} </td>
-        <td><form method="POST">
+        <td>
+            <form method="POST">
 			{{ forms.csrf_token() }}
 			{{ forms.request_id(value=k) }}
             <fieldset class="form-group">

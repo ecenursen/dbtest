@@ -39,12 +39,28 @@
     </br>
     <table>
         <caption>Employees working here</caption>
-        {% if pharmacist %}
         <tr>
             <th>Name</th>
             <th>Telephone number</th>
-        </tr>{% else %}
-	</table>
+        </tr>{% if pharmacist %}
+        <tr>
+            <td>{{pharmacist[0]}}</td>
+            <td>{{pharmacist[1]}}</td>
+            <td><form method="POST" action="">
+                {{ forms.csrf_token() }}
+			{{ forms.request_id(value=0) }}
+                <fieldset class="form-group">
+                    <div class="form-group">
+                        {{ forms.delete(class="btn btn-outline-info") }}
+                    </div>
+                    <div class="form-group">
+                        {{ forms.edit(class="btn btn-outline-info") }}
+                    </div>
+                </fieldset>
+            </form> </td>
+        </tr>
+        {% else %}
+    </table>
 	<table>
 		<tr>
 			<th>Pharmacist</th>
@@ -68,22 +84,6 @@
 			</form>
 		</tr>
         {% endif %}
-        <tr>
-            <td>{{pharmacist[0]}}</td>
-            <td>{{pharmacist[1]}}</td>
-            <td><form method="POST" action="">
-                {{ forms.csrf_token() }}
-			{{ forms.request_id(value=0) }}
-                <fieldset class="form-group">
-                    <div class="form-group">
-                        {{ forms.delete(class="btn btn-outline-info") }}
-                    </div>
-                    <div class="form-group">
-                        {{ forms.edit(class="btn btn-outline-info") }}
-                    </div>
-                </fieldset>
-            </form> </td>
-        </tr>
         {% if helper %}
         <tr>
             <td>{{helper[0]}}</td>
@@ -173,6 +173,16 @@
             {% endfor %}
         </table>
     {% endif %}
-
+    {% if logged_in %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ search_form.hidden_tag() }}
+            <fieldset class="form-group">
+            <div class="form-group">
+                    {{ delete_form.submit(class="btn btn-outline-info") }}
+                </div>
+            </fieldset>
+        </form>
+    {% endif %}
 
 {% endblock content %}

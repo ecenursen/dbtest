@@ -18,27 +18,27 @@ for statement in INIT_STATEMENTS:
 connection.commit()
 cursor.close()
 '''
-DEBUG = True
+DEBUG = False
 # LIVE ICIN
 if(DEBUG == False):
-    url = os.getenv("DATABASE_URL")
+	url = os.getenv("DATABASE_URL")
 else:
-    # DENEME ICIN
-    url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
-    initialize(url)
-    # drop_table(url)
+	# DENEME ICIN
+	url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
+	initialize(url)
+	# drop_table(url)
 
 
 @app.route("/")
 @app.route("/home")
 def home_page():
-    logged = True if session.get('logged_in') == True else False
-    return render_template('home_page.html', logged=logged)
+	logged = True if session.get('logged_in') == True else False
+	return render_template('home_page.html', logged=logged)
 
 
 @app.route("/about")
 def about_page():
-    return render_template('about_page.html')
+	return render_template('about_page.html')
 
 
 @app.route("/patients_page", methods=['GET', 'POST'])
@@ -376,8 +376,8 @@ def inventory_page(id,mode):
 			connection.commit()
 			name = cursor.fetchone()[0]
 
-			#self = session.get('status')==4 and session.get['id']==id
-			self = True
+			self = (session.get('status')==4 and session.get('id')==id)
+			#self = True
 			if (self):
 				forms = inventory_change_form()
 				i = []
@@ -409,6 +409,7 @@ def inventory_page(id,mode):
 				statement = "select NAME , number from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
 				cursor.execute(statement)
 				connection.commit()
+				i=[]
 				inventory = cursor.fetchall()
 				cursor.close()
 
@@ -417,7 +418,10 @@ def inventory_page(id,mode):
 				statement = "select NAME from DRUGS,pharmacy_inventory where pharmacy_inventory.pharmacy_id = {} and drugs_id = ID".format(id)
 				cursor.execute(statement)
 				connection.commit()
+				i=[]
 				inventory = cursor.fetchall()
+				for k in range(0,len(inventory)):
+					i.append(k)
 				cursor.close()
 				return render_template('inventory_page.html', self=False, name=name, results=inventory)
 
@@ -558,6 +562,7 @@ def hospital_page():
     cursor.close()
     form=HospitalSearchForm()
     status = session.get('status')
+    status=1
     delform=HospitalDeleteForm()
     if(request.method=='POST'):
         if form.validate_on_submit() and form.submit.data:
@@ -598,6 +603,7 @@ app.add_url_rule("/hospital", view_func=hospital_page, methods=['GET', 'POST'])
 
 def add_hospital():
     status=session.get('status')
+    status=1
     if status not in (1,7):
         return redirect(url_for('home_page'))
     hospitals=[]
@@ -629,6 +635,8 @@ app.add_url_rule('/hospital/add_hospital',view_func=add_hospital, methods=['GET'
 
 def edit_hospital(hospital_id):
     status = session.get('status')
+    status=1
+
     if status not in (1,7):
         return redirect(url_for('home_page'))
     connection=db.connect(url)
@@ -854,9 +862,15 @@ def emergency_shift_page():
         cursor = connection.cursor()
         statement="""INSERT INTO day_table(
 	personnel_id, shift_begin_date, shift_repeat_interval, shift_hours, dayshift, emergency_area_assigned)
-	VALUES ( \'{}\', \'{}\',\'{}\', \'{}\', \'{}\', \'{}\')""".format(personnel_id,shift_begin_date,shift_repeat_interval,shift_hours,dayshift,emergency_area_assigned)
-    print(statement)
-    return render_template('emergency_shift_page.html',form=form, data=data)
+	VALUES ( \'{}\',\'{}\',\'{}\', \'{}\', \'{}\', \'{}\')""".format(personnel_id,shift_begin_date,shift_repeat_interval,shift_hours,dayshift,emergency_area_assigned)
+        print(statement)
+        cursor.execute(statement)
+        connection.commit()
+        cursor.close()
+    delform=HospitalDeleteForm()
+    #if delform.validate_on_submit():
+
+    return render_template('emergency_shift_page.html',form=form,delform=delform, data=data)
 app.add_url_rule("/emergency_shift",
                  view_func=emergency_shift_page, methods=['GET','POST'])
 
@@ -1529,46 +1543,46 @@ def exam_pres_del(id,pid,did):
 
 @app.route("/login", methods=['GET', 'POST'])
 def login_page():
-    if session.get('logged_in'):
-        return redirect(url_for('home_page'))
-    else:
-        form = LoginForm()
-        if form.validate_on_submit():
-            id = form.id.data
-            pw = form.password.data
-            try:
-                connection = db.connect(url)
-                cursor = connection.cursor()
-                statement = """SELECT * FROM USERS WHERE ID = '%s'
+	if session.get('logged_in'):
+		return redirect(url_for('home_page'))
+	else:
+		form = LoginForm()
+		if form.validate_on_submit():
+			id = form.id.data
+			pw = form.password.data
+			try:
+				connection = db.connect(url)
+				cursor = connection.cursor()
+				statement = """SELECT * FROM USERS WHERE ID = '%s'
 						""" % id
-                cursor.execute(statement)
-                result = cursor.fetchone()
-                if(result[1] == pw):
-                    flash('You have been logged in!', 'success')
-                    session['logged_in'] = True
-                    session['id'] = id
-                    session['status'] = result[2]
-                    return redirect(url_for('home_page'))
-                else:
-                    flash(
-                        'Login Unsuccessful. Please check username and password', 'danger')
-            except db.DatabaseError:
-                connection.rollback()
-                flash('Login Unsuccessful. Please check username and password', 'danger')
-            finally:
-                connection.close()
-        return render_template('login_page.html', title='Login', form=form)
+				cursor.execute(statement)
+				result = cursor.fetchone()
+				if(result[1] == pw):
+					flash('You have been logged in!', 'success')
+					session['logged_in'] = True
+					session['id'] = id
+					session['status'] = result[2]
+					return redirect(url_for('home_page'))
+				else:
+					flash(
+						'Login Unsuccessful. Please check username and password', 'danger')
+			except db.DatabaseError:
+				connection.rollback()
+				flash('Login Unsuccessful. Please check username and password', 'danger')
+			finally:
+				connection.close()
+		return render_template('login_page.html', title='Login', form=form)
 
 
 @app.route("/logout")
 def logout_page():
-    session.pop('id', None)
-    session['logged_in'] = False
-    return redirect(url_for('home_page'))
+	session.pop('id', None)
+	session['logged_in'] = False
+	return redirect(url_for('home_page'))
 
 
 if __name__ == "__main__":
-    if(DEBUG):
-        app.run(debug='True')
-    else:
-        app.run()
+	if(DEBUG):
+		app.run(debug='True')
+	else:
+		app.run()
