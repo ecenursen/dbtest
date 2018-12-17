@@ -12,6 +12,14 @@ INIT_STATEMENTS = [
         STATUS INTEGER NOT NULL,
         CONSTRAINT pk PRIMARY KEY (ID,PASSWORD)
     )""",
+    """
+    CREATE TABLE IF NOT EXISTS INSURANCE(
+        INSURANCE_ID SERIAL PRIMARY KEY,
+        INSURANCE_NAME VARCHAR,
+        INSURANCE_TYPE VARCHAR
+    )
+    """,
+
     #GOKTUG
     #False == Male
     """CREATE TABLE IF NOT EXISTS PATIENTS (
@@ -110,14 +118,6 @@ INIT_STATEMENTS = [
     )""",
         #emergency area assigned -> red yellow green
 
-
-    """
-    CREATE TABLE IF NOT EXISTS INSURANCE(
-        INSURANCE_ID SERIAL PRIMARY KEY,
-        INSURANCE_NAME VARCHAR,
-        INSURANCE_TYPE VARCHAR
-    )
-    """,
 
     """
     CREATE TABLE IF NOT EXISTS COVERANCE(
