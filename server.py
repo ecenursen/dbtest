@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, flash, request, session,abort
-from forms import FlaskForm, PatientSearchForm, LoginForm, G_PharmacySearchForm, HospitalSearchForm, HospitalAddForm,HospitalDeleteForm,inventory_change_form,G_WarehouseSearchForm,PharmacyPersonelForm,PharPersonelEditForm,PharPersonelAdd
+from forms import *
 import datetime
 import os
 import psycopg2 as db
@@ -18,7 +18,7 @@ connection.commit()
 cursor.close()
 '''
 
-DEBUG = False
+DEBUG = True
 
 #DEBUG = True
 # LIVE ICIN
@@ -43,12 +43,40 @@ def about_page():
     return render_template('about_page.html')
 
 
-@app.route("/patients", methods=['GET', 'POST'])
+@app.route("/patients_page", methods=['GET', 'POST'])
 def patients_page():
+    form = PatientForm()
     patients = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE_COMPANIES WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID ORDER BY PATIENTS.NAME ASC"
+    statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,CUR_COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID ORDER BY PATIENTS.NAME ASC"
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        patients.append(row)
+    cursor.close()
+    print(patients[0])
+    if form.validate_on_submit():
+        name = form.name.data
+        age = form.age.data
+        sex = form.sex.data
+        tckn = form.tckn.data
+        phone = form.phone.data
+        complaint = form.complaint.data
+        insurance = form.insurance.data
+        if form.validate_on_submit():
+            if form.search.data == True:
+                return redirect(url_for("patients_search_page"))
+            elif form.submit.data == True:
+                print("hey")
+    return render_template('patients_page.html',Patients=patients,form=form)
+
+@app.route("/patients_search_page", methods=['GET', 'POST'])
+def patients_search_page():
+    patients = []
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,CUR_COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID ORDER BY PATIENTS.NAME ASC"
     cursor.execute(statement)
     connection.commit()
     for row in cursor:
@@ -61,7 +89,7 @@ def patients_page():
         result = []
         connection = db.connect(url)
         cursor = connection.cursor()
-        statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE_COMPANIES WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID AND CAST({} AS TEXT) ILIKE {} ORDER BY {} ASC".format(
+        statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,CUR_COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID AND CAST({} AS TEXT) ILIKE {} ORDER BY {} ASC".format(
             attr, "\'%" + key + "%\'", attr)
         #statement = """SELECT * FROM PATIENTS WHERE CAST({} AS TEXT) ILIKE {} ORDER BY {} ASC""".format(attr,"\'%" + key + "%\'", attr)
         cursor.execute(statement)
@@ -69,25 +97,122 @@ def patients_page():
         for row in cursor:
             result.append(row)
         cursor.close()
-        return render_template('patients_page.html', Patients=result, form=form)
-    return render_template('patients_page.html', Patients=patients, form=form)
+        return render_template('patients_search_page.html', Patients=result, form=form,filtered=True)
+    return render_template('patients_search_page.html', Patients=patients, form=form,filtered=False)
 
-
-@app.route("/drugs")
+@app.route("/drugs",methods=['GET', 'POST'])
 def drugs_page():
     drugs = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = "SELECT DRUGS.name,DRUG_COMPANIES.name,size,shelf_life,price,DRUG_TYPE.name FROM DRUGS,DRUG_COMPANIES,DRUG_TYPE WHERE company_id=DRUG_COMPANIES.id AND type=DRUG_TYPE.id ORDER BY drugs.NAME ASC"
+    statement= "SELECT DRUGS.name,DRUG_COMPANIES.name,size,shelf_life,price,DRUG_TYPE.name FROM DRUGS,DRUG_COMPANIES,DRUG_TYPE WHERE company_id=DRUG_COMPANIES.id AND type=DRUG_TYPE.id ORDER BY drugs.NAME ASC"
     cursor.execute(statement)
     connection.commit()
     for row in cursor:
         drugs.append(row)
     cursor.close()
-    return render_template('drugs_page.html', Drugs=drugs)
+
+    form = Drugs_Form()
+    if form.validate_on_submit():
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        select = form.select.data
+        name=form.name.data
+        company=form.company.data
+        size=form.size.data
+        shelf=form.shelf.data
+        typ =form.typ.data
+        price = form.price.data
+        if(form.delete.data == True):
+            statement= "select * from drugs where name = \'{}\'".format(name)
+            cursor.execute(statement)
+            connection.commit()
+            result = cursor.fetchone()
+            if result == None:
+                flash("The drug does not exists. Cannot be deleted",'warning')
+                return redirect(url_for("drugs_page"))
+            else:
+                statement = "DELETE FROM DRUGS WHERE NAME = \'{}\'".format(name)
+                cursor.execute(statement)
+                connection.commit()
+                return redirect(url_for("drugs_page"))
+        if(form.submit.data == True):
+            if select == "insert":
+                if(name=="" or company == "" or shelf =="" or size =="" or typ =="" or price == ""):
+                    flash("Please fill in all the boxes.",'warning')
+                    return redirect(url_for('drug_companies_page'))
+
+                statement="SELECT * FROM DRUGS WHERE NAME= \'{}\'".format(name)
+                print(statement)
+                cursor.execute(statement)
+                connection.commit()
+                result = cursor.fetchone()
+                print(result)
+                if not result == None and len(result)>0:
+                    flash("The drug already exists, cannot insert.",'warning')
+                    cursor.close()
+                    return redirect(url_for("drugs_page"))
+                else:
+                    statement = "SELECT * from drug_companies where NAME = \'{}\'".format(company)
+                    cursor.execute(statement)
+                    connection.commit()
+                    result = cursor.fetchone()
+                    if not result == None and len(result) > 0:
+                        company_id = result[0]
+                        statement = "SELECT * FROM DRUG_TYPE WHERE TYPE = \'{}\'".format(typ)
+                        cursor.execute(statement)
+                        connection.commit()
+                        result = cursor.fetchone()
+                        if not result == None and len(result)>0:
+                            drug_type = result[0]
+                            statement = "INSERT INTO public.DRUGS(name,company_id,size,shelf_life,price,type) VALUES (\'{}\',{},{},{},\'{}\',{});".format(name,company_id,size,shelf,price,typ)
+                            print(statement)
+                            cursor.execute(statement)
+                            connection.commit()
+                            return redirect(url_for("drugs_page"))
+                        else:
+                            flash("Drug type is unknown. Please check again",'warning')
+                            return redirect(url_for("drugs_page"))
+                    else:
+                        flash("The Drug Company does not exists.",'warning')          
+                        return redirect(url_for("drugs_page"))
+            elif select == 'update':
+                statement="SELECT * FROM DRUGS WHERE NAME= \'{}\'".format(name)
+                cursor.execute(statement)
+                connection.commit()
+                result = cursor.fetchone()
+                if not result == None and len(result)==0:
+                    print("The drug does not exists, cannot update.")
+                    cursor.close()
+                    return redirect(url_for("drugs_page"))
+                else:
+                    drug_id = result[0]
+                    statement = "SELECT * from drug_companies where NAME = \'{}\'".format(company)
+                    cursor.execute(statement)
+                    connection.commit()
+                    result = cursor.fetchone()
+                    if not result == None and len(result) > 0:
+                        company_id = result[0]
+                        statement = "SELECT * FROM DRUG_TYPE WHERE TYPE = \'{}\'".format(typ)
+                        cursor.execute(statement)
+                        connection.commit()
+                        result = cursor.fetchone()
+                        if not result == None and len(result)>0:
+                            drug_type = result[0]
+                            statement = "UPDATE public.drugs SET name=\'{}\',company_id={},size={},shelf_life={},price=\'{}\',type={} WHERE id = {};".format(name,company_id,size,shelf,price,typ,drug_id)
+                            cursor.execute(statement)
+                            connection.commit()
+                            return redirect(url_for("drugs_page"))
+                        else:
+                            flash("Drug type is unknown.",'warning')
+                            return redirect(url_for("drugs_page"))
+                    else:
+                        flash("The company does not exists.",'warning')
+            return redirect(url_for("drugs_page"))
+    return render_template('drugs_page.html', Drugs=drugs,form=form)
 
 
-@app.route("/drug_companies")
+@app.route("/drug_companies",methods=['GET', 'POST'])
 def drug_companies_page():
     companies = []
     connection = db.connect(url)
@@ -98,7 +223,66 @@ def drug_companies_page():
     for row in cursor:
         companies.append(row)
     cursor.close()
-    return render_template('drug_companies_page.html', DrugCompanies=companies)
+
+    form = DrugCompanies_Form()
+    if form.validate_on_submit():
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        if(form.delete.data == True):
+            name = form.name.data
+            if name=="":
+                flash("Please write the name of the company to be deleted...",'info')
+                return redirect(url_for('drug_companies_page'))
+            else:
+                statement = "DELETE FROM DRUG_COMPANIES WHERE NAME = \'{}\'".format(name)
+                cursor.execute(statement)
+                connection.commit()
+                return redirect(url_for('drug_companies_page'))
+        if(form.submit.data == True):
+            select = form.select.data
+            name=form.name.data
+            year=form.year.data
+            founder=form.founder.data
+            country=form.country.data
+            workers =form.workers.data
+            factories = form.factories.data
+            if(name=="" or year =="" or founder =="" or country == "" or factories ==""):
+                flash("Please fill in all the boxes.",'warning')
+                return redirect(url_for('drug_companies_page'))
+            if select == "insert":
+                checkIfExist = "SELECT * FROM PUBLIC.DRUG_COMPANIES WHERE NAME = \'{}\'".format(name)
+                print(checkIfExist)
+                cursor.execute(checkIfExist)
+                connection.commit()
+                result = cursor.fetchone()
+                print(result)
+                if not result == None and len(result)>0:
+                    print("Company already exists. Cannot insert")
+                else:
+                    statement = "INSERT INTO PUBLIC.DRUG_COMPANIES(NAME,FOUNDATION_YEAR,FOUNDER,COUNTRY,WORKER_NUM,FACTORY_NUM) VALUES(\'{}\',{},\'{}\',\'{}\',{},{});".format(
+                        name,year,founder,country,workers,factories
+                    )
+                    print(statement)
+                    cursor.execute(statement)
+                    connection.commit()
+                    cursor.close()
+                return redirect(url_for('drug_companies_page'))
+            elif select == "update":
+                statement = "SELECT * FROM DRUG_COMPANIES WHERE NAME = \'{}\'".format(name)
+                cursor.execute(statement)
+                connection.commit()
+                result = cursor.fetchone()
+                if not result == None and len(result)>0:
+                    statement = "update public.drug_companies SET name=\'{}\',foundation_year={},FOUNDER=\'{}\',COUNTRY=\'{}\',WORKER_NUM={},FACTORY_NUM={}".format(
+                    name,year,founder,country,workers,factories 
+                    )
+                    cursor.execute(statement)
+                    connection.commit()
+                    cursor.close()
+                return redirect(url_for('drug_companies_page'))
+
+    return render_template('drug_companies_page.html', DrugCompanies=companies,form=form)
+
 
 
 @app.route("/pharmacy", methods=['GET', 'POST'])
