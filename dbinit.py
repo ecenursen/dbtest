@@ -7,10 +7,9 @@ import psycopg2 as dbapi2
 
 INIT_STATEMENTS = [
     """CREATE TABLE IF NOT EXISTS USERS (
-        ID VARCHAR NOT NULL,
+        ID VARCHAR UNIQUE PRIMARY KEY,
         PASSWORD VARCHAR NOT NULL,
-        STATUS INTEGER NOT NULL,
-        CONSTRAINT pkey PRIMARY KEY (ID,PASSWORD)
+        STATUS INTEGER NOT NULL
     )""",
     # unique kalkması lazım sanki - primary de patlar primary id ve password olmalı olcak
     #GOKTUG
@@ -95,8 +94,8 @@ INIT_STATEMENTS = [
         GENERATED_KEY SERIAL PRIMARY KEY,
         PERSONNEL_ID INTEGER,
         SHIFT_BEGIN_DATE DATE,
-        SHIFT_REPEAT_INTERVAL INTEGER,
-        SHIFT_HOURS INTEGER,
+        SHIFT_REPEAT_INTERVAL INTERVAL,
+        SHIFT_HOURS INTERVAL,
         DAYSHIFT BOOL,
         EMERGENCY_AREA_ASSIGNED VARCHAR, CHECK(EMERGENCY_AREA_ASSIGNED IN('Green','Yellow','Red')),
         FOREIGN KEY (PERSONNEL_ID) REFERENCES HOSPITAL_PERSONNEL ON DELETE CASCADE ON UPDATE CASCADE
@@ -143,8 +142,8 @@ INIT_STATEMENTS = [
         id SERIAL PRIMARY KEY,
         name VARCHAR NOT NULL,
         location VARCHAR,
-        pharmacist INTEGER REFERENCES  pharmacy_personel(id) ON DELETE SET NULL ON UPDATE CASCADE,
-        helper INTEGER REFERENCES  pharmacy_personel(id) ON DELETE SET NULL ON UPDATE CASCADE,
+        pharmacist INTEGER REFERENCES  pharmacy_personel(id) ON DELETE SET NULL,
+        helper INTEGER REFERENCES  pharmacy_personel(id) ON DELETE SET NULL,
         next_night_shift DATE,
         tel_num INTEGER
     )""",
@@ -160,14 +159,14 @@ INIT_STATEMENTS = [
     )""",
     """
     CREATE TABLE IF NOT EXISTS pharmacy_inventory (
-        drugs_id INTEGER REFERENCES DRUGS(ID) ON DELETE CASCADE ON UPDATE CASCADE,
-        pharmacy_id INTEGER REFERENCES pharmacies(id) ON DELETE CASCADE ON UPDATE CASCADE,
+        drugs_id INTEGER REFERENCES DRUGS(ID) ON DELETE CASCADE,
+        pharmacy_id INTEGER REFERENCES pharmacies(id) ON DELETE CASCADE,
         number INTEGER DEFAULT 0
     )""",
     """
     CREATE TABLE IF NOT EXISTS warehouse_inventory (
-        drugs_id INTEGER REFERENCES DRUGS(ID) ON DELETE CASCADE ON UPDATE CASCADE,
-        warehouse_id INTEGER REFERENCES pharmaceutical_warehouse(id) ON DELETE CASCADE ON UPDATE CASCADE,
+        drugs_id INTEGER REFERENCES DRUGS(ID) ON DELETE CASCADE,
+        warehouse_id INTEGER REFERENCES pharmaceutical_warehouse(id) ON DELETE CASCADE,
         number INTEGER DEFAULT 0
     )
     """,
@@ -244,7 +243,7 @@ INIT_STATEMENTS = [
         ID SERIAL PRIMARY KEY,
         PRESCRIPTION_ID INTEGER,
         DRUG_ID INTEGER,
-        DRUG_NAME INTEGER,
+        DRUG_NAME VARCHAR,
         DOSAGE_PER_TAKE INTEGER DEFAULT 1,
         TIMES_PER_DAY INTEGER DEFAULT 1, 
         DURATION INTEGER DEFAULT 3,
