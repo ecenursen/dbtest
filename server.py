@@ -20,7 +20,7 @@ cursor.close()
 
 #DEBUG = False
 
-DEBUG = False
+DEBUG = True
 # LIVE ICIN
 if(DEBUG == False):
     url = os.getenv("DATABASE_URL")
