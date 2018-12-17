@@ -34,6 +34,12 @@ class inventory_change_form(FlaskForm):
     bought = SubmitField('Bought a Drug')
     request_id = HiddenField('Request ID')
 
+class delete_pharmacy_form(FlaskForm):
+    submit = SubmitField('DELETE PHARMACY')
+
+class create_pharmacy_form(FlaskForm):
+    submit = SubmitField('CREATE NEW PHARMACY')
+
 class G_WarehouseSearchForm(FlaskForm):
     c = [('name','Name'),
     ('region','Region'),

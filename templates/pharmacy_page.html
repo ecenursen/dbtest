@@ -173,6 +173,16 @@
             {% endfor %}
         </table>
     {% endif %}
-
+    {% if logged_in %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ search_form.hidden_tag() }}
+            <fieldset class="form-group">
+            <div class="form-group">
+                    {{ delete_form.submit(class="btn btn-outline-info") }}
+                </div>
+            </fieldset>
+        </form>
+    {% endif %}
 
 {% endblock content %}
