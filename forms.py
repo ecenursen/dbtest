@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField,StringField, PasswordField, SubmitField, BooleanField, RadioField, IntegerField, FloatField, SelectMultipleField,widgets,HiddenField
+from wtforms import SelectField,StringField, PasswordField, SubmitField, BooleanField, RadioField, IntegerField, FloatField, SelectMultipleField,widgets
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 class LoginForm(FlaskForm):
@@ -32,7 +32,6 @@ class G_PharmacySearchForm(FlaskForm):
 class inventory_change_form(FlaskForm):
     sold = SubmitField('Sold a Drug')
     bought = SubmitField('Bought a Drug')
-    request_id = HiddenField('Request ID')
 
 class G_WarehouseSearchForm(FlaskForm):
     c = [('name','Name'),
@@ -40,27 +39,9 @@ class G_WarehouseSearchForm(FlaskForm):
     ]
     select = RadioField('Search for Pharmaceutical Warehouses' , choices = c)
     search = StringField('')
-    submit = SubmitField('Search')
-
-class PharmacyPersonelForm(FlaskForm):
-    delete = SubmitField('Delete')
-    edit = SubmitField('Edit')
-    request_id = HiddenField('Request ID')
-
-class PharPersonelAdd(FlaskForm):
-	request_id = HiddenField('Request ID')
-	tckn = IntegerField('')
-	name = StringField('')
-	tel_num =IntegerField('')
-	school = StringField('')
-	graduation_year = IntegerField('')
-	years_worked = IntegerField('')
-	submit = SubmitField('Save Changes')
-
-class PharPersonelEditForm(FlaskForm):
-	tel = IntegerField('123')
-	years = IntegerField('')
-	submit = SubmitField('Save Changes')
+    submit = SubmitField('Search') 
+    submit = SubmitField('Save Changes')
+    value = IntegerField('')
 
 class HospitalSearchForm(FlaskForm):
     choices=[('HOSPITAL_NAME','Hospital Name'),

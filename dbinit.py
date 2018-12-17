@@ -142,10 +142,12 @@ INIT_STATEMENTS = [
         id SERIAL PRIMARY KEY,
         name VARCHAR NOT NULL,
         location VARCHAR,
-        pharmacist INTEGER REFERENCES  pharmacy_personel(id) ON DELETE SET NULL,
-        helper INTEGER REFERENCES  pharmacy_personel(id) ON DELETE SET NULL,
+        pharmacist INTEGER,
+        helper INTEGER,
         next_night_shift DATE,
-        tel_num INTEGER
+        tel_num INTEGER,
+        CONSTRAINT c1 FOREIGN KEY (helper) REFERENCES  pharmacy_personel(id),
+        CONSTRAINT c2 FOREIGN KEY (pharmacist) REFERENCES  pharmacy_personel(id)
     )""",
     """
     CREATE TABLE IF NOT EXISTS pharmaceutical_warehouse (
@@ -159,14 +161,14 @@ INIT_STATEMENTS = [
     )""",
     """
     CREATE TABLE IF NOT EXISTS pharmacy_inventory (
-        drugs_id INTEGER REFERENCES DRUGS(ID) ON DELETE CASCADE,
-        pharmacy_id INTEGER REFERENCES pharmacies(id) ON DELETE CASCADE,
+        drugs_id INTEGER REFERENCES DRUGS(ID),
+        pharmacy_id INTEGER REFERENCES pharmacies(id),
         number INTEGER DEFAULT 0
     )""",
     """
     CREATE TABLE IF NOT EXISTS warehouse_inventory (
-        drugs_id INTEGER REFERENCES DRUGS(ID) ON DELETE CASCADE,
-        warehouse_id INTEGER REFERENCES pharmaceutical_warehouse(id) ON DELETE CASCADE,
+        drugs_id INTEGER REFERENCES DRUGS(ID),
+        warehouse_id INTEGER REFERENCES pharmacies(id),
         number INTEGER DEFAULT 0
     )
     """,
