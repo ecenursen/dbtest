@@ -5,6 +5,7 @@
 {% block content %}
 {% if stat==1 or stat==7 %}
     <a href="{{url_for('add_hospital')}}" class="btn btn-primary" role="button">Add Hospital</a>
+
     <br></br>
     <br></br>
 {% endif %}
@@ -42,6 +43,9 @@
         <th>ADMINISTRATOR </th>
         <th>PHONE NUMBER </th>
         <th>AMBULANCE COUNT </th>
+        {% if stat==1 or stat==7 %}
+        <th>EDIT HOSPITAL</th>
+        {% endif %}
     </tr>
     {% for item in hospital %}
     <tr>
@@ -59,6 +63,11 @@
         <td>{{item.get_administrator()}}</td>
         <td>{{item.get_telephone_number()}}</td>
         <td>{{item.get_ambulance_count()}}</td>
+        {% if stat==1 or stat==7 %}
+        <td>
+            <a href="{{url_for('edit_hospital',hospital_id=item.get_id())}}" class="btn btn-success" role="button">Edit Hospital</a>
+        </td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>
