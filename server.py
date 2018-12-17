@@ -18,7 +18,7 @@ for statement in INIT_STATEMENTS:
 connection.commit()
 cursor.close()
 '''
-DEBUG = True
+DEBUG = False
 # LIVE ICIN
 if(DEBUG == False):
 	url = os.getenv("DATABASE_URL")
