@@ -269,21 +269,21 @@ def inventory_page(id,mode):
 						new_value = 1
 					elif forms.sold.data:
 						new_value = -1
- 					new_value = int(inventory[k][1]) + new_value
+					new_value = int(inventory[k][1]) + new_value
 					if new_value == 0:
 						statement = "DELETE FROM public.warehouse_inventory WHERE drugs_id={} and warehouse_id = {};".format(inventory[k][2], id)
 						del i[-1]
 					else:
 						#print ("aaaaaaaa")
 						statement = "UPDATE public.warehouse_inventory SET number={} WHERE drugs_id={} and warehouse_id = {};".format(new_value, inventory[k][2], id)
- 				cursor.execute(statement)
+				cursor.execute(statement)
 				connection.commit()
 				statement = "select NAME , number from DRUGS,warehouse_inventory where warehouse_inventory.warehouse_id = {} and drugs_id = ID".format(id)
 				cursor.execute(statement)
 				connection.commit()
 				inventory = cursor.fetchall()
 				cursor.close()
- 				return render_template('inventory_page.html', self=True, name=name, results=inventory, i=i, forms=forms)
+				return render_template('inventory_page.html', self=True, name=name, results=inventory, i=i, forms=forms)
 			else:
 				statement = "select name from pharmaceutical_warehouse where id={} ".format(id)
 				cursor.execute(statement)
@@ -339,6 +339,33 @@ def pharmaceutical_warehouse_page():
 	else:
 		return redirect(url_for('home_page'))
 	return redirect(url_for('home_page'))
+
+@app.route("/edit_p_personel", methods=['GET', 'POST'])
+def edit_p_personel_page():
+	per_id = session['per_id']
+	if (per_id):
+		connection = db.connect(url)
+		cursor = connection.cursor()
+		statement = """SELECT name,tel_num,years_worked FROM pharmacy_personel WHERE id = '{}' """.format(per_id)
+		cursor.execute(statement)
+		connection.commit()
+		person = cursor.fetchone()
+		form = PharPersonelEditForm()
+		if form.validate_on_submit():
+			print("hops")
+			tel = form.tel.data
+			years = form.years.data
+			statement = "UPDATE public.pharmacy_personel SET tel_num={}, years_worked={}	WHERE id = {};".format(tel,years,per_id)
+			cursor.execute(statement)
+			connection.commit()
+			session['per_id'] = None
+			cursor.close()
+			return  redirect(url_for('pharmacy_page'))
+		cursor.close()
+		return render_template('edit_p_personel_page.html',per=person,form=form)
+	else: 
+		return redirect(url_for('home_page'))
+	return
 
 status=1
 def hospital_page():
