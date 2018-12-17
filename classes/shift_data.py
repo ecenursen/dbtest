@@ -8,6 +8,8 @@ class shift_data:
         self.dayshift=dayshift
         self.ea=emergency_area_assigned
         self.name=name
+    def get_id(self):
+        return self.shift_id
     def get_personnel_id(self):
         return self.personnel_id
     def get_begin(self):
