@@ -13,7 +13,8 @@ class PatientForm(FlaskForm):
     select = RadioField('Choose an operation',choices=choices,default='insert')
     name=StringField('Name')
     age=StringField('Age')
-    sex=StringField('Sex')
+    sexChoices = [('male','Male'),('female','Female')]
+    sex=SelectField('Sex',choices=sexChoices)
     tckn=StringField('TCKN')
     phone = StringField('Phone')
     complaint = StringField('Current Complaint')
