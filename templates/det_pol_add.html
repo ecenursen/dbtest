@@ -3,7 +3,7 @@
     <h1>PRESCRIPTION_ADD</h1>
 {% endblock title %}
 {% block content %}
------ buraya if
+{% if  log_id == 1  or log_id == 7 %}
 <form role="form" action="{{url_for('add_pol_det',hospital_id = hospital_id, pol_id = pol_id)}}" method="post" name="submit" class="form-horizontal">
     
     <div class="form-group">
@@ -33,7 +33,6 @@
         </div> 
     </div>
 </form>
-{% if log_id == 3 %}
 {% else %}
 <div class="alert alert-danger" role="alert">
     Your are not authorized to access this page! Please go back to home page!
