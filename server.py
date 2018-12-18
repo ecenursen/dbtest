@@ -18,7 +18,7 @@ for statement in INIT_STATEMENTS:
 connection.commit()
 cursor.close()
 '''
-DEBUG = False
+DEBUG = True
 # LIVE ICIN
 #DEBUG=True
 if(DEBUG == False):
@@ -48,7 +48,7 @@ def patients_page():
     patients = []
     connection = db.connect(url)
     cursor = connection.cursor()
-    statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,CUR_COMPLAINT,INSURANCE.INSURANCE_NAME FROM PATIENTS,INSURANCE WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID ORDER BY PATIENTS.NAME ASC"
+    statement = "SELECT PATIENTS.NAME,AGE,SEX,TCKN,PHONE,CUR_COMPLAINT,INSURANCE.INSURANCE_NAME,PATIENTS.ID FROM PATIENTS,INSURANCE WHERE PATIENTS.INSURANCE = INSURANCE.INSURANCE_ID ORDER BY PATIENTS.NAME ASC"
     cursor.execute(statement)
     connection.commit()
     for row in cursor:
