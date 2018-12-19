@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import SelectField,StringField, PasswordField, SubmitField, BooleanField, RadioField, IntegerField, FloatField, SelectMultipleField,widgets,HiddenField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
-
+class InsertForm(FlaskForm):
+    input = StringField('Scripts')
+    submit = SubmitField('Submit')
 class LoginForm(FlaskForm):
     id = StringField('ID',
                         validators=[DataRequired()])

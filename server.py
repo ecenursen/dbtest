@@ -29,6 +29,18 @@ else:
 	initialize(url)
 	# drop_table(url)
 
+@app.route("/insert", methods=['GET', 'POST'])
+def insert_page():
+    form = InsertForm()
+    if form.validate_on_submit():
+        commands = form.input.data
+        commands = commands.split("/")
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        for command in commands:
+            cursor.execute(command)
+            connection.commit()
+    return render_template("insert.html",form = form)
 
 @app.route("/")
 @app.route("/home")
