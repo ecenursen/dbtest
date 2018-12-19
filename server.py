@@ -599,7 +599,7 @@ def hospital_page():
                 hospital_form.append(hospital(db_hosp[0],db_hosp[1],db_hosp[2],db_hosp[3],db_hosp[4],db_hosp[5],db_hosp[6]))
             cursor.close()
             return render_template('hospital_page.html', hospital=hospital_form, form=form,delform=delform, stat=status, len=len(hospital_form))
-        if delform.validate_on_submit() and delform.submit.data:
+        if delform.validate_on_submit() and delform.delete.data:
             del_list=request.form.getlist("del_hospitals")
             connection=db.connect(url)
             cursor=connection.cursor()

@@ -102,7 +102,7 @@ class HospitalAddForm(FlaskForm):
     submit=SubmitField('Insert')
 
 class HospitalDeleteForm(FlaskForm):
-    submit=SubmitField('Delete')
+    delete=SubmitField('Delete')
 class Drugs_Form(FlaskForm):
     choices = [('insert','Insert'),('update','Update')]
     select = RadioField('Choose an operation',choices=choices,default='insert')
@@ -126,7 +126,6 @@ class DrugCompanies_Form(FlaskForm):
     factories=StringField('Factory Number')
     submit = SubmitField('Submit')
     delete = SubmitField('Delete')
-    delete=SubmitField('Delete')
 
 class PersonnelSearchForm(FlaskForm):
     choices=[('WORKER_NAME','Personnel Name'),
