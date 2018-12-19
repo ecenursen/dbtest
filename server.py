@@ -577,7 +577,7 @@ def hospital_page():
     cursor.close()
     form=HospitalSearchForm()
     status = session.get('status')
-    status=1
+    #status=1
     delform=HospitalDeleteForm()
     if(request.method=='POST'):
         if form.validate_on_submit() and form.submit.data:
@@ -618,7 +618,7 @@ app.add_url_rule("/hospital", view_func=hospital_page, methods=['GET', 'POST'])
 
 def add_hospital():
     status=session.get('status')
-    status=1
+    #status=1
     if status not in (1,7):
         return redirect(url_for('home_page'))
     hospitals=[]
@@ -650,7 +650,7 @@ app.add_url_rule('/hospital/add_hospital',view_func=add_hospital, methods=['GET'
 
 def edit_hospital(hospital_id):
     status = session.get('status')
-    status=1
+    #status=1
 
     if status not in (1,7):
         return redirect(url_for('home_page'))
@@ -722,7 +722,7 @@ app.add_url_rule("/emergency_shift/<int:personnel_id>",view_func=single_personne
 
 def hospital_personnel_sheet():
     status = session.get('status')
-    status=1
+    #status=1
     workers = []
     connection = db.connect(url)
     cursor = connection.cursor()
@@ -772,7 +772,7 @@ app.add_url_rule("/hospital_personnel",
 
 def add_personnel():
     status=session.get('status')
-    status=1
+    #status=1
     if status not in (1,6,7):
         return redirect(url_for('home_page'))
     personnel=[]
@@ -808,7 +808,7 @@ app.add_url_rule('/hospital_personnel/add_personnel',view_func=add_personnel, me
 
 def hospital_personnel_page(hospital_id):
     status=session.get('status')
-    status=1
+    #status=1
     workers =[]
     connection = db.connect(url)
     cursor=connection.cursor()
@@ -857,7 +857,7 @@ app.add_url_rule("/<int:hospital_id>/hospital_personnel",view_func=hospital_pers
 def emergency_shift_page():
     data = []
     status = session.get('status')
-    status=1
+    #status=1
     connection = db.connect(url)
     cursor = connection.cursor()
     statement = """SELECT GENERATED_KEY,HOSPITAL_PERSONNEL.PERSONNEL_ID, SHIFT_BEGIN_DATE,SHIFT_REPEAT_INTERVAL,SHIFT_HOURS,DAYSHIFT ,EMERGENCY_AREA_ASSIGNED, WORKER_NAME FROM DAY_TABLE LEFT JOIN HOSPITAL_PERSONNEL ON DAY_TABLE.PERSONNEL_ID=HOSPITAL_PERSONNEL.PERSONNEL_ID ORDER BY SHIFT_BEGIN_DATE"""
