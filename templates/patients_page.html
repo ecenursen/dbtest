@@ -64,7 +64,7 @@
             </tr>
             {% for item in Patients %}
             <tr>
-                <td><a href="{{ url_for('prescription_page',id=item[0]) }}">{{item[0]}}</a></td>
+                <td><a href="{{ url_for('prescription_page',id=item[7]) }}">{{item[0]}}</a></td>
                 {% if item[1] %}
                     <td>Female</td>
                 {% else %}
