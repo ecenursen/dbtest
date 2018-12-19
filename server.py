@@ -354,7 +354,7 @@ def pharmacy_page():
         connection.commit()
         for row in cursor:
             results.append(row)
-            cursor.close()
+        cursor.close()
         return render_template('pharmacy_page.html', on_duty = on_duty,   search_form = form1,logged_in=False, results = results,searched = True,add_form=add_form,delete_form=delete_form)
 	
     if ((logged_in) and ( s )):
