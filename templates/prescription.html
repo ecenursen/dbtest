@@ -9,25 +9,27 @@
         <th>PRESCRIPTION ID </th>
         <th>HOSPITAL NAME </th>
         <th>DOCTOR NAME </th>
-        <th>VALID UNTIL </th>
+        <th>PATIENT NAME </th>
+	        <th>PRESCRIPTION DATE </th>
+	        <th>VALID FOR </th>
     </tr>
     {% for item in Prescriptions %}
     <tr>
-        <td><a href="{{ url_for('det_prescription_page',id=id,pid=item[0]) }}">{{item[0]}}</a>
             {% if log_id == 1 or log_id == 3 %}
-            <form action="{{url_for('pres_del',id = id,pid=item[0])}}">
-                <input type="submit" value="delete" /> 
-            </form>
+        <td><a href="{{ url_for('det_prescription_page',id=id,pid=item[0]) }}">{{item[0]}}</a>
+	        <form action="{{url_for('pres_del',id = id,pid=item[0])}}">
+	                <input type="submit" value="delete" /> 
+	            </form>
             <form action="{{url_for('edit_pres',id = id,pid=item[0])}}">
                 <input type="submit" value="edit" /> 
             </form>
             {% endif %}
         </td>
-        <td>{{item[4]}}</td>
-        <td>{{item[5]}}</td>
-        <td>{{item[6]}}</td>
-        <td>{{item[7]}}</td>
-        <td>{{item[8]}}</td>
+	        <td>{{item[4]}}</td>
+	        <td>{{item[5]}}</td>
+	        <td>{{item[6]}}</td>
+	        <td>{{item[7]}}</td>
+	        <td>{{item[8]}}</td>
     </tr>
     {% endfor %}
 
