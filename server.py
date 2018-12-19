@@ -501,7 +501,7 @@ def pharmaceutical_warehouse_page():
 	logged_in = session.get('logged_in')
 	status = session.get('status')
 	if (logged_in):
-		id = session.get['id']  # =warehouse id
+		id = session.get('id')  # =warehouse id
 	#logged_in = True
 	if (logged_in and (status == 5 or status == 4)):
 		form = G_WarehouseSearchForm()
