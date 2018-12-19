@@ -358,18 +358,18 @@ def pharmacy_page():
         return render_template('pharmacy_page.html', on_duty = on_duty,   search_form = form1,logged_in=False, results = results,searched = True,add_form=add_form,delete_form=delete_form)
 	
     if ((logged_in) and ( s )):
-	    phar_id = session.get('id')
+        phar_id = session.get('id')
         connection = db.connect(url)
         cursor = connection.cursor()
         statement = """SELECT name,location,next_night_shift,tel_num,pharmacist,helper FROM pharmacies
-						WHERE id = '{}' """.format(phar_id) 
+                        WHERE id = '{}' """.format(phar_id) 
         cursor.execute(statement)
         connection.commit()
         phar_detail = cursor.fetchone()
         pharmacist_id=phar_detail[4]
         helper_id=phar_detail[5]
         statement = """ SELECT name,tel_num FROM pharmacy_personel
-						WHERE (id ={} or id={})""".format(pharmacist_id,helper_id)
+                        WHERE (id ={} or id={})""".format(pharmacist_id,helper_id)
         cursor.execute(statement)
         connection.commit()
         employees = cursor.fetchall() 
