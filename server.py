@@ -884,6 +884,7 @@ def emergency_shift_page():
         cursor.execute(statement)
         connection.commit()
         cursor.close()
+        return redirect(url_for('emergency_shift_page'))
     delform=HospitalDeleteForm()
     if delform.validate_on_submit():
             del_list=request.form.getlist("del_shift")
