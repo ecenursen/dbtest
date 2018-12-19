@@ -15,8 +15,9 @@
     </tr>
     {% for item in Prescriptions %}
     <tr>
-            {% if log_id == 1 or log_id == 3 %}
+            
         <td><a href="{{ url_for('det_prescription_page',id=id,pid=item[0]) }}">{{item[0]}}</a>
+            {% if log_id == 1 or log_id == 3 %}
 	        <form action="{{url_for('pres_del',id = id,pid=item[0])}}">
 	                <input type="submit" value="delete" /> 
 	            </form>
