@@ -339,8 +339,8 @@ def pharmacy_page():
 	#print(logged_in)
     s = (session.get('status') == 4)
 	#for debug
-    logged_in = s=True
-    phar_id =11
+    #logged_in = s=True
+    #phar_id =11
 	#
     if form1.validate_on_submit():
         attr = form1.select.data
@@ -358,7 +358,7 @@ def pharmacy_page():
         return render_template('pharmacy_page.html', on_duty = on_duty,   search_form = form1,logged_in=False, results = results,searched = True,add_form=add_form,delete_form=delete_form)
 	
     if ((logged_in) and ( s )):
-		#phar_id = session.get('id')
+	phar_id = session.get('id')
         connection = db.connect(url)
         cursor = connection.cursor()
         statement = """SELECT name,location,next_night_shift,tel_num,pharmacist,helper FROM pharmacies
