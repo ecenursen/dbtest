@@ -192,7 +192,7 @@ def drugs_page():
                     result = cursor.fetchone()
                     if not result == None and len(result) > 0:
                         company_id = result[0]
-                        statement = "SELECT * FROM DRUG_TYPE WHERE TYPE = \'{}\'".format(typ)
+                        statement = "SELECT * FROM DRUG_TYPE WHERE NAME = \'{}\'".format(typ)
                         cursor.execute(statement)
                         connection.commit()
                         result = cursor.fetchone()
