@@ -1,4 +1,4 @@
-Welcome to itucsdbNN's documentation!
+Welcome to itucsdb1821's documentation!
 =====================================
 
 :Team: Team Name
@@ -9,7 +9,6 @@ Welcome to itucsdbNN's documentation!
    * Member 2
    * Member 3
    * Member 4
-   * Member 5
 
 **project description goes here (a few paragraphs)**
 
