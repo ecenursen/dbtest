@@ -192,13 +192,13 @@ def drugs_page():
                     result = cursor.fetchone()
                     if not result == None and len(result) > 0:
                         company_id = result[0]
-                        statement = "SELECT * FROM DRUG_TYPE WHERE TYPE = \'{}\'".format(typ)
+                        statement = "SELECT * FROM DRUG_TYPE WHERE NAME = \'{}\'".format(typ)
                         cursor.execute(statement)
                         connection.commit()
                         result = cursor.fetchone()
                         if not result == None and len(result)>0:
                             drug_type = result[0]
-                            statement = "INSERT INTO public.DRUGS(name,company_id,size,shelf_life,price,type) VALUES (\'{}\',{},{},{},\'{}\',{});".format(name,company_id,size,shelf,price,typ)
+                            statement = "INSERT INTO public.DRUGS(name,company_id,size,shelf_life,price,type) VALUES (\'{}\',{},{},{},\'{}\',{});".format(name,company_id,size,shelf,price,drug_type)
                             print(statement)
                             cursor.execute(statement)
                             connection.commit()
@@ -306,8 +306,9 @@ def drug_companies_page():
                 connection.commit()
                 result = cursor.fetchone()
                 if not result == None and len(result)>0:
-                    statement = "update public.drug_companies SET name=\'{}\',foundation_year={},FOUNDER=\'{}\',COUNTRY=\'{}\',WORKER_NUM={},FACTORY_NUM={}".format(
-                    name,year,founder,country,workers,factories 
+                    comp_id = result[0]
+                    statement = "update public.drug_companies SET name=\'{}\',foundation_year={},FOUNDER=\'{}\',COUNTRY=\'{}\',WORKER_NUM={},FACTORY_NUM={} WHERE ID = {}".format(
+                    name,year,founder,country,workers,factories,comp_id
                     )
                     cursor.execute(statement)
                     connection.commit()
@@ -884,6 +885,7 @@ def emergency_shift_page():
         cursor.execute(statement)
         connection.commit()
         cursor.close()
+        return redirect(url_for('emergency_shift_page'))
     delform=HospitalDeleteForm()
     if delform.validate_on_submit():
             del_list=request.form.getlist("del_shift")
