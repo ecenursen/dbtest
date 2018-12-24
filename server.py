@@ -1474,8 +1474,8 @@ def edit_drug_pres(id,pid,did):
                 statement = statement + ""","""
             else:
                 statement = statement + """SET """
-            dosager_id = int(request.form['dosage'])
-            statement = statement + """SET DOSAGE_PER_TAKE = """ +"CAST("+str(dosage)+" AS INTEGER)""" 
+            dosage = int(request.form['dosage'])
+            statement = statement + """ DOSAGE_PER_TAKE = """ +"CAST("+str(dosage)+" AS INTEGER)""" 
 
         if request.form.get('times'):
             if flag ==False:
@@ -1484,7 +1484,7 @@ def edit_drug_pres(id,pid,did):
                 statement = statement + """SET """
             flag = False
             times = request.form['times']
-            statement = statement + """TIMES_PER_DAY = """ +"CAST("+str(times)+" AS VARCHAR)"""
+            statement = statement + """TIMES_PER_DAY = """ +"CAST("+str(times)+" AS INTEGER)"""
 
         if request.form.get('duration'):
             if flag ==False:
