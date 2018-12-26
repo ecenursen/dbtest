@@ -10,7 +10,7 @@ The open source database management system used in this project is PostgreSQL. I
 with a diverse community which helps a lot in development phase. It also supports ACID (Atomicity,
 Consistency, Isolation, Durability). It supports multiple indexing techniques such as GIN (Generalized Inverted Index) or GiST (Generealized Search Tree).
 
-*Database Initialization for HEROKU*
+**Database Initialization for HEROKU**
 
 Since we are using *HEROKU* for deployment, we need to set the database up accordingly. The code block below
 descripes how our system is initialized. **DATABASE_URL** is inside the Heroku server and it is generated automatically
@@ -35,7 +35,7 @@ SQL queries for table creation.
 			sys.exit(1)
 		initialize(url)
 
-*Database Initialization for LOCAL development*
+**Database Initialization for LOCAL development**
 
 For local development and debugging purposes, the *DATABASE_URL* should be given. It should
 contain some keywords in order to be used. For our specific database
@@ -67,7 +67,7 @@ Also, this can be achieved without changing the whole code's structure via chang
 		url = "dbname='<dbname>' user='<user>' host='<host>' password='<password>'"
 		initialize(url)
 
-*Sample Database Query*
+**Sample Database Query**
 
 Let's imagine a scenario where the user wants to see everything from SAMPLE_TABLE with
 a given ID number. A typical SQL query can be accomplished via the snippet below.
