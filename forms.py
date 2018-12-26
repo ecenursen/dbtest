@@ -115,6 +115,26 @@ class Drugs_Form(FlaskForm):
     price = StringField('Price')
     submit = SubmitField('Submit')
     delete = SubmitField('Delete')
+    search = SubmitField('Search')
+class Drugs_Search_Form(FlaskForm):
+    choices = [('Name','Name'),
+    ('Type','Type'),
+    ('Company_ID','Company')
+    ]
+    select = SelectField('Filter Drugs:',choices=choices)
+    search = StringField('')
+    submit = SubmitField('Filter')
+
+class DrugCompanies_Search_Form(FlaskForm):
+    choices = [('Name','Name'),
+    ('Type','Type'),
+    ('Company','Company'),
+    ('Founder','Founder'),
+    ('Country','Country')
+    ]
+    select = SelectField('Filter Companies:',choices=choices)
+    search = StringField('')
+    submit = SubmitField('Filter')
 
 class DrugCompanies_Form(FlaskForm):
     choices = [('insert','Insert'),('update','Update')]
@@ -127,6 +147,7 @@ class DrugCompanies_Form(FlaskForm):
     factories=StringField('Factory Number')
     submit = SubmitField('Submit')
     delete = SubmitField('Delete')
+    search = SubmitField('Search')
 
 class PersonnelSearchForm(FlaskForm):
     choices=[('WORKER_NAME','Personnel Name'),

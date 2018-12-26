@@ -6,7 +6,7 @@
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
-            <legend class="border-bottom mb-2">Patients Search Page</legend>
+            <legend class="border-bottom mb-2">Drug Companies Search Page</legend>
             <div class="form-group">
                 {{ form.select.label(class="form-control-label") }}
                 {{ form.select(class="form-control") }}
@@ -27,22 +27,16 @@
     <table class = "table" style='margin-top: 2%; table-layout: fixed;'>
         <tr>
             <th>NAME</th>
-            <th>AGE</th>
-            <th>SEX</th>
-            <th>TCKN</th>
-            <th>PHONE</th>
-            <th>COMPLAINT</th>
-            <th>INSURANCE</th>
+            <th>YEAR</th>
+            <th>FOUNDER</th>
+            <th>COUNTRY</th>
+            <th>WORKER NO</th>
+            <th>FACTORY NO</th>
         </tr>
-        {% for item in Patients %}
+        {% for item in Companies %}
         <tr>
-                <td><a href="{{ url_for('prescription_page',id=item[0]) }}">{{item[0]}}</a></td>
                 <td>{{item[1]}}</td>
-                {% if item[2] %}
-                    <td>Female</td>
-                {% else %}
-                    <td>Male</td>
-                {% endif %}
+                <td>{{item[2]}}</td>
                 <td>{{item[3]}}</td>
                 <td>{{item[4]}}</td>
                 <td>{{item[5]}}</td>

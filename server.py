@@ -149,7 +149,35 @@ def patients_search_page():
         cursor.close()
         return render_template('patients_search_page.html', Patients=result, form=form,filtered=True)
     return render_template('patients_search_page.html', Patients=patients, form=form,filtered=False)
-
+@app.route("/drugs_search_page",methods=['GET','POST'])
+def drugs_search_page():
+    drugs = []
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement= "SELECT DRUGS.name,DRUG_COMPANIES.name,size,shelf_life,price,DRUG_TYPE.name FROM DRUGS,DRUG_COMPANIES,DRUG_TYPE WHERE company_id=DRUG_COMPANIES.id AND type=DRUG_TYPE.id ORDER BY drugs.NAME ASC"
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        drugs.append(row)
+    cursor.close()
+    form = Drugs_Search_Form()
+    if form.validate_on_submit():
+        attr = form.select.data
+        key = form.search.data
+        result = []
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        statement = "SELECT DRUGS.name,DRUG_COMPANIES.name,size,shelf_life,price,DRUG_TYPE.name FROM DRUGS,DRUG_COMPANIES,DRUG_TYPE WHERE company_id=DRUG_COMPANIES.id AND type=DRUG_TYPE.id AND CAST(drugs.{} AS TEXT) ILIKE {} ORDER BY drugs.{} ASC".format(
+            attr, "\'%" + key + "%\'", attr)
+        print(statement)
+        cursor.execute(statement)
+        connection.commit()
+        for row in cursor:
+            result.append(row)
+        print(result)
+        cursor.close()
+        return render_template('drugs_search_page.html', Drugs=result, form=form,filtered=True)
+    return render_template('drugs_search_page.html', Drugs=drugs, form=form,filtered=False)
 @app.route("/drugs",methods=['GET', 'POST'])
 def drugs_page():
     drugs = []
@@ -173,6 +201,8 @@ def drugs_page():
         shelf=form.shelf.data
         typ =form.typ.data
         price = form.price.data
+        if(form.search.data == True):
+            return redirect(url_for("drugs_search_page"))
         if(form.delete.data == True):
             statement= "select * from drugs where name = \'{}\'".format(name)
             cursor.execute(statement)
@@ -260,8 +290,33 @@ def drugs_page():
                         flash("The company does not exists.",'warning')
             return redirect(url_for("drugs_page"))
     return render_template('drugs_page.html', Drugs=drugs,form=form)
-
-
+@app.route("/drug_companies_search",methods=['GET','POST'])
+def drug_companies_search_page():
+    companies = []
+    connection = db.connect(url)
+    cursor = connection.cursor()
+    statement = """SELECT * FROM DRUG_COMPANIES"""""
+    cursor.execute(statement)
+    connection.commit()
+    for row in cursor:
+        companies.append(row)
+    cursor.close()
+    form = DrugCompanies_Search_Form()
+    if form.validate_on_submit():
+        attr = form.select.data
+        key = form.search.data
+        result = []
+        connection = db.connect(url)
+        cursor = connection.cursor()
+        statement = "SELECT * FROM DRUG_COMPANIES WHERE CAST({} AS TEXT) ILIKE {} ORDER BY {} ASC".format(
+            attr, "\'%" + key + "%\'", attr)
+        cursor.execute(statement)
+        connection.commit()
+        for row in cursor:
+            result.append(row)
+        cursor.close()
+        return render_template('drug_companies_search_page.html', Companies=result, form=form,filtered=True)
+    return render_template('drug_companies_search_page.html', Companies=companies, form=form,filtered=False)
 @app.route("/drug_companies",methods=['GET', 'POST'])
 def drug_companies_page():
     companies = []
@@ -278,6 +333,8 @@ def drug_companies_page():
     if form.validate_on_submit():
         connection = db.connect(url)
         cursor = connection.cursor()
+        if(form.search.data == True):
+            return redirect(url_for('drug_companies_search_page'))
         if(form.delete.data == True):
             name = form.name.data
             if name=="":

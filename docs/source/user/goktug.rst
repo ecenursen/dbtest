@@ -18,6 +18,8 @@ In order to perform operation on patients, you must login and have permission.
 Once those are provided, you are eligible to operate on patients in our system and this page should be
 visible to you.
 
+.. tip:: If you cannot access this page being an authorized member, please contact the administrator.
+
 .. figure:: insert_patient.jpg
 	:scale: 50 %
 	:alt: Patient Page
@@ -34,7 +36,6 @@ the process and add the patient.
 
 .. warning:: The insurance company you type must exist in order to add the patient.
 
-.. tip:: If you cannot access this page being an authorized member, please contact the administrator.
 
 1.2. Updating a Existing Patient
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,4 +70,22 @@ necessary information to the box below and click *FILTER*.
 The results should appear via a table right below the *Filter* button.
 
 .. note:: You do not have to specify the entire information of a patient.
-	* *Eg. Searching for "A" with name filter will give you every patient with a letter "A" in their names.
+	* *Eg. Searching for "A" with name filter will give you every patient with a letter "A" in their names.*
+	
+2. Drug Companies
+------------------
+
+In order to perform operation on drug companies, you must login and have permission.
+Once those are provided, you are eligible to operate on drug companies in our system and this page should be
+visible to you.
+
+.. tip:: If you cannot access this page being an authorized member, please contact the administrator.
+
+.. figure:: drug_companies_page.jpg
+	:scale: 50 %
+	:alt: Drug Companies Page
+	:align: center
+	
+	Drug Companies
+
+	
