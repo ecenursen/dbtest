@@ -22,12 +22,12 @@ Code
 
 .. code-block:: python
 
-  def initialize(url):
-    with dbapi2.connect(url) as connection:
-        cursor = connection.cursor()
-        for statement in INIT_STATEMENTS:
-            cursor.execute(statement)
-        cursor.close()
+	def initialize(url):
+		with dbapi2.connect(url) as connection:
+			cursor = connection.cursor()
+			for statement in INIT_STATEMENTS:
+				cursor.execute(statement)
+			cursor.close()
 
 	if __name__ == "__main__":
 		url = os.getenv("DATABASE_URL")
@@ -54,7 +54,7 @@ a given ID number. A typical SQL query can be accomplished via the snippet below
         result.append(row)
 	cursor.close()
 	
-At the end of the execution, if successfull, result list will be populated with the 
+At the end of the execution, if successful, result list will be populated with the 
 set of rows that satisfy the given query.
 
 .. toctree::
