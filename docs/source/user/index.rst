@@ -4,15 +4,12 @@ User Guide
 **Welcome to *HastayimDB* user guide. Here, there will be information from A to Z on 
 how to completly use our application.**
 
-**'Logging In'**::
+.. topic:: Logging In
+	.. image:: indexImages/loginPage.png
+		:scale: 50 %
+		:alt: Login Page
 
-.. figure:: indexImages/loginPage.png
-	:scale: 50 %
-	:alt: Login Page
-	
-Login Page Interface
-
-.. toctree::
+toctree::
 
    member1
    member2
