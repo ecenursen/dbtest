@@ -4,15 +4,15 @@ User Guide
 **Welcome to *HastayimDB* user guide. Here, there will be information from A to Z on 
 how to completly use our application.**
 
-**to add a picture, use the following example**::
+**'Logging In'**::
 
-   .. figure:: picture.png
-      :scale: 50 %
-      :alt: map to buried treasure
+figure:: indexImages/loginPage.png
+:scale: 50 %
+:alt: Login Page
 
-      This is the caption of the figure (a simple paragraph).
+Login Page Interface
 
-.. toctree::
+toctree::
 
    member1
    member2
