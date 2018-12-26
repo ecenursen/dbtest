@@ -1,8 +1,8 @@
 User Guide
 ==========
 
-**explain how your application works from the user perspective, use
-screenshots whereever appropriate**
+**Welcome to *HastayimDB* user guide. Here, there will be information from A to Z on 
+how to completly use our application.**
 
 **to add a picture, use the following example**::
 
@@ -18,5 +18,4 @@ screenshots whereever appropriate**
    member2
    member3
    member4
-   member5
    
