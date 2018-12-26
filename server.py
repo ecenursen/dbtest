@@ -10,23 +10,12 @@ from classes.shift_data import *
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ioJbIGGH6ndzWOi3vEW'
 
-'''
-connection = db.connect("dbname='postgres' user='postgres' host='localhost' password='hastayimpw'")
-cursor = connection.cursor()
-for statement in INIT_STATEMENTS:
-	cursor.execute(statement)
-connection.commit()
-cursor.close()
-'''
 DEBUG = False
-# LIVE ICIN
-#DEBUG=True
 if(DEBUG == False):
 	url = os.getenv("DATABASE_URL")
 else:
-	# DENEME ICIN
 	url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
-	initialize(url)
+    initialize(url)
 	# drop_table(url)
 
 @app.route("/insert", methods=['GET', 'POST'])
