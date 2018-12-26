@@ -1,9 +1,6 @@
 Developer Guide
 ===============
 
-Database Design
----------------
-
 .. image:: postgresql.png
 	:scale: 40 %
 	:alt: Patient Page
@@ -12,9 +9,6 @@ Database Design
 The open source database management system used in this project is PostgreSQL. It is a DBMS
 with a diverse community which helps a lot in development phase. It also supports ACID (Atomicity,
 Consistency, Isolation, Durability). It supports multiple indexing techniques such as GIN (Generalized Inverted Index) or GiST (Generealized Search Tree).
-
-Code
-----
 
 1. Database Initialization for HEROKU
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,7 +91,6 @@ At the end of the execution, if successful, result list will be populated with t
 set of rows that satisfy the given query.
 
 .. toctree::
-
    goktug
    member2
    member3
