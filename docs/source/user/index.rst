@@ -4,8 +4,7 @@ User Guide
 **Welcome to *HastayimDB* user guide. Here, there will be information from A to Z on 
 how to completely use our application.**
 
-Login
-########
+*Login*
 
 Navigate to Login Page by clicking the *Login* button on the top right corner of your browser.
 

@@ -4,24 +4,24 @@ Parts Implemented by Göktuğ Başaran
 This page will be providing information on 
 
 * *Patients*, 
-* *drugs* and 
-* *drug companies*
+* *Drugs*
+* *Drug companies*
 
-1 Patients
-----------
+1. Patients
+-------------
 
 Patients page is only provided to medical personnel in hospitals and pharmacies.
 Hospital personnel can view the patient list and access their *medical records*.
 Pharmacy personnel can view the patient list and access their *prescription records*.
 
-1.1 Adding a New Patient
+1.1. Adding a New Patient
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In order to add a new patients, you must login and have authorization for the operation.
 Once those are provided, you are eligible to add a new patient to our system and this page should be
 visible to you.
 
-.. figure:: insert.jpg
+.. figure:: insert_patient.jpg
 	:scale: 50 %
 	:alt: Patient Page
 	:align: center
