@@ -1,16 +1,18 @@
 Welcome to itucsdb1821's documentation!
 =====================================
 
-:Team: Team Name
+:Team: 1821
 
 :Members:
 
-   * Member 1
-   * Member 2
-   * Member 3
-   * Member 4
+   * Atakan Göl
+   * Ece Nur Şen
+   * Ecem Konu
+   * Göktuğ Başaran
 
-**project description goes here (a few paragraphs)**
+**HastayimDB is a project to combine every aspect of Health Industry
+into a single application. In the current health system, hospitals are seperated, pharmacies are seperated,
+drug companies are seperated and so on. Our idea brings them all together on a single platform.**
 
 Contents:
 
