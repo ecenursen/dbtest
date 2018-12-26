@@ -3,9 +3,10 @@ User Guide
 
 **Welcome to *HastayimDB* user guide. Here, there will be information from A to Z on 
 how to completely use our application.**
-Login_
-Searching For A Hospital_
-Logging Out_
+
+* Login_
+* Searching For A Hospital_
+* Logging Out_
 
 
 .. _Login
