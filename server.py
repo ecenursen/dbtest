@@ -18,7 +18,7 @@ for statement in INIT_STATEMENTS:
 connection.commit()
 cursor.close()
 '''
-DEBUG = False
+DEBUG = True
 # LIVE ICIN
 #DEBUG=True
 if(DEBUG == False):
@@ -73,10 +73,27 @@ def patients_page():
         phone = form.phone.data
         complaint = form.complaint.data
         insurance = form.insurance.data
-        if form.validate_on_submit():
-            
+        if form.validate_on_submit():    
             if form.search.data == True:
                 return redirect(url_for("patients_search_page"))
+            elif form.delete.data == True:
+                if(name ==""):
+                    flash("Fill in the name of the patient.")
+                    return redirect(url_for("patients_page"))
+                else:
+                    find = "SELECT NAME FROM PATIENTS WHERE NAME =\'{}\'".format(name)
+                    cursor.execute(find)
+                    connection.commit()
+                    result = cursor.fetchone()
+                    if not result is None and len(result) > 0:
+                        statement = "DELETE FROM PATIENTS WHERE NAME=\'{}\'".format(name)
+                        cursor.execute(statement)
+                        connection.commit()
+                        return redirect(url_for("patients_page"))
+                    else:
+                        flash("Patient cannot be found.")
+                        return redirect(url_for("patients_page"))
+                    
             elif form.submit.data == True:
                 if(name == "" or age == "" or tckn == "" or phone == "" or complaint == "" or insurance ==""):
                     flash("Fill in the boxes")

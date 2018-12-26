@@ -23,6 +23,7 @@ class PatientForm(FlaskForm):
     insurance = StringField('Insurance')
     submit = SubmitField('Submit')
     search = SubmitField('Search')
+    delete = SubmitField('Delete')
 class PatientSearchForm(FlaskForm):
     choices = [('Name','Name'),
     ('Age','Age'),

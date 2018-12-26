@@ -45,6 +45,7 @@
             <div class="form-group" align='center'>
                 {{ form.submit(class="btn btn-outline-info") }}
                 {{ form.search(class="btn btn-outline-info") }}
+                {{ form.delete(class="btn btn-outline-info") }}
             </div>
 
         </fieldset>
@@ -65,12 +66,12 @@
             {% for item in Patients %}
             <tr>
                 <td><a href="{{ url_for('prescription_page',id=item[7]) }}">{{item[0]}}</a></td>
-                {% if item[1] %}
+                <td>{{item[1]}}</td>
+                {% if item[2] %}
                     <td>Female</td>
                 {% else %}
                     <td>Male</td>
                 {% endif %}
-                <td>{{item[2]}}</td>
                 <td>{{item[3]}}</td>
                 <td>{{item[4]}}</td>
                 <td>{{item[5]}}</td>
