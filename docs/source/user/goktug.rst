@@ -1,4 +1,5 @@
 Parts Implemented by Göktuğ Başaran
+Parts Implemented by Göktuğ Başaran
 ================================
 
 This page will be providing information on 
@@ -92,12 +93,13 @@ visible to you.
 	
 	Drug Companies
 	
-2.1. Inserting a New Drug Company
+2.1. Adding a New Drug Company
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 From the first dialog box, pick *INSERT* and provide the necessary information about the company
 in relative boxes below. Once you have provided all the information, click *Submit* button to finalize
 the process and add the company.
+
 
 2.2. Updating an Existing Company
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -152,12 +154,14 @@ visible to you.
 	
 	Drugs Page
 	
-3.1. Inserting a New Drug
+3.1. Adding a New Drug
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 From the first dialog box, pick *INSERT* and provide the necessary information about the drug
 in relative boxes below. Once you have provided all the information, click *Submit* button to finalize
 the process and add the drug.
+
+.. warning:: The Drug Company you type must exist in order to add the drug.
 
 3.2. Updating an Existing Drug
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -191,5 +195,5 @@ Pick the filter with which you would like to search, and provide the
 necessary information to the box below and click *FILTER*.
 The results should appear via a table right below the *Filter* button.
 
-.. note:: You do not have to specify the entire information of a company.
-	* *Eg. Searching for "A" with name filter will give you every company with a letter "A" in their names.*
+.. note:: You do not have to specify the entire information of a drug.
+	* *Eg. Searching for "A" with name filter will give you every drug with a letter "A" in their names.*
