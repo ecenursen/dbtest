@@ -5,7 +5,7 @@ User Guide
 how to completly use our application.**
 
 **Logging In**
-.. figure:: indexImages/loginPage.png
+.. figure:: loginPage.png
 	:scale: 50 %
 	:alt: Login Page
 	:align: center
