@@ -6,13 +6,13 @@ how to completly use our application.**
 
 **'Logging In'**::
 
-figure:: indexImages/loginPage.png
-:scale: 50 %
-:alt: Login Page
-
+.. figure:: indexImages/loginPage.png
+	:scale: 50 %
+	:alt: Login Page
+	
 Login Page Interface
 
-toctree::
+.. toctree::
 
    member1
    member2
