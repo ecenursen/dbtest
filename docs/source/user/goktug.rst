@@ -1,6 +1,5 @@
 Parts Implemented by Göktuğ Başaran
-Parts Implemented by Göktuğ Başaran
-================================
+===================================
 
 This page will be providing information on 
 
