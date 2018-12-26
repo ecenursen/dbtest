@@ -63,8 +63,8 @@ we can initialize as follows:
 Also, this can be achieved without changing the whole code's structure via changing a boolean in our *server.py* file, line 13.
 
 
-*If *DEBUG* is true, you can run the database locally.
-*If *DEBUG* is false,you can run the database on HEROKU.
+*If *DEBUG is true, you can run the database locally.*
+*If *DEBUG is false,you can run the database on HEROKU.*
 	
 .. code-block:: python
 	
@@ -85,12 +85,12 @@ a given ID number. A typical SQL query can be accomplished via the snippet below
 
 	result = []
 	connection = db.connect(url)
-    cursor = connection.cursor()
-    statement = "SELECT * FROM SAMPLE_TABLE WHERE ID={}".format(id)
-    cursor.execute(statement)
-    connection.commit()
-    for row in cursor:
-        result.append(row)
+	cursor = connection.cursor()
+	statement = "SELECT * FROM SAMPLE_TABLE WHERE ID={}".format(id)
+	cursor.execute(statement)
+	connection.commit()
+	for row in cursor:
+		result.append(row)
 	cursor.close()
 	
 At the end of the execution, if successful, result list will be populated with the 
