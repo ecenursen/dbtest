@@ -10,7 +10,6 @@ how to completly use our application.**
 	:alt: Login Page
 	:align: center
 .. toctree::
-:
    member1
    member2
    member3
