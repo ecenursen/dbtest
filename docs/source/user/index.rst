@@ -9,7 +9,7 @@ how to completely use our application.**
 Navigate to Login Page by clicking the *Login* button on the top right corner of your browser.
 
 .. figure:: login_page.jpg
-	:scale: 50 %
+	:scale: 40 %
 	:alt: Login Page
 	:align: center
 	
