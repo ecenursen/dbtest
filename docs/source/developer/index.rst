@@ -95,4 +95,3 @@ set of rows that satisfy the given query.
    member2
    member3
    member4
-   member5
