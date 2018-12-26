@@ -5,10 +5,11 @@ User Guide
 how to completly use our application.**
 
 **Logging In**
-.. figure:: loginPage.png
+.. figure:: login_page.jpg
 	:scale: 50 %
 	:alt: Login Page
 	:align: center
+	Login Page
 .. toctree::
    member1
    member2
