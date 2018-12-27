@@ -20,7 +20,7 @@ new functionalities of our application will be provided to you depending on your
 
 .. toctree::
    goktug
-   member2
+   ecenur
    member3
    member4
    
