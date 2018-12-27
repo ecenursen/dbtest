@@ -3,6 +3,7 @@
     <h1>HOSPITALS </h1>
 {% endblock title %}
 {% block content %}
+{% if log_id == 3 or log_id == 1 %}
 <div class="alert alert-info" role="alert">
     Choose a hospital from list!
 </div>
@@ -29,4 +30,9 @@
     </tr>
     {% endfor %}
 </table>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    Your are not authorized to access this page! Please go back to home page!
+</div>
+{% endif %}
 {% endblock content %}

@@ -14,7 +14,7 @@ DEBUG = False
 if(DEBUG == False):
 	url = os.getenv("DATABASE_URL")
 else:
-	url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
+    url = "dbname='postgres' user='postgres' host='localhost' password='hastayimpw'"
     initialize(url)
 	# drop_table(url)
 
