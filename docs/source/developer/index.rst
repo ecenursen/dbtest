@@ -89,6 +89,6 @@ set of rows that satisfy the given query.
 
 .. toctree::
    goktug
-   member2
+   ecenur
    member3
    member4
