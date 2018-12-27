@@ -1,7 +1,7 @@
 Parts Implemented by Ece Nur Şen
 ================================
 
-All table creations are exist in db_init.py file.
+.. note:: All table creations are exist in db_init.py file.
 
 **************
 Policlinics
