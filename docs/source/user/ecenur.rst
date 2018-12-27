@@ -91,7 +91,7 @@ A user can see this page without login.
 
 .. note:: If the user is admin or hospital administrator, user will see page different.
 
-.. figure:: ecenur/det_pol_w_log.png
+.. figure:: ecenur/det_pol_page_w_log.png
     :scale: 40 %
     :alt: Detailed Policlinics Page
     :align: center
@@ -246,7 +246,7 @@ An authorized user can add or delete drugs.
 
 To add new examination, user will click *Add Examination* button on Detailed Prescription Page.
 
-.. figure:: ecenur/add_Exam.png
+.. figure:: ecenur/add_exam.png
     :scale: 40 %
     :alt: Adding Examination
     :align: center
