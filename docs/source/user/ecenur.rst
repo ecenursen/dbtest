@@ -32,7 +32,7 @@ When user choose a hospital from list, user will see a list policlinics accordin
 
     Choosing Policlinic Without Login
 
-.. tip:: If the user is admin or hospital administrator, user will see page different.
+.. note:: If the user is admin or hospital administrator, user will see page different.
 
 .. figure:: ecenur/choose_pol_w_log.png
     :scale: 40 %
