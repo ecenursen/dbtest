@@ -20,3 +20,30 @@ he/she will see a page for him/her to choose a hospital.
 
     Choose Hospital Without Login
 
+1.1. Policlinics Page
+~~~~~~~~~~~~~~~~~~~~~
+
+When user choose a hospital from list, user will see a list policlinics according to that hospital.
+
+.. figure:: ecenur/choose_pol_wout_log.png
+    :scale: 40 %
+    :alt: Choosing Policlinic Without Login
+    :align: center
+
+    Choosing Policlinic Without Login
+
+.. note: If the user is admin or hospital administrator, user will see page different.
+
+.. figure:: ecenur/choose_pol_w_log.png
+    :scale: 40 %
+    :alt: Choosing Policlinic Page
+    :align: center
+
+    Choosing Policlinic Page
+
+Authorized user can add, delete or edit policlinics.
+
+1.1.1. Adding New Policlinics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
