@@ -1,14 +1,14 @@
 Parts Implemented by Ece Nur Şen
 ================================
 
-.. note:: All table creations are exist in db_init.py file.
+.. note:: All table creations exist in db_init.py file.
 
 **************
 Policlinics
 **************
 
-Table
------
+1. Table
+~~~~~~~~
 
 .. code-block:: sql
 
@@ -34,8 +34,8 @@ Table
 HOSPITAL_ID is referencing HOSPITAL_ID from HOSPITAL table. When a hospital got deleted or updated, it will affect Policlinics Table. Policlinics with given hospital id will be deleted or updated accordingly.
 RECEPTIONIST_ID is referencing PERSONNEL_ID from HOSPITAL_PERSONNEL table. When a hospital personnel got deleted or updated, it will affect Policlinics Table. Policlinics with given receptionist id will be deleted or updated accordingly.
 
-Reading Policlinics
-~~~~~~~~~~~~~~~~~~~
+2. Reading Policlinics
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -59,8 +59,8 @@ Reading Policlinics
 
 This function gets id of hospital and returns the all policlinics with given hospital id through html to user.
 
-Adding Policlinics
-~~~~~~~~~~~~~~~~~~
+3. Adding Policlinics
+~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -105,8 +105,8 @@ Adding Policlinics
 
 This function insert new policlinic to policlinics table. When the method is 'GET', it returns html of adding page. When the method is 'POST', it creates a sql statement for inserting new entry and executes accordingly.
 
-Editing Policlinics
-~~~~~~~~~~~~~~~~~~~
+4. Editing Policlinics
+~~~~~~~~~~~~~~~~~~~~~~
 
 
 .. code-block:: python
@@ -184,8 +184,8 @@ Editing Policlinics
 
 This function updates a policlinic from Policlinics table. When the method is 'GET', it returns html of editing page. When method is 'POST', it generates an sql statement for updating table and it executes statement.
 
-Deleting Policlinics
-~~~~~~~~~~~~~~~~~~~~
+5. Deleting Policlinics
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block::python
 
@@ -209,8 +209,8 @@ This function deletes choosen policlinic with given policlinics id from Policlin
 Detailed Policlinics
 **********************
 
-Table
------
+1. Table
+~~~~~~~~
 
 .. code-block:: sql
 
@@ -239,8 +239,8 @@ HOSPITAL_ID is referencing HOSPITAL_ID from HOSPITAL table. When a hospital got 
 POLICLINIC_ID is referencing ID from POLICLINICS table. When a policlinics got deleted or updated, it will affect Detailed_Policlinics Table. Detailed_Policlinics with given policlinics id will be deleted or updated accordingly.
 DOCTOR_ID is referencing PERSONNEL_ID from HOSPITAL_PERSONNEL table. When a hospital personnel got deleted or updated, it will affect Detailed_Policlinics Table. Detailed_Policlinics with given doctor id will be deleted or updated accordingly.
 
-Reading Detailed_Policlinics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2. Reading Detailed_Policlinics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -266,8 +266,8 @@ Reading Detailed_Policlinics
 
 This function gets id of hospital and id of policlinics, returns the detailed_policlinics with given hospital id and policlinics id through html to user.
 
-Adding Detailed_Policlinics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3. Adding Detailed_Policlinics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -298,8 +298,8 @@ Adding Detailed_Policlinics
 
 This function insert new detailed_policlinic to detailed_policlinics table. When the method is 'GET', it returns html of adding page. When the method is 'POST', it creates a sql statement for inserting new entry and executes accordingly.
 
-Deleting Detailed_Policlinics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4. Deleting Detailed_Policlinics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -323,8 +323,8 @@ This function deletes choosen detailed_policlinic with given id from Detailed_Po
 Prescription
 **************
 
-Table
------
+1. Table
+~~~~~~~~
 
 .. code-block:: sql
 
@@ -356,8 +356,8 @@ HOSPITAL_ID is referencing HOSPITAL_ID from HOSPITAL table. When a hospital got 
 DOCTOR_ID is referencing PERSONNEL_ID from HOSPITAL_PERSONNEL table. When a hospital personnel got deleted or updated, it will affect Prescription Table. Prescription with given doctor id will be set as NULL. Because when a doctor got died or changed, we don't want prescription data to change.
 PATIENT_ID is referencing ID from PATIENTS table. When a patient got deleted or updated, it will affect Prescription Table. Prescription with given patient id will be deleted when a patient id wanted to be deleted. But when patient id wanted to be updated, patient id in prescription it will set as NULL.
 
-Reading Prescription
-~~~~~~~~~~~~~~~~~~~~
+2. Reading Prescription
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -381,8 +381,8 @@ Reading Prescription
 
 This function gets id of patients and returns the all prescriptions with given patient id through html to user.
 
-Adding Prescription
-~~~~~~~~~~~~~~~~~~~
+3. Adding Prescription
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -459,8 +459,8 @@ Adding Prescription
 This function insert new prescription to prescription table. When the method is 'GET', it returns html of adding page. When the method is 'POST', it creates a sql statement for inserting new entry and executes accordingly.
 
 
-Editing Prescription
-~~~~~~~~~~~~~~~~~~~~
+4. Editing Prescription
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -598,8 +598,8 @@ Editing Prescription
 This function updates a prescription from Prescription table. When the method is 'GET', it returns html of editing page. When method is 'POST', it generates an sql statement for updating table and it executes statement.
 
 
-Deleting Prescription
-~~~~~~~~~~~~~~~~~~~~~
+5. Deleting Prescription
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -621,11 +621,11 @@ This function deletes choosen prescription with given prescription id from PRESC
 
 
 ***********************
-Detiled Prescription
+Detailed Prescription
 ***********************
 
-Table
------
+1. Table
+~~~~~~~~
 
 .. code-block:: sql
 
@@ -651,8 +651,8 @@ Table
 PRESCRIPTION_ID is referencing ID from PRESCRIPTION table. When a prescription got deleted or updated, it will affect Detailed_Prescription Table. Detailed_Prescription with given prescription id will be deleted when a prescription id wanted to be deleted. But when prescription id wanted to be updated, it will be restricted.
 DRUG_ID is referencing ID from DRUGS table. When a drug got deleted or updated, it will affect Detailed_Prescription Table. Detailed_Prescription's drug id will be set as NULL. Because when a drug got no longer produced or changed, we don't want detailed_prescription data to change.
 
-Reading Detailed_Prescription(Drugs) and Examination
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2. Reading Detailed_Prescription(Drugs) and Examination
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -688,8 +688,8 @@ Reading Detailed_Prescription(Drugs) and Examination
 
 This function gets id of prescription and returns the drug and examination detailes of given prescription through html to user.
 
-Adding Detailed_Prescription
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3. Adding Detailed_Prescription
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -753,8 +753,8 @@ Adding Detailed_Prescription
 
 This function insert new detailed_prescription(drug) to detailed_prescription table. When the method is 'GET', it returns html of adding page. When the method is 'POST', it creates a sql statement for inserting new entry and executes accordingly.
 
-Editing Detailed_Prescription
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4. Editing Detailed_Prescription
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -832,8 +832,8 @@ Editing Detailed_Prescription
 
 This function updates a detail_prescription from Detailed_Prescription table. When the method is 'GET', it returns html of editing page. When method is 'POST', it generates an sql statement for updating table and it executes statement.
 
-Deleting Detailed_Prescription
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5. Deleting Detailed_Prescription
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -857,8 +857,8 @@ This function deletes choosen detailed_prescription with given id from Detailed_
 Examination
 **************
 
-Table
------
+1. Table
+~~~~~~~~
 
 .. code-block:: sql
 
@@ -876,8 +876,8 @@ Table
 
 PRESCRIPTION_ID is referencing ID from PRESCRIPTION table. When a prescription got deleted or updated, it will affect Examination Table. Examination with given prescription id will be deleted when a prescription id wanted to be deleted. But when prescription id wanted to be updated, it will be restricted.
 
-Adding Examination
-~~~~~~~~~~~~~~~~~~
+2. Adding Examination
+~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -913,8 +913,8 @@ Adding Examination
 
 This function insert new examination to examination table. When the method is 'GET', it returns html of adding page. When the method is 'POST', it creates a sql statement for inserting new entry and executes accordingly.
 
-Deleting Examination
-~~~~~~~~~~~~~~~~~~~~
+3. Deleting Examination
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
